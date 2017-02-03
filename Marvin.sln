@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{7DB16A4C-E881-AECE-C2BF-EB3E0C741888}") = "Marvin", "Assembly-CSharp.csproj", "{7AEEB50F-4B82-0FF3-7456-1D0BE0642886}"
+EndProject
+Project("{7DB16A4C-E881-AECE-C2BF-EB3E0C741888}") = "Marvin", "Assembly-CSharp-Editor.csproj", "{05FA8EE0-EFA1-BFB0-F78A-BD2CA8E396D5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7AEEB50F-4B82-0FF3-7456-1D0BE0642886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AEEB50F-4B82-0FF3-7456-1D0BE0642886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AEEB50F-4B82-0FF3-7456-1D0BE0642886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AEEB50F-4B82-0FF3-7456-1D0BE0642886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05FA8EE0-EFA1-BFB0-F78A-BD2CA8E396D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05FA8EE0-EFA1-BFB0-F78A-BD2CA8E396D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05FA8EE0-EFA1-BFB0-F78A-BD2CA8E396D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05FA8EE0-EFA1-BFB0-F78A-BD2CA8E396D5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
