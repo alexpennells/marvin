@@ -133,10 +133,11 @@ public class Player_Base : InputObj {
   }
 
   public void StateSwim(Water_Base other) {
-    ShootTimer.Enabled = false;
-    canDoubleJump = true;
-    Sprite.StopBlur();
-    Physics.Swim.Begin(other);
+    if (Physics.Swim.Begin(other)) {
+      ShootTimer.Enabled = false;
+      canDoubleJump = true;
+      Sprite.StopBlur();
+    }
   }
 
   /***********************************
