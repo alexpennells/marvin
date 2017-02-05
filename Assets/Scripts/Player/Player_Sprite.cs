@@ -5,7 +5,10 @@ using System.Collections;
 public class Player_Sprite : SpriteObj {
 
   public override void Step() {
-    FaceFlat();
+    if (Base.HasFooting)
+      FaceFooting();
+    else
+      FaceAngle(0);
 
     if (Base.Is("Sliding") && Math.Abs(Base.Physics.hspeed) < 2f) {
       Play("Duck");
@@ -33,7 +36,6 @@ public class Player_Sprite : SpriteObj {
     }
 
     if (Base.HasFooting) {
-      FaceFooting();
       StopBlur();
 
       if (Game.DownHeld) {
