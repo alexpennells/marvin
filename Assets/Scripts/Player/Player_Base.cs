@@ -12,9 +12,13 @@ public class Player_Base : InputObj {
   public float accelerationSpeed = 0.3f;
 
   private bool canDoubleJump = true;
+  private SpriteObj chargeAura = null;
 
   protected override void Init() {
-    ShootTimer.Interval = 2000;
+    ShootTimer.Interval = 800;
+
+    chargeAura = transform.Find("ChargeAura").gameObject.GetComponent<SpriteObj>();
+    ResetChargeAura();
   }
 
   protected override void Step () {
@@ -25,6 +29,34 @@ public class Player_Base : InputObj {
 
     if (HasFooting)
       canDoubleJump = true;
+  }
+
+  private void ResetChargeAura () {
+    chargeAura.SetAlpha(0f);
+    chargeAura.SetSpeed(1.5f);
+    chargeAura.transform.localScale = Vector3.zero;
+  }
+
+  private void GrowChargeAura () {
+    float chargeSpeed = 50f;
+
+    chargeAura.SetAlpha(Math.Min(0.8f, chargeAura.GetAlpha() + 0.8f / chargeSpeed));
+
+    float scaleSize = chargeAura.transform.localScale.y;
+    scaleSize = Math.Min(0.8f, scaleSize + 0.8f / chargeSpeed);
+    chargeAura.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
+
+    chargeAura.transform.localPosition = GetGunPosition();
+    chargeAura.FacingLeft = Sprite.FacingLeft;
+  }
+
+  private Vector3 GetGunPosition () {
+    if (Sprite.IsPlaying("idle_gun"))
+      return new Vector3(14, 15, z);
+    else if (Sprite.IsPlaying("walk_gun"))
+      return new Vector3(16, 14, z);
+    else
+      return new Vector3(16, 20, z);
   }
 
   /***********************************
@@ -39,6 +71,10 @@ public class Player_Base : InputObj {
   protected override void DownHeld(float val) {
     if (Is("Climbing"))
       Physics.vspeed -= Physics.Climb.acceleration;
+    else if (Is("Ducking")) {
+      ShootTimer.Enabled = false;
+      ResetChargeAura();
+    }
   }
 
   protected override void LeftHeld (float val) {
@@ -95,12 +131,44 @@ public class Player_Base : InputObj {
       State("Shoot");
   }
 
+  protected override void AttackHeld () {
+    if (!Is("Shooting"))
+      return;
+
+    // Reset timer until it's released
+    ShootTimer.Enabled = false;
+    ShootTimer.Enabled = true;
+
+    GrowChargeAura();
+  }
+
+  protected override void AttackReleased () {
+    if (!Is("Shooting"))
+      return;
+
+    Laser_Base laser = Game.Create("Laser", chargeAura.transform.position) as Laser_Base;
+    laser.Sprite.SetAlpha(0.8f);
+    laser.Sprite.StartBlur(0.01f, 0.4f, 0.1f);
+
+    float scaleSize = chargeAura.transform.localScale.y > 0.75f ? 1f : 0.4f;
+    laser.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
+    laser.Sprite.FacingLeft = Sprite.FacingLeft;
+    laser.Sprite.SetAngle(Sprite.currentRotationAngle);
+
+    float destX = Sprite.FacingRight ? 1f : -1f;
+    float destY = (float)Math.Tan(Math.PI * Sprite.currentRotationAngle / 180f) * destX;
+    laser.Physics.MoveTo(new Vector2(chargeAura.transform.position.x + destX, chargeAura.transform.position.y + destY), 8f);
+
+    ResetChargeAura();
+  }
+
   /***********************************
    * STATE CHANGE FUNCTIONS
    **********************************/
 
   public void StateSlide() {
     ShootTimer.Enabled = false;
+    ResetChargeAura();
 
     Sprite.Play("Slide");
     Sprite.StartBlur(0.001f, 0.2f, 0.02f);
@@ -114,6 +182,7 @@ public class Player_Base : InputObj {
 
   public void StateDoubleJump() {
     ShootTimer.Enabled = false;
+    ResetChargeAura();
 
     canDoubleJump = false;
     Physics.vspeed = this.jumpSpeed;
@@ -123,10 +192,12 @@ public class Player_Base : InputObj {
   public void StateShoot() {
     ShootTimer.Enabled = false;
     ShootTimer.Enabled = true;
+    ResetChargeAura();
   }
 
   public void StateClimb(Ladder_Base other) {
     ShootTimer.Enabled = false;
+    ResetChargeAura();
     canDoubleJump = true;
     Sprite.StopBlur();
     Physics.Climb.Begin(other);
@@ -134,6 +205,7 @@ public class Player_Base : InputObj {
 
   public void StateSwim(Water_Base other) {
     if (Physics.Swim.Begin(other)) {
+      ResetChargeAura();
       ShootTimer.Enabled = false;
       canDoubleJump = true;
       Sprite.StopBlur();

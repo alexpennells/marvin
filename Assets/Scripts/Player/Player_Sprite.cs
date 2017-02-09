@@ -8,7 +8,7 @@ public class Player_Sprite : SpriteObj {
     if (Base.HasFooting)
       FaceFooting();
     else
-      FaceAngle(0);
+      FaceAngle(IsPlaying("jump_gun") ? 0 : Base.Physics.vspeed * 2);
 
     if (Base.Is("Sliding") && Math.Abs(Base.Physics.hspeed) < 2f) {
       Play("Duck");

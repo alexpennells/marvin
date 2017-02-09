@@ -1,0 +1,140 @@
+fileFormatVersion: 2
+guid: e7a11093e739e446abbe6671d01e0ec4
+timeCreated: 1486595685
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: laser_0
+    21300002: laser_1
+    21300004: laser_2
+    21300006: laser_3
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 1
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: laser_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.65, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -2.7999992, y: 12}
+        - {x: -20.8, y: 6}
+        - {x: -20.8, y: -6}
+        - {x: -8.799999, y: -12}
+        - {x: 8.200001, y: -12}
+        - {x: 11.200001, y: -6}
+        - {x: 11.200001, y: 8}
+        - {x: 3.2000008, y: 12}
+    - name: laser_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.65, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -4.799999, y: 11}
+        - {x: -20.8, y: 5}
+        - {x: -20.8, y: -5}
+        - {x: -19.8, y: -7}
+        - {x: -10.799999, y: -10}
+        - {x: -3.7999992, y: -11}
+        - {x: 7.200001, y: -11}
+        - {x: 11.200001, y: -8}
+        - {x: 11.200001, y: 5}
+        - {x: 8.200001, y: 11}
+    - name: laser_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.65, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -2.800003, y: 12}
+        - {x: -20.800003, y: 6}
+        - {x: -20.800003, y: -6}
+        - {x: -8.800003, y: -12}
+        - {x: 8.199997, y: -12}
+        - {x: 11.199997, y: -6}
+        - {x: 11.199997, y: 8}
+        - {x: 3.199997, y: 12}
+    - name: laser_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.65, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 0.19999695, y: 13}
+        - {x: -4.800003, y: 12}
+        - {x: -20.800003, y: 6}
+        - {x: -20.800003, y: -9}
+        - {x: -9.800003, y: -13}
+        - {x: 8.199997, y: -13}
+        - {x: 11.199997, y: -5}
+        - {x: 11.199997, y: 9}
+        - {x: 5.199997, y: 13}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

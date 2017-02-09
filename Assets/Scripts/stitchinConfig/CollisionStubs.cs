@@ -23,6 +23,9 @@ public class CollisionStubs : CollisionObj
       case eObjectType.WATER:
         WaterCollision(other as Water_Base);
         break;
+      case eObjectType.LASER:
+        LaserCollision(other as Laser_Base);
+        break;
     }
   }
 
@@ -47,6 +50,7 @@ public class CollisionStubs : CollisionObj
   protected virtual void PlayerCollision(Player_Base other) {}
   protected virtual void LadderCollision(Ladder_Base other) {}
   protected virtual void WaterCollision(Water_Base other) {}
+  protected virtual void LaserCollision(Laser_Base other) {}
   protected virtual void PlayerExit(Player_Base other) {}
   protected virtual void LadderExit(Ladder_Base other) {}
   protected virtual void WaterExit(Water_Base other) {}

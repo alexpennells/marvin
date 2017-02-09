@@ -13,5 +13,6 @@ public enum eObjectType
   PLAYER,
   SCENE_EXIT,
   LADDER,
-  WATER
+  WATER,
+  LASER
 };
