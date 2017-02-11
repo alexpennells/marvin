@@ -7,7 +7,7 @@ public class Player_Collision : CollisionStubs
   public override eObjectType Type { get { return eObjectType.PLAYER; } }
 
   protected override void LadderCollision(Ladder_Base other) {
-    if (!Base.Is("Climbing") && !Base.Is("Torpedoing") && (Game.UpHeld || Game.DownHeld))
+    if (!Base.Is("Climbing") && !Base.Is("Torpedoing") && !Base.Is("Flying") && (Game.UpHeld || Game.DownHeld))
       Base.State("Climb", other);
   }
 
@@ -17,7 +17,7 @@ public class Player_Collision : CollisionStubs
   }
 
   protected override void WaterCollision(Water_Base other) {
-    if (!Base.Is("Swimming"))
+    if (!Base.Is("Swimming") && !Base.Is("Flying"))
       Base.State("Swim", other);
   }
 
@@ -26,4 +26,12 @@ public class Player_Collision : CollisionStubs
       Base.Physics.Swim.Stop();
   }
 
+  protected override void ShipCollision(Ship_Base other) {
+    if (Base.Physics.vspeed < 0) {
+      Base.x = other.x;
+      Base.y = other.y;
+      Base.State("Flying");
+      other.DestroySelf();
+    }
+  }
 }

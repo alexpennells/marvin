@@ -15,5 +15,6 @@ public enum eObjectType
   LADDER,
   WATER,
   LASER,
-  TORPEDO
+  TORPEDO,
+  SHIP
 };

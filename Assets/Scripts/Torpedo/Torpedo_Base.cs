@@ -11,7 +11,7 @@ public class Torpedo_Base : BaseObj {
   }
 
   protected override void Step() {
-    Game.CreateParticle("TorpedoPuff", Mask.Center + Vector3.forward * -5f);
+    Game.CreateParticle("TorpedoPuff", Mask.Center);
 
     if (!BoostTimer.Enabled && !this.blurStarted) {
       Sprite.StartBlur(0.01f, 0.5f, 0.1f);
@@ -30,7 +30,7 @@ public class Torpedo_Base : BaseObj {
   public void StateImpact() {
     Physics.hspeed = 0;
     Physics.vspeed = 0;
-    Game.CreateParticle("TorpedoExplosion", Mask.Center + Vector3.forward * -5f);
+    Game.CreateParticle("TorpedoExplosion", Mask.Center);
     DestroySelf();
   }
 

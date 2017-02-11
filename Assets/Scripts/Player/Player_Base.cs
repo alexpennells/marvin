@@ -12,6 +12,7 @@ public class Player_Base : InputObj {
   public float accelerationSpeed = 0.3f;
 
   private bool canDoubleJump = true;
+  private bool flying = false;
   private SpriteObj chargeAura = null;
 
   protected override void Init() {
@@ -31,6 +32,12 @@ public class Player_Base : InputObj {
       Physics.SkipNextGravityUpdate();
       Physics.SkipNextFrictionUpdate();
     }
+
+    if (Is("Flying")) {
+      Physics.SkipNextGravityUpdate();
+      Physics.applyFrictionToVspeed = true;
+    } else
+      Physics.applyFrictionToVspeed = false;
 
     base.Step();
 
@@ -64,8 +71,16 @@ public class Player_Base : InputObj {
       return new Vector3(16, 14, z);
     else if (Sprite.IsPlaying("torpedo"))
       return new Vector3(16, 14, z);
+    else if (Sprite.IsPlaying("in_ship"))
+      return new Vector3(16, 4, z);
     else
       return new Vector3(16, 20, z);
+  }
+
+  private void StopFlying() {
+    this.flying = false;
+    Physics.vspeed = this.jumpSpeed;
+    Game.Create("Ship", transform.position);
   }
 
   /***********************************
@@ -75,11 +90,15 @@ public class Player_Base : InputObj {
   protected override void UpHeld(float val) {
     if (Is("Climbing"))
       Physics.vspeed += Physics.Climb.acceleration;
+    else if (Is("Flying"))
+      Physics.vspeed += accelerationSpeed;
   }
 
   protected override void DownHeld(float val) {
     if (Is("Climbing"))
       Physics.vspeed -= Physics.Climb.acceleration;
+    else if (Is("Flying"))
+      Physics.vspeed -= accelerationSpeed;
     else if (Is("Ducking")) {
       ShootTimer.Enabled = false;
       ResetChargeAura();
@@ -114,6 +133,11 @@ public class Player_Base : InputObj {
     if (Is("Sliding") || Is("Torpedoing"))
       return;
 
+    if (Is("Flying")) {
+      StopFlying();
+      return;
+    }
+
     if (Is("Swimming")) {
       Physics.Swim.Stroke();
       SolidPhysics.Collider.ClearFooting();
@@ -126,6 +150,9 @@ public class Player_Base : InputObj {
   }
 
   protected override void JumpReleased () {
+    if (Is("Flying") || Is("Swimming"))
+      return;
+
     if (Physics.vspeed > 2)
       Physics.vspeed = 2;
   }
@@ -239,7 +266,8 @@ public class Player_Base : InputObj {
     ShootTimer.Enabled = false;
     ResetChargeAura();
 
-    Sprite.Play("Torpedo");
+    if (!Is("Flying"))
+      Sprite.Play("Torpedo");
 
     chargeAura.transform.localPosition = GetGunPosition();
     Torpedo_Base torpedo = Game.Create("Torpedo", chargeAura.transform.position) as Torpedo_Base;
@@ -251,16 +279,29 @@ public class Player_Base : InputObj {
     float destY = (float)Math.Tan(Math.PI * Sprite.currentRotationAngle / 180f) * destX;
     torpedo.Physics.MoveTo(new Vector2(chargeAura.transform.position.x + destX, chargeAura.transform.position.y + destY), 1f);
 
-    Physics.hspeed = -torpedo.Physics.hspeed * 2;
-    Physics.vspeed = -torpedo.Physics.vspeed * 2;
-
-    TorpedoTimer.Enabled = true;
+    if (!Is("Flying")) {
+      Physics.hspeed = -torpedo.Physics.hspeed * 2;
+      Physics.vspeed = -torpedo.Physics.vspeed * 2;
+      TorpedoTimer.Enabled = true;
+    }
   }
 
   public void StateShield() {
-    GameObject p = Game.CreateParticle("ShieldAura", Mask.Center + Vector3.forward * -5f);
+    GameObject p = Game.CreateParticle("ShieldAura", Mask.Center);
     p.transform.parent = transform;
     ShieldTimer.Enabled = true;
+  }
+
+  public void StateFlying() {
+    ShootTimer.Enabled = false;
+    ResetChargeAura();
+    canDoubleJump = true;
+    Sprite.StopBlur();
+    Physics.Swim.Stop();
+
+    flying = true;
+    Physics.hspeed = 0;
+    Physics.vspeed = 0;
   }
 
   /***********************************
@@ -274,6 +315,7 @@ public class Player_Base : InputObj {
   public bool IsSwimming() { return Physics.Swimming; }
   public bool IsTorpedoing() { return TorpedoTimer.Enabled; }
   public bool IsShielding() { return ShieldTimer.Enabled; }
+  public bool IsFlying() { return flying; }
 
   /***********************************
    * TIMER HANDLERS

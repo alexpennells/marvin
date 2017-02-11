@@ -10,8 +10,17 @@ public class Player_Sprite : SpriteObj {
 
     if (Base.HasFooting)
       FaceFooting();
-    else
-      FaceAngle(IsPlaying("jump_gun") ? 0 : Base.Physics.vspeed * 2);
+    else {
+      float angle = Base.Physics.vspeed * 2;
+      if (IsPlaying("jump_gun"))
+        angle = 0;
+      else if (Base.Is("Flying"))
+        angle *= 2;
+
+      if (FacingLeft)
+        angle *= -1;
+      FaceAngle(angle);
+    }
 
     if (Base.Is("Sliding") && Math.Abs(Base.Physics.hspeed) < 2f) {
       Play("Duck");
@@ -27,6 +36,11 @@ public class Player_Sprite : SpriteObj {
       FacingLeft = true;
     else if (Game.RightHeld)
       FacingRight = true;
+
+    if (Base.Is("Flying")) {
+      Play("Flying");
+      return;
+    }
 
     if (Base.Is("Climbing")) {
       Play("Climb");
@@ -101,6 +115,10 @@ public class Player_Sprite : SpriteObj {
 
   public void PlayTorpedo() {
     Animate("torpedo", 0f);
+  }
+
+  public void PlayFlying() {
+    Animate("in_ship", 1f);
   }
 
   /***********************************
