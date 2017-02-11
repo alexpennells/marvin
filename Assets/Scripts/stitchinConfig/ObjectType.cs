@@ -14,5 +14,6 @@ public enum eObjectType
   SCENE_EXIT,
   LADDER,
   WATER,
-  LASER
+  LASER,
+  TORPEDO
 };

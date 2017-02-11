@@ -1,0 +1,119 @@
+fileFormatVersion: 2
+guid: 342974c70d1844334b264d2f161a5652
+timeCreated: 1486616899
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: torpedo_0
+    21300002: torpedo_1
+    21300004: torpedo_2
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 1
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: torpedo_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -28, y: 12}
+        - {x: -29, y: 11}
+        - {x: -31, y: 6}
+        - {x: -31, y: -11}
+        - {x: 8, y: -11}
+        - {x: 29, y: -10}
+        - {x: 32, y: -5}
+        - {x: 32, y: 8}
+        - {x: 7, y: 12}
+    - name: torpedo_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 9, y: 12}
+        - {x: -32, y: 12}
+        - {x: -32, y: -11}
+        - {x: -11, y: -11}
+        - {x: 27, y: -7}
+        - {x: 32, y: -5}
+        - {x: 32, y: 4}
+        - {x: 29, y: 11}
+    - name: torpedo_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -31, y: 12}
+        - {x: -32, y: 11}
+        - {x: -32, y: -9}
+        - {x: -31, y: -11}
+        - {x: 1, y: -11}
+        - {x: 29, y: -10}
+        - {x: 32, y: -5}
+        - {x: 32, y: 8}
+        - {x: 14, y: 12}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -2,18 +2,8 @@ using UnityEngine;
 using System;
 
 public class Laser_Base : BaseObj {
-  private bool impacted = false;
   private bool submerged = false;
   private Vector2 startSpeed;
-
-  protected override void Step() {
-    if (Is("Impacted")) {
-      Sprite.SetAlpha(Sprite.GetAlpha() - 0.1f);
-
-      if (Sprite.GetAlpha() <= 0f)
-        DestroySelf();
-    }
-  }
 
   protected override void OffScreenStep() {
     DestroySelf();
@@ -26,14 +16,14 @@ public class Laser_Base : BaseObj {
   public void StateImpact() {
     Physics.hspeed = 0;
     Physics.vspeed = 0;
-    impacted = true;
-    Sprite.Play("Die");
+    Game.CreateParticle(transform.localScale.y > 0.9f ? "LaserCollideLarge" : "LaserCollideSmall", Mask.Center + Vector3.forward * -5f);
+    DestroySelf();
   }
 
   public void StateSubmerged() {
     this.startSpeed = new Vector2(Physics.hspeed, Physics.vspeed);
-    Physics.hspeed = Physics.hspeed / 2f;
-    Physics.vspeed = Physics.vspeed / 2f;
+    Physics.hspeed = Physics.hspeed / 3f;
+    Physics.vspeed = Physics.vspeed / 3f;
     this.submerged = true;
   }
 
@@ -47,6 +37,5 @@ public class Laser_Base : BaseObj {
    * STATE CHECKERS
    **********************************/
 
-  public bool IsImpacted() { return impacted; }
   public bool IsSubmerged() { return submerged; }
 }

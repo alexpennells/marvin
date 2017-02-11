@@ -16,6 +16,8 @@ public class Player_Base : InputObj {
 
   protected override void Init() {
     ShootTimer.Interval = 800;
+    TorpedoTimer.Interval = 200;
+    ShieldTimer.Interval = 2000;
 
     chargeAura = transform.Find("ChargeAura").gameObject.GetComponent<SpriteObj>();
     ResetChargeAura();
@@ -24,6 +26,11 @@ public class Player_Base : InputObj {
   protected override void Step () {
     if (!Is("Sliding"))
       Physics.hspeedMax = 4;
+
+    if (Is("Torpedoing")) {
+      Physics.SkipNextGravityUpdate();
+      Physics.SkipNextFrictionUpdate();
+    }
 
     base.Step();
 
@@ -55,6 +62,8 @@ public class Player_Base : InputObj {
       return new Vector3(14, 15, z);
     else if (Sprite.IsPlaying("walk_gun"))
       return new Vector3(16, 14, z);
+    else if (Sprite.IsPlaying("torpedo"))
+      return new Vector3(16, 14, z);
     else
       return new Vector3(16, 20, z);
   }
@@ -78,7 +87,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void LeftHeld (float val) {
-    if (Is("Ducking") || Is("Sliding"))
+    if (Is("Ducking") || Is("Sliding") || Is("Torpedoing"))
       return;
 
     if (Is("Climbing")) {
@@ -90,7 +99,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void RightHeld (float val) {
-    if (Is("Ducking") || Is("Sliding"))
+    if (Is("Ducking") || Is("Sliding") || Is("Torpedoing"))
       return;
 
     if (Is("Climbing")) {
@@ -102,7 +111,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void JumpPressed () {
-    if (Is("Sliding"))
+    if (Is("Sliding") || Is("Torpedoing"))
       return;
 
     if (Is("Swimming")) {
@@ -122,7 +131,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void AttackPressed () {
-    if (Is("Sliding") || Is("Climbing") || Is("Swimming"))
+    if (Is("Sliding") || Is("Climbing") || Is("Swimming") || Is("Torpedoing"))
       return;
 
     if (Is("Ducking"))
@@ -160,6 +169,20 @@ public class Player_Base : InputObj {
     laser.Physics.MoveTo(new Vector2(chargeAura.transform.position.x + destX, chargeAura.transform.position.y + destY), 8f);
 
     ResetChargeAura();
+  }
+
+  protected override void SkatePressed () {
+    if (Is("Torpedoing") || Is("Ducking") || Is("Sliding") || Is("Climbing"))
+      return;
+
+    State("Torpedo");
+  }
+
+  protected override void GrindPressed () {
+    if (Is("Torpedoing") || Is("Sliding") || Is("Shielding"))
+      return;
+
+    State("Shield");
   }
 
   /***********************************
@@ -212,6 +235,34 @@ public class Player_Base : InputObj {
     }
   }
 
+  public void StateTorpedo() {
+    ShootTimer.Enabled = false;
+    ResetChargeAura();
+
+    Sprite.Play("Torpedo");
+
+    chargeAura.transform.localPosition = GetGunPosition();
+    Torpedo_Base torpedo = Game.Create("Torpedo", chargeAura.transform.position) as Torpedo_Base;
+
+    torpedo.Sprite.FacingLeft = Sprite.FacingLeft;
+    torpedo.Sprite.SetAngle(Sprite.currentRotationAngle);
+
+    float destX = Sprite.FacingRight ? 4f : -4f;
+    float destY = (float)Math.Tan(Math.PI * Sprite.currentRotationAngle / 180f) * destX;
+    torpedo.Physics.MoveTo(new Vector2(chargeAura.transform.position.x + destX, chargeAura.transform.position.y + destY), 1f);
+
+    Physics.hspeed = -torpedo.Physics.hspeed * 2;
+    Physics.vspeed = -torpedo.Physics.vspeed * 2;
+
+    TorpedoTimer.Enabled = true;
+  }
+
+  public void StateShield() {
+    GameObject p = Game.CreateParticle("ShieldAura", Mask.Center + Vector3.forward * -5f);
+    p.transform.parent = transform;
+    ShieldTimer.Enabled = true;
+  }
+
   /***********************************
    * STATE CHECKERS
    **********************************/
@@ -221,6 +272,8 @@ public class Player_Base : InputObj {
   public bool IsShooting() { return ShootTimer.Enabled; }
   public bool IsClimbing() { return Physics.Climbing; }
   public bool IsSwimming() { return Physics.Swimming; }
+  public bool IsTorpedoing() { return TorpedoTimer.Enabled; }
+  public bool IsShielding() { return ShieldTimer.Enabled; }
 
   /***********************************
    * TIMER HANDLERS
@@ -231,4 +284,13 @@ public class Player_Base : InputObj {
     ShootTimer.Enabled = false;
   }
 
+  public Timer TorpedoTimer { get { return Timer2; } }
+  protected override void Timer2Elapsed(object source, ElapsedEventArgs e) {
+    TorpedoTimer.Enabled = false;
+  }
+
+  public Timer ShieldTimer { get { return Timer3; } }
+  protected override void Timer3Elapsed(object source, ElapsedEventArgs e) {
+    ShieldTimer.Enabled = false;
+  }
 }

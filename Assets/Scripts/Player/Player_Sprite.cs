@@ -5,6 +5,9 @@ using System.Collections;
 public class Player_Sprite : SpriteObj {
 
   public override void Step() {
+    if (Base.Is("Torpedoing"))
+      return;
+
     if (Base.HasFooting)
       FaceFooting();
     else
@@ -94,6 +97,10 @@ public class Player_Sprite : SpriteObj {
 
   public void PlaySwim() {
     Animate("swim", SwimSpeed());
+  }
+
+  public void PlayTorpedo() {
+    Animate("torpedo", 0f);
   }
 
   /***********************************
