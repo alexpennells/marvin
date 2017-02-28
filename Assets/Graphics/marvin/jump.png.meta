@@ -29,10 +29,10 @@ TextureImporter:
   cubemapConvolutionSteps: 7
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: -3
   maxTextureSize: 2048
   textureSettings:
-    filterMode: -1
+    filterMode: 0
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -64,15 +64,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -4, y: 32}
-        - {x: -13, y: 28}
-        - {x: -14, y: 16}
-        - {x: -14, y: 5}
-        - {x: -13, y: 0}
-        - {x: 8, y: 0}
-        - {x: 13, y: 16}
-        - {x: 13, y: 27}
-        - {x: 9, y: 32}
+      - - {x: -11, y: 34}
+        - {x: -14, y: 33}
+        - {x: -15, y: 23}
+        - {x: -15, y: 1}
+        - {x: -14, y: 0}
+        - {x: 4, y: 0}
+        - {x: 12, y: 12}
+        - {x: 12, y: 24}
+        - {x: 5, y: 34}
     - name: jump_1
       rect:
         serializedVersion: 2
@@ -84,15 +84,16 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -4, y: 32}
-        - {x: -13, y: 28}
-        - {x: -14, y: 18}
-        - {x: -14, y: 6}
-        - {x: -12, y: 0}
+      - - {x: 0, y: 34}
+        - {x: -9, y: 34}
+        - {x: -14, y: 33}
+        - {x: -16, y: 23}
+        - {x: -16, y: 8}
+        - {x: -10, y: 0}
         - {x: 8, y: 0}
-        - {x: 13, y: 7}
-        - {x: 13, y: 28}
-        - {x: 9, y: 32}
+        - {x: 10, y: 6}
+        - {x: 10, y: 21}
+        - {x: 7, y: 26}
     - name: jump_2
       rect:
         serializedVersion: 2
@@ -104,15 +105,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -7, y: 32}
-        - {x: -13, y: 24}
-        - {x: -14, y: 19}
-        - {x: -14, y: 9}
-        - {x: -9, y: 3}
-        - {x: 11, y: 3}
-        - {x: 14, y: 4}
-        - {x: 14, y: 31}
-        - {x: 11, y: 32}
+      - - {x: -9, y: 33}
+        - {x: -13, y: 31}
+        - {x: -14, y: 22}
+        - {x: -14, y: 10}
+        - {x: -7, y: 1}
+        - {x: 6, y: 1}
+        - {x: 9, y: 5}
+        - {x: 9, y: 23}
+        - {x: -2, y: 33}
     outline: []
   spritePackingTag: 
   userData: 

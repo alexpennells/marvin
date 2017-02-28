@@ -30,10 +30,10 @@ TextureImporter:
   cubemapConvolutionSteps: 7
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: -3
   maxTextureSize: 2048
   textureSettings:
-    filterMode: -1
+    filterMode: 0
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -65,14 +65,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -4, y: 28}
-        - {x: -11, y: 20}
-        - {x: -11, y: 9}
-        - {x: -10, y: 0}
+      - - {x: -7, y: 30}
+        - {x: -12, y: 28}
+        - {x: -13, y: 19}
+        - {x: -13, y: 5}
+        - {x: -8, y: 0}
         - {x: 8, y: 0}
-        - {x: 11, y: 16}
-        - {x: 11, y: 25}
-        - {x: 6, y: 28}
+        - {x: 10, y: 12}
+        - {x: 10, y: 21}
+        - {x: 1, y: 30}
     - name: walk_1
       rect:
         serializedVersion: 2
@@ -84,14 +85,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -3, y: 29}
-        - {x: -12, y: 25}
-        - {x: -12, y: 2}
-        - {x: -11, y: 0}
-        - {x: 7, y: 0}
-        - {x: 11, y: 6}
-        - {x: 11, y: 26}
-        - {x: 9, y: 29}
+      - - {x: -14, y: 31}
+        - {x: -14, y: 0}
+        - {x: 10, y: 0}
+        - {x: 10, y: 23}
+        - {x: 1, y: 31}
     - name: walk_2
       rect:
         serializedVersion: 2
@@ -103,11 +101,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -3, y: 29}
-        - {x: -12, y: 26}
+      - - {x: -14, y: 2}
         - {x: -12, y: 0}
-        - {x: 12, y: 0}
-        - {x: 12, y: 29}
+        - {x: 11, y: 0}
+        - {x: 11, y: 23}
+        - {x: 7, y: 31}
+        - {x: -10, y: 31}
+        - {x: -12, y: 30}
+        - {x: -14, y: 17}
     - name: walk_3
       rect:
         serializedVersion: 2
@@ -119,13 +120,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -4, y: 28}
-        - {x: -11, y: 20}
-        - {x: -11, y: 2}
+      - - {x: -7, y: 30}
+        - {x: -12, y: 28}
+        - {x: -14, y: 14}
+        - {x: -14, y: 5}
         - {x: -9, y: 0}
-        - {x: 11, y: 0}
-        - {x: 11, y: 26}
-        - {x: 7, y: 28}
+        - {x: 10, y: 0}
+        - {x: 10, y: 24}
+        - {x: 4, y: 30}
     outline: []
   spritePackingTag: 
   userData: 

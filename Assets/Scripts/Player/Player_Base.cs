@@ -25,13 +25,16 @@ public class Player_Base : InputObj {
   }
 
   protected override void Step () {
-    if (!Is("Sliding"))
-      Physics.hspeedMax = 4;
+    if (!Is("Pouncing"))
+      Physics.hspeedMax = 5;
 
     if (Is("Torpedoing")) {
       Physics.SkipNextGravityUpdate();
       Physics.SkipNextFrictionUpdate();
     }
+
+    if (Is("Pouncing"))
+      Physics.SkipNextFrictionUpdate();
 
     if (Is("Flying")) {
       Physics.SkipNextGravityUpdate();
@@ -78,6 +81,7 @@ public class Player_Base : InputObj {
   }
 
   private void StopFlying() {
+    Sprite.StopBlur();
     this.flying = false;
     Physics.vspeed = this.jumpSpeed;
     Game.Create("Ship", transform.position);
@@ -106,7 +110,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void LeftHeld (float val) {
-    if (Is("Ducking") || Is("Sliding") || Is("Torpedoing"))
+    if (Is("Ducking") || Is("Pouncing") || Is("Torpedoing"))
       return;
 
     if (Is("Climbing")) {
@@ -118,7 +122,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void RightHeld (float val) {
-    if (Is("Ducking") || Is("Sliding") || Is("Torpedoing"))
+    if (Is("Ducking") || Is("Pouncing") || Is("Torpedoing"))
       return;
 
     if (Is("Climbing")) {
@@ -130,7 +134,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void JumpPressed () {
-    if (Is("Sliding") || Is("Torpedoing"))
+    if (Is("Pouncing") || Is("Torpedoing"))
       return;
 
     if (Is("Flying")) {
@@ -158,11 +162,11 @@ public class Player_Base : InputObj {
   }
 
   protected override void AttackPressed () {
-    if (Is("Sliding") || Is("Climbing") || Is("Swimming") || Is("Torpedoing"))
+    if (Is("Pouncing") || Is("Swimming") || Is("Torpedoing"))
       return;
 
-    if (Is("Ducking"))
-      State("Slide");
+    if (Is("Ducking") || Is("Climbing"))
+      State("Pounce");
     else
       State("Shoot");
   }
@@ -199,14 +203,14 @@ public class Player_Base : InputObj {
   }
 
   protected override void SkatePressed () {
-    if (Is("Torpedoing") || Is("Ducking") || Is("Sliding") || Is("Climbing"))
+    if (Is("Torpedoing") || Is("Ducking") || Is("Pouncing") || Is("Climbing"))
       return;
 
     State("Torpedo");
   }
 
   protected override void GrindPressed () {
-    if (Is("Torpedoing") || Is("Sliding") || Is("Shielding"))
+    if (Is("Torpedoing") || Is("Pouncing") || Is("Shielding"))
       return;
 
     State("Shield");
@@ -216,13 +220,15 @@ public class Player_Base : InputObj {
    * STATE CHANGE FUNCTIONS
    **********************************/
 
-  public void StateSlide() {
+  public void StatePounce() {
+    Physics.Climb.Stop();
     ShootTimer.Enabled = false;
     ResetChargeAura();
 
-    Sprite.Play("Slide");
+    Sprite.Play("Pounce");
     Sprite.StartBlur(0.001f, 0.2f, 0.02f);
     Physics.hspeedMax = 5;
+    Physics.vspeed = 3;
 
     if (Sprite.FacingLeft)
       Physics.hspeed = -Physics.hspeedMax;
@@ -236,7 +242,8 @@ public class Player_Base : InputObj {
 
     canDoubleJump = false;
     Physics.vspeed = this.jumpSpeed;
-    Sprite.StartBlur(0.001f, 0.2f, 0.02f);
+    Sprite.StartBlur(0.002f, 0.2f, 0.05f);
+    Game.CreateParticle("AirRipple", Mask.Center);
   }
 
   public void StateShoot() {
@@ -246,6 +253,7 @@ public class Player_Base : InputObj {
   }
 
   public void StateClimb(Ladder_Base other) {
+    Sprite.Play("Climb");
     ShootTimer.Enabled = false;
     ResetChargeAura();
     canDoubleJump = true;
@@ -255,6 +263,7 @@ public class Player_Base : InputObj {
 
   public void StateSwim(Water_Base other) {
     if (Physics.Swim.Begin(other)) {
+      Sprite.Play("Swim");
       ResetChargeAura();
       ShootTimer.Enabled = false;
       canDoubleJump = true;
@@ -293,10 +302,12 @@ public class Player_Base : InputObj {
   }
 
   public void StateFlying() {
+    Sprite.Play("Flying");
     ShootTimer.Enabled = false;
     ResetChargeAura();
     canDoubleJump = true;
     Sprite.StopBlur();
+    Sprite.StartBlur(0.001f, 0.2f, 0.02f);
     Physics.Swim.Stop();
 
     flying = true;
@@ -308,7 +319,7 @@ public class Player_Base : InputObj {
    * STATE CHECKERS
    **********************************/
 
-  public bool IsSliding() { return Sprite.IsPlaying("slide"); }
+  public bool IsPouncing() { return Sprite.IsPlaying("pounce"); }
   public bool IsDucking() { return Sprite.IsPlaying("duck"); }
   public bool IsShooting() { return ShootTimer.Enabled; }
   public bool IsClimbing() { return Physics.Climbing; }

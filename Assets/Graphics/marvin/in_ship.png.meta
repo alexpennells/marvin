@@ -29,10 +29,10 @@ TextureImporter:
   cubemapConvolutionSteps: 7
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: -3
   maxTextureSize: 2048
   textureSettings:
-    filterMode: -1
+    filterMode: 0
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -64,12 +64,13 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -20, y: 29}
+      - - {x: 4, y: 32}
+        - {x: -18, y: 32}
+        - {x: -20, y: 24}
         - {x: -20, y: 0}
-        - {x: 12, y: 0}
-        - {x: 18, y: 7}
-        - {x: 18, y: 16}
-        - {x: 12, y: 29}
+        - {x: 15, y: 0}
+        - {x: 19, y: 5}
+        - {x: 19, y: 23}
     - name: in_ship_1
       rect:
         serializedVersion: 2
@@ -81,12 +82,13 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -20, y: 29}
+      - - {x: 4, y: 32}
+        - {x: -18, y: 32}
+        - {x: -20, y: 24}
         - {x: -20, y: 0}
-        - {x: 12, y: 0}
-        - {x: 18, y: 7}
-        - {x: 18, y: 16}
-        - {x: 12, y: 29}
+        - {x: 15, y: 0}
+        - {x: 19, y: 5}
+        - {x: 19, y: 23}
     - name: in_ship_2
       rect:
         serializedVersion: 2
@@ -98,12 +100,13 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -20, y: 29}
+      - - {x: 4, y: 32}
+        - {x: -18, y: 32}
+        - {x: -20, y: 24}
         - {x: -20, y: 0}
-        - {x: 12, y: 0}
-        - {x: 18, y: 7}
-        - {x: 18, y: 16}
-        - {x: 12, y: 29}
+        - {x: 15, y: 0}
+        - {x: 19, y: 5}
+        - {x: 19, y: 23}
     outline: []
   spritePackingTag: 
   userData: 

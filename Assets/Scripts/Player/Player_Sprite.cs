@@ -5,6 +5,11 @@ using System.Collections;
 public class Player_Sprite : SpriteObj {
 
   public override void Step() {
+    if (Base.Is("Climbing") && !AdditiveExists("tail"))
+      CreateAdditive("tail", "climbing_tail", new Vector2(0, 0));
+    else if (!Base.Is("Climbing") && AdditiveExists("tail"))
+      DeleteAdditive("tail");
+
     if (Base.Is("Torpedoing"))
       return;
 
@@ -22,15 +27,8 @@ public class Player_Sprite : SpriteObj {
       FaceAngle(angle);
     }
 
-    if (Base.Is("Sliding") && Math.Abs(Base.Physics.hspeed) < 2f) {
-      Play("Duck");
-      StopBlur();
-    }
-
-    if (Base.Is("Sliding")) {
-      FaceFooting();
+    if (Base.Is("Pouncing"))
       return;
-    }
 
     if (Game.LeftHeld)
       FacingLeft = true;
@@ -98,11 +96,11 @@ public class Player_Sprite : SpriteObj {
   }
 
   public void PlayDuck() {
-    Animate("duck", 0f);
+    Animate("duck", 0.5f);
   }
 
-  public void PlaySlide() {
-    Animate("slide", 0f);
+  public void PlayPounce() {
+    Animate("pounce", 1f);
   }
 
   public void PlayClimb() {
