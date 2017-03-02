@@ -17,9 +17,7 @@ public class Player_Sprite : SpriteObj {
       FaceFooting();
     else {
       float angle = Base.Physics.vspeed * 2;
-      if (IsPlaying("jump_gun"))
-        angle = 0;
-      else if (Base.Is("Flying"))
+      if (Base.Is("Flying"))
         angle *= 2;
 
       if (FacingLeft)
@@ -70,7 +68,7 @@ public class Player_Sprite : SpriteObj {
 
   public void PlayIdle() {
     if (Base.Is("Shooting"))
-      Animate("idle_gun", 0f);
+      Animate("idle_gun", 0.5f);
     else
       Animate("idle1", 0.5f);
   }
@@ -83,16 +81,14 @@ public class Player_Sprite : SpriteObj {
   }
 
   public void PlayJump() {
-    if (Base.Is("Shooting"))
-      Animate("jump_gun", 0f);
-    else {
-      if (Base.Physics.vspeed > 3)
-        Animate("jump", 0f, 0f);
-      else if (Base.Physics.vspeed > 0f)
-        Animate("jump", 0f, 0.4f);
-      else
-        Animate("jump", 0f, 0.8f);
-    }
+    string spriteName = Base.Is("Shooting") ? "jump_gun" : "jump";
+
+    if (Base.Physics.vspeed > 3)
+      Animate(spriteName, 0f, 0f);
+    else if (Base.Physics.vspeed > 0f)
+      Animate(spriteName, 0f, 0.4f);
+    else
+      Animate(spriteName, 0f, 0.8f);
   }
 
   public void PlayDuck() {

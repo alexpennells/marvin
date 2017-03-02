@@ -69,15 +69,15 @@ public class Player_Base : InputObj {
 
   private Vector3 GetGunPosition () {
     if (Sprite.IsPlaying("idle_gun"))
-      return new Vector3(14, 15, z);
+      return new Vector3(14, 10.5f, z);
     else if (Sprite.IsPlaying("walk_gun"))
-      return new Vector3(16, 14, z);
+      return new Vector3(14, 10.5f, z);
     else if (Sprite.IsPlaying("torpedo"))
-      return new Vector3(16, 14, z);
+      return new Vector3(14, 11.5f, z);
     else if (Sprite.IsPlaying("in_ship"))
       return new Vector3(16, 4, z);
     else
-      return new Vector3(16, 20, z);
+      return new Vector3(14, 11.5f, z);
   }
 
   private void StopFlying() {
