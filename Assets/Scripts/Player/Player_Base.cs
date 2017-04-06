@@ -8,12 +8,18 @@ public class Player_Base : InputObj {
   [Tooltip("Vertical speed of the player when jumping")]
   public float jumpSpeed = 6;
 
+  [Tooltip("Vertical speed of the player when double jumping")]
+  public float doubleJumpSpeed = 5;
+
   [Tooltip("The amount of speed the player picks up per step")]
   public float accelerationSpeed = 0.3f;
 
   private bool canDoubleJump = true;
+  public bool CanDoubleJump { get { return canDoubleJump; } set { canDoubleJump = value; } }
+
   private bool flying = false;
   private SpriteObj chargeAura = null;
+  private GameObject chargeLight = null;
 
   protected override void Init() {
     ShootTimer.Interval = 800;
@@ -21,6 +27,7 @@ public class Player_Base : InputObj {
     ShieldTimer.Interval = 2000;
 
     chargeAura = transform.Find("ChargeAura").gameObject.GetComponent<SpriteObj>();
+    chargeLight = chargeAura.transform.Find("Light").gameObject;
     ResetChargeAura();
   }
 
@@ -52,12 +59,14 @@ public class Player_Base : InputObj {
     chargeAura.SetAlpha(0f);
     chargeAura.SetSpeed(1.5f);
     chargeAura.transform.localScale = Vector3.zero;
+
+    chargeLight.SetActive(false);
   }
 
   private void GrowChargeAura () {
     float chargeSpeed = 50f;
 
-    chargeAura.SetAlpha(Math.Min(0.8f, chargeAura.GetAlpha() + 0.8f / chargeSpeed));
+    chargeAura.SetAlpha(Math.Min(1f, chargeAura.GetAlpha() + 1f / chargeSpeed));
 
     float scaleSize = chargeAura.transform.localScale.y;
     scaleSize = Math.Min(0.8f, scaleSize + 0.8f / chargeSpeed);
@@ -65,19 +74,24 @@ public class Player_Base : InputObj {
 
     chargeAura.transform.localPosition = GetGunPosition();
     chargeAura.FacingLeft = Sprite.FacingLeft;
+
+    chargeLight.SetActive(true);
+    chargeLight.GetComponent<Light>().intensity = scaleSize * 3;
   }
 
   private Vector3 GetGunPosition () {
     if (Sprite.IsPlaying("idle_gun"))
-      return new Vector3(14, 10.5f, z);
+      return new Vector3(14, 10.5f, z) / 100f;
     else if (Sprite.IsPlaying("walk_gun"))
-      return new Vector3(14, 10.5f, z);
+      return new Vector3(14, 10.5f, z) / 100f;
     else if (Sprite.IsPlaying("torpedo"))
-      return new Vector3(14, 11.5f, z);
+      return new Vector3(14, 11.5f, z) / 100f;
     else if (Sprite.IsPlaying("in_ship"))
-      return new Vector3(16, 4, z);
+      return new Vector3(16, 4, z) / 100f;
+    else if (Sprite.IsPlaying("wall_slide_shoot"))
+      return new Vector3(16, 12.5f, z) / 100f;
     else
-      return new Vector3(14, 11.5f, z);
+      return new Vector3(14, 11.5f, z) / 100f;
   }
 
   private void StopFlying() {
@@ -145,6 +159,8 @@ public class Player_Base : InputObj {
     if (Is("Swimming")) {
       Physics.Swim.Stroke();
       SolidPhysics.Collider.ClearFooting();
+    } else if (Is("WallSliding")) {
+      SolidPhysics.Walljump.ActuallyWalljump();
     } else if (HasFooting || Is("Climbing")) {
       Physics.vspeed = this.jumpSpeed;
       SolidPhysics.Collider.ClearFooting();
@@ -199,6 +215,11 @@ public class Player_Base : InputObj {
     float destY = (float)Math.Tan(Math.PI * Sprite.currentRotationAngle / 180f) * destX;
     laser.Physics.MoveTo(new Vector2(chargeAura.transform.position.x + destX, chargeAura.transform.position.y + destY), 8f);
 
+    chargeLight.GetComponent<Light>().intensity = Math.Max(chargeLight.GetComponent<Light>().intensity, 0.5f);
+    GameObject laserLight = Instantiate(chargeLight) as GameObject;
+    laserLight.transform.parent = laser.transform;
+    laserLight.transform.localPosition = new Vector3(0, 0, 0);
+
     ResetChargeAura();
   }
 
@@ -237,12 +258,8 @@ public class Player_Base : InputObj {
   }
 
   public void StateDoubleJump() {
-    ShootTimer.Enabled = false;
-    ResetChargeAura();
-
     canDoubleJump = false;
-    Physics.vspeed = this.jumpSpeed;
-    Sprite.StartBlur(0.002f, 0.2f, 0.05f);
+    Physics.vspeed = this.doubleJumpSpeed;
     Game.CreateParticle("AirRipple", Mask.Center);
   }
 
@@ -263,11 +280,19 @@ public class Player_Base : InputObj {
 
   public void StateSwim(Water_Base other) {
     if (Physics.Swim.Begin(other)) {
-      Sprite.Play("Swim");
       ResetChargeAura();
       ShootTimer.Enabled = false;
       canDoubleJump = true;
       Sprite.StopBlur();
+
+      if (Physics.vspeed < 0) {
+        Game.CreateParticle("SplashTop", new Vector3(Mask.Center.x, other.Mask.Top + 0.05f, z));
+      } else if (Physics.vspeed > 0)
+        Game.CreateParticle("SplashBottom", new Vector3(Mask.Center.x, other.Mask.Bottom + 0.05f, z));
+
+      Physics.vspeed = Math.Max(Physics.vspeed, -1);
+      Physics.hspeed = Math.Min(Physics.hspeed, 1);
+      Physics.hspeed = Math.Max(Physics.hspeed, -1);
     }
   }
 
@@ -290,7 +315,8 @@ public class Player_Base : InputObj {
 
     if (!Is("Flying")) {
       Physics.hspeed = -torpedo.Physics.hspeed * 2;
-      Physics.vspeed = -torpedo.Physics.vspeed * 2;
+      if (!HasFooting)
+        Physics.vspeed = -torpedo.Physics.vspeed * 2;
       TorpedoTimer.Enabled = true;
     }
   }
@@ -327,6 +353,7 @@ public class Player_Base : InputObj {
   public bool IsTorpedoing() { return TorpedoTimer.Enabled; }
   public bool IsShielding() { return ShieldTimer.Enabled; }
   public bool IsFlying() { return flying; }
+  public bool IsWallSliding() { return SolidPhysics.Walljump.Sliding; }
 
   /***********************************
    * TIMER HANDLERS

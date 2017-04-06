@@ -52,7 +52,7 @@ TextureImporter:
   alignment: 7
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 1
+  spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
@@ -69,12 +69,12 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -8, y: 31}
-        - {x: -12, y: 29}
-        - {x: -13, y: 25}
+      - - {x: -11, y: 31}
+        - {x: -13, y: 26}
         - {x: -13, y: 0}
-        - {x: 12, y: 0}
-        - {x: 12, y: 24}
+        - {x: 11, y: 0}
+        - {x: 16, y: 9}
+        - {x: 16, y: 14}
         - {x: 1, y: 31}
     - name: idle_gun_1
       rect:
@@ -87,15 +87,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -10, y: 31}
-        - {x: -13, y: 30}
-        - {x: -14, y: 24}
-        - {x: -14, y: 4}
-        - {x: -10, y: 0}
-        - {x: 9, y: 0}
-        - {x: 12, y: 3}
-        - {x: 12, y: 16}
-        - {x: 4, y: 31}
+      - - {x: -12, y: 31}
+        - {x: -14, y: 25}
+        - {x: -14, y: 1}
+        - {x: -13, y: 0}
+        - {x: 10, y: 0}
+        - {x: 16, y: 8}
+        - {x: 16, y: 15}
+        - {x: 1, y: 31}
     - name: idle_gun_2
       rect:
         serializedVersion: 2
@@ -107,15 +106,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 2, y: 31}
-        - {x: -8, y: 31}
-        - {x: -13, y: 30}
+      - - {x: -8, y: 31}
+        - {x: -13, y: 29}
         - {x: -13, y: 11}
         - {x: -8, y: 0}
-        - {x: 9, y: 0}
-        - {x: 12, y: 6}
-        - {x: 12, y: 12}
-        - {x: 10, y: 20}
+        - {x: 10, y: 0}
+        - {x: 16, y: 8}
+        - {x: 16, y: 15}
+        - {x: 2, y: 31}
     - name: idle_gun_3
       rect:
         serializedVersion: 2
@@ -127,16 +125,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 0, y: 31}
-        - {x: -8, y: 31}
-        - {x: -12, y: 29}
-        - {x: -13, y: 24}
-        - {x: -13, y: 9}
-        - {x: -9, y: 0}
-        - {x: 9, y: 0}
-        - {x: 12, y: 6}
-        - {x: 12, y: 12}
-        - {x: 10, y: 20}
+      - - {x: -11, y: 31}
+        - {x: -13, y: 26}
+        - {x: -13, y: 8}
+        - {x: -8, y: 0}
+        - {x: 10, y: 0}
+        - {x: 16, y: 8}
+        - {x: 16, y: 15}
+        - {x: 1, y: 31}
     - name: idle_gun_4
       rect:
         serializedVersion: 2
@@ -148,15 +144,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 2, y: 31}
-        - {x: -8, y: 31}
-        - {x: -13, y: 30}
-        - {x: -13, y: 7}
-        - {x: -8, y: 0}
-        - {x: 9, y: 0}
-        - {x: 12, y: 6}
-        - {x: 12, y: 12}
-        - {x: 10, y: 20}
+      - - {x: -8, y: 31}
+        - {x: -13, y: 29}
+        - {x: -13, y: 6}
+        - {x: -10, y: 0}
+        - {x: 10, y: 0}
+        - {x: 16, y: 8}
+        - {x: 16, y: 15}
+        - {x: 2, y: 31}
     - name: idle_gun_5
       rect:
         serializedVersion: 2
@@ -170,12 +165,12 @@ TextureImporter:
       outline:
       - - {x: -10, y: 31}
         - {x: -13, y: 30}
-        - {x: -13, y: 9}
-        - {x: -8, y: 0}
-        - {x: 9, y: 0}
-        - {x: 12, y: 3}
-        - {x: 12, y: 17}
-        - {x: 4, y: 31}
+        - {x: -13, y: 7}
+        - {x: -7, y: 0}
+        - {x: 10, y: 0}
+        - {x: 16, y: 8}
+        - {x: 16, y: 15}
+        - {x: 2, y: 31}
     - name: idle_gun_6
       rect:
         serializedVersion: 2
@@ -187,15 +182,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 2, y: 31}
-        - {x: -8, y: 31}
-        - {x: -13, y: 30}
-        - {x: -13, y: 4}
-        - {x: -9, y: 0}
-        - {x: 9, y: 0}
-        - {x: 12, y: 6}
-        - {x: 12, y: 12}
-        - {x: 10, y: 20}
+      - - {x: -12, y: 31}
+        - {x: -13, y: 26}
+        - {x: -13, y: 1}
+        - {x: -12, y: 0}
+        - {x: 10, y: 0}
+        - {x: 16, y: 8}
+        - {x: 16, y: 15}
+        - {x: 1, y: 31}
     - name: idle_gun_7
       rect:
         serializedVersion: 2
@@ -207,15 +201,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 2, y: 31}
-        - {x: -8, y: 31}
+      - - {x: -8, y: 31}
         - {x: -12, y: 30}
         - {x: -12, y: 2}
         - {x: -9, y: 0}
-        - {x: 9, y: 0}
-        - {x: 12, y: 6}
-        - {x: 12, y: 12}
-        - {x: 10, y: 20}
+        - {x: 10, y: 0}
+        - {x: 16, y: 8}
+        - {x: 16, y: 15}
+        - {x: 2, y: 31}
     outline: []
   spritePackingTag: 
   userData: 

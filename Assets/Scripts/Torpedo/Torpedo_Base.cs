@@ -3,20 +3,9 @@ using System;
 using System.Timers;
 
 public class Torpedo_Base : BaseObj {
-  private bool blurStarted = false;
-
   protected override void Init() {
     BoostTimer.Interval = 500;
     BoostTimer.Enabled = true;
-  }
-
-  protected override void Step() {
-    Game.CreateParticle("TorpedoPuff", Mask.Center);
-
-    if (!BoostTimer.Enabled && !this.blurStarted) {
-      Sprite.StartBlur(0.01f, 0.5f, 0.1f);
-      this.blurStarted = true;
-    }
   }
 
   protected override void OffScreenStep() {

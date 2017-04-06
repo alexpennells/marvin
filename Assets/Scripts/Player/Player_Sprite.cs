@@ -5,19 +5,22 @@ using System.Collections;
 public class Player_Sprite : SpriteObj {
 
   public override void Step() {
-    if (Base.Is("Climbing") && !AdditiveExists("tail"))
-      CreateAdditive("tail", "climbing_tail", new Vector2(0, 0));
-    else if (!Base.Is("Climbing") && AdditiveExists("tail"))
-      DeleteAdditive("tail");
+    ToggleAdditives();
 
     if (Base.Is("Torpedoing"))
       return;
+
+    if (Base.Is("WallSliding")) {
+      Play("WallSlide");
+      FaceAngle(0);
+      return;
+    }
 
     if (Base.HasFooting)
       FaceFooting();
     else {
       float angle = Base.Physics.vspeed * 2;
-      if (Base.Is("Flying"))
+      if (Base.Is("Flying") || Base.Is("Swimming"))
         angle *= 2;
 
       if (FacingLeft)
@@ -43,7 +46,7 @@ public class Player_Sprite : SpriteObj {
       return;
     }
 
-    if (Base.Is("Swimming")) {
+    if (Base.Is("Swimming") && !Base.HasFooting) {
       Play("Swim");
       return;
     }
@@ -68,9 +71,9 @@ public class Player_Sprite : SpriteObj {
 
   public void PlayIdle() {
     if (Base.Is("Shooting"))
-      Animate("idle_gun", 0.5f);
+      Animate("idle_gun", Base.Is("Swimming") ? 0.25f : 0.5f);
     else
-      Animate("idle1", 0.5f);
+      Animate("idle1", Base.Is("Swimming") ? 0.25f : 0.5f);
   }
 
   public void PlayWalk() {
@@ -92,7 +95,7 @@ public class Player_Sprite : SpriteObj {
   }
 
   public void PlayDuck() {
-    Animate("duck", 0.5f);
+    Animate("duck", Base.Is("Swimming") ? 0.25f : 0.5f);
   }
 
   public void PlayPounce() {
@@ -115,12 +118,17 @@ public class Player_Sprite : SpriteObj {
     Animate("in_ship", 1f);
   }
 
+  public void PlayWallSlide() {
+    Animate(Base.Is("Shooting") ? "wall_slide_shoot" : "wall_slide", 1f);
+  }
+
   /***********************************
    * PRIVATE DEFINITIONS
    **********************************/
 
   private float WalkSpeed() {
-    return 3f - Math.Abs(Base.Physics.hspeed) / Base.Physics.hspeedMax;
+    float s = 3f - Math.Abs(Base.Physics.hspeed) / Base.Physics.hspeedMax;
+    return s / (Base.Is("Swimming") ? 2f : 1f);
   }
 
   private float ClimbSpeed() {
@@ -128,6 +136,18 @@ public class Player_Sprite : SpriteObj {
   }
 
   private float SwimSpeed() {
-    return Math.Min(Math.Max(Base.Physics.vspeed, 0.1f), 1f);
+    return Math.Min(Math.Max(Base.Physics.vspeed, 0.75f), 6f);
+  }
+
+  private void ToggleAdditives() {
+    if (Base.Is("Climbing") && !AdditiveExists("climb_tail"))
+      CreateAdditive("climb_tail", "climbing_tail", new Vector2(0, 0), 1);
+    else if (!Base.Is("Climbing") && AdditiveExists("climb_tail"))
+      DeleteAdditive("climb_tail");
+
+    if (Base.Is("Swimming") && !Base.HasFooting && !AdditiveExists("swim_tail"))
+      CreateAdditive("swim_tail", "swim_tail", new Vector2(0, 0), -1);
+    else if ((!Base.Is("Swimming") || Base.HasFooting) && AdditiveExists("swim_tail"))
+      DeleteAdditive("swim_tail");
   }
 }

@@ -48,7 +48,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 1
+  spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
@@ -65,15 +65,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 2, y: 28}
-        - {x: -8, y: 28}
-        - {x: -15, y: 20}
-        - {x: -15, y: 9}
-        - {x: -14, y: 0}
-        - {x: 5, y: 0}
-        - {x: 18, y: 11}
-        - {x: 18, y: 15}
-        - {x: 17, y: 18}
+      - - {x: 1, y: 30}
+        - {x: -8, y: 30}
+        - {x: -13, y: 29}
+        - {x: -13, y: 6}
+        - {x: -8, y: 0}
+        - {x: 9, y: 0}
+        - {x: 14, y: 5}
+        - {x: 16, y: 8}
+        - {x: 16, y: 14}
     - name: walk_gun_1
       rect:
         serializedVersion: 2
@@ -85,14 +85,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -7, y: 29}
-        - {x: -16, y: 25}
-        - {x: -16, y: 2}
-        - {x: -15, y: 0}
-        - {x: 14, y: 0}
-        - {x: 18, y: 8}
-        - {x: 18, y: 27}
-        - {x: 12, y: 29}
+      - - {x: -8, y: 31}
+        - {x: -13, y: 29}
+        - {x: -14, y: 12}
+        - {x: -14, y: 7}
+        - {x: -8, y: 0}
+        - {x: 9, y: 0}
+        - {x: 16, y: 8}
+        - {x: 16, y: 16}
+        - {x: 2, y: 31}
     - name: walk_gun_2
       rect:
         serializedVersion: 2
@@ -104,14 +105,16 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 6, y: 29}
-        - {x: -7, y: 29}
-        - {x: -16, y: 25}
-        - {x: -16, y: 0}
-        - {x: 9, y: 0}
-        - {x: 18, y: 9}
-        - {x: 18, y: 17}
-        - {x: 17, y: 19}
+      - - {x: -1, y: 31}
+        - {x: -11, y: 31}
+        - {x: -12, y: 29}
+        - {x: -14, y: 21}
+        - {x: -14, y: 1}
+        - {x: -12, y: 0}
+        - {x: 13, y: 0}
+        - {x: 16, y: 3}
+        - {x: 16, y: 20}
+        - {x: 12, y: 27}
     - name: walk_gun_3
       rect:
         serializedVersion: 2
@@ -123,13 +126,14 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: 2, y: 28}
-        - {x: -8, y: 28}
-        - {x: -15, y: 20}
-        - {x: -15, y: 0}
-        - {x: 11, y: 0}
-        - {x: 18, y: 8}
-        - {x: 18, y: 18}
+      - - {x: -10, y: 30}
+        - {x: -14, y: 17}
+        - {x: -14, y: 5}
+        - {x: -9, y: 0}
+        - {x: 10, y: 0}
+        - {x: 16, y: 2}
+        - {x: 16, y: 18}
+        - {x: 6, y: 30}
     outline: []
   spritePackingTag: 
   userData: 

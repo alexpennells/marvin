@@ -10,4 +10,12 @@ public class Player_SolidCollider : SolidColliderObj {
 
     return true;
   }
+
+  protected override void WallCollision(SolidObj wall) {
+    base.WallCollision(wall);
+
+    Base.Physics.hspeed = 0;
+    if (Base.SolidPhysics.Walljump.Sliding)
+      (Base as Player_Base).CanDoubleJump = true;
+  }
 }

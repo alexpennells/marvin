@@ -46,7 +46,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 1
+  spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
@@ -63,15 +63,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -9, y: 33}
-        - {x: -11, y: 27}
-        - {x: -11, y: 4}
-        - {x: -9, y: 0}
-        - {x: 1, y: 0}
-        - {x: 11, y: 4}
-        - {x: 12, y: 13}
-        - {x: 12, y: 30}
-        - {x: 7, y: 33}
+      - - {x: 6, y: 36}
+        - {x: -10, y: 36}
+        - {x: -11, y: 30}
+        - {x: -11, y: 9}
+        - {x: -7, y: 2}
+        - {x: 7, y: 2}
+        - {x: 12, y: 16}
+        - {x: 12, y: 31}
+        - {x: 11, y: 33}
     - name: climb_1
       rect:
         serializedVersion: 2
@@ -83,15 +83,15 @@ TextureImporter:
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -10, y: 33}
-        - {x: -12, y: 30}
+      - - {x: 3, y: 36}
+        - {x: -7, y: 35}
+        - {x: -12, y: 32}
         - {x: -12, y: 9}
-        - {x: -10, y: 5}
-        - {x: -4, y: 0}
-        - {x: 9, y: 0}
-        - {x: 11, y: 6}
-        - {x: 11, y: 27}
-        - {x: 8, y: 33}
+        - {x: -11, y: 3}
+        - {x: -10, y: 2}
+        - {x: 6, y: 2}
+        - {x: 11, y: 4}
+        - {x: 11, y: 36}
     outline: []
   spritePackingTag: 
   userData: 
