@@ -28,7 +28,7 @@ public class Player_Sprite : SpriteObj {
       FaceAngle(angle);
     }
 
-    if (Base.Is("Pouncing"))
+    if (Base.Is("Rolling"))
       return;
 
     if (Game.LeftHeld)
@@ -54,15 +54,19 @@ public class Player_Sprite : SpriteObj {
     if (Base.HasFooting) {
       StopBlur();
 
-      if (Game.DownHeld) {
-        Play("Duck");
-      } else if (Game.LeftHeld || Game.RightHeld) {
+      if (Game.LeftHeld || Game.RightHeld) {
         Play("Walk");
       } else {
         Play("Idle");
       }
     } else
       Play("Jump");
+  }
+
+  public void RollEnd() {
+    Play("Idle");
+    if (Base.HasFooting)
+      Base.Physics.hspeed = 0;
   }
 
   /***********************************
@@ -94,12 +98,8 @@ public class Player_Sprite : SpriteObj {
       Animate(spriteName, 0f, 0.8f);
   }
 
-  public void PlayDuck() {
-    Animate("duck", Base.Is("Swimming") ? 0.25f : 0.5f);
-  }
-
-  public void PlayPounce() {
-    Animate("roll", 1f);
+  public void PlayRoll() {
+    Animate("roll", 1.25f);
   }
 
   public void PlayClimb() {

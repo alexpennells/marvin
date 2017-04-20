@@ -32,7 +32,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void Step () {
-    if (!Is("Pouncing"))
+    if (!Is("Rolling"))
       Physics.hspeedMax = 5;
 
     if (Is("Torpedoing")) {
@@ -40,7 +40,7 @@ public class Player_Base : InputObj {
       Physics.SkipNextFrictionUpdate();
     }
 
-    if (Is("Pouncing"))
+    if (Is("Rolling"))
       Physics.SkipNextFrictionUpdate();
 
     if (Is("Flying")) {
@@ -117,14 +117,10 @@ public class Player_Base : InputObj {
       Physics.vspeed -= Physics.Climb.acceleration;
     else if (Is("Flying"))
       Physics.vspeed -= accelerationSpeed;
-    else if (Is("Ducking")) {
-      ShootTimer.Enabled = false;
-      ResetChargeAura();
-    }
   }
 
   protected override void LeftHeld (float val) {
-    if (Is("Ducking") || Is("Pouncing") || Is("Torpedoing"))
+    if (Is("Rolling") || Is("Torpedoing"))
       return;
 
     if (Is("Climbing")) {
@@ -136,7 +132,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void RightHeld (float val) {
-    if (Is("Ducking") || Is("Pouncing") || Is("Torpedoing"))
+    if (Is("Rolling") || Is("Torpedoing"))
       return;
 
     if (Is("Climbing")) {
@@ -148,7 +144,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void UnoPressed () {
-    if (Is("Pouncing") || Is("Torpedoing"))
+    if (Is("Rolling") || Is("Torpedoing"))
       return;
 
     if (Is("Flying")) {
@@ -178,13 +174,10 @@ public class Player_Base : InputObj {
   }
 
   protected override void DosPressed () {
-    if (Is("Pouncing") || Is("Swimming") || Is("Torpedoing"))
+    if (Is("Rolling") || Is("Swimming") || Is("Torpedoing") || Is("Climbing"))
       return;
 
-    if (Is("Ducking") || Is("Climbing"))
-      State("Pounce");
-    else
-      State("Shoot");
+    State("Shoot");
   }
 
   protected override void DosHeld () {
@@ -224,32 +217,45 @@ public class Player_Base : InputObj {
   }
 
   protected override void TresPressed () {
-    if (Is("Torpedoing") || Is("Ducking") || Is("Pouncing") || Is("Climbing"))
+    if (Is("Torpedoing") || Is("Rolling") || Is("Climbing"))
       return;
 
     State("Torpedo");
   }
 
   protected override void CuatroPressed () {
-    if (Is("Torpedoing") || Is("Pouncing") || Is("Shielding"))
+    if (Is("Torpedoing") || Is("Rolling") || Is("Shielding"))
       return;
 
     State("Shield");
+  }
+
+  protected override void LeftTriggerPressed() {
+    if (Is("Rolling"))
+      return;
+
+    Sprite.FacingLeft = true;
+    State("Roll");
+  }
+
+  protected override void RightTriggerPressed() {
+    if (Is("Rolling"))
+      return;
+
+    Sprite.FacingRight = true;
+    State("Roll");
   }
 
   /***********************************
    * STATE CHANGE FUNCTIONS
    **********************************/
 
-  public void StatePounce() {
-    Physics.Climb.Stop();
+  public void StateRoll() {
     ShootTimer.Enabled = false;
     ResetChargeAura();
 
-    Sprite.Play("Pounce");
-    Sprite.StartBlur(0.001f, 0.2f, 0.02f);
-    Physics.hspeedMax = 5;
-    Physics.vspeed = 3;
+    Sprite.Play("Roll");
+    Physics.hspeedMax = 5.5f;
 
     if (Sprite.FacingLeft)
       Physics.hspeed = -Physics.hspeedMax;
@@ -345,8 +351,7 @@ public class Player_Base : InputObj {
    * STATE CHECKERS
    **********************************/
 
-  public bool IsPouncing() { return Sprite.IsPlaying("roll"); }
-  public bool IsDucking() { return Sprite.IsPlaying("duck"); }
+  public bool IsRolling() { return Sprite.IsPlaying("roll"); }
   public bool IsShooting() { return ShootTimer.Enabled; }
   public bool IsClimbing() { return Physics.Climbing; }
   public bool IsSwimming() { return Physics.Swimming; }
