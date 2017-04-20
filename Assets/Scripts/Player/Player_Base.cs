@@ -17,6 +17,9 @@ public class Player_Base : InputObj {
   private bool canDoubleJump = true;
   public bool CanDoubleJump { get { return canDoubleJump; } set { canDoubleJump = value; } }
 
+  private bool facingLeftBeforeRoll = false;
+  public bool FacingLeftBeforeRoll { get { return facingLeftBeforeRoll; } }
+
   private bool flying = false;
   private SpriteObj chargeAura = null;
   private GameObject chargeLight = null;
@@ -25,6 +28,7 @@ public class Player_Base : InputObj {
     ShootTimer.Interval = 800;
     TorpedoTimer.Interval = 200;
     ShieldTimer.Interval = 2000;
+    RollTimer.Interval = 25;
 
     chargeAura = transform.Find("ChargeAura").gameObject.GetComponent<SpriteObj>();
     chargeLight = chargeAura.transform.Find("Light").gameObject;
@@ -181,8 +185,12 @@ public class Player_Base : InputObj {
   }
 
   protected override void DosHeld () {
-    if (!Is("Shooting"))
-      return;
+    if (!Is("Shooting")) {
+      if (Is("Rolling") || Is("Swimming") || Is("Torpedoing") || Is("Climbing"))
+        return;
+      else
+        State("Shoot");
+    }
 
     // Reset timer until it's released
     ShootTimer.Enabled = false;
@@ -231,17 +239,19 @@ public class Player_Base : InputObj {
   }
 
   protected override void LeftTriggerPressed() {
-    if (Is("Rolling"))
+    if (RollTimer.Enabled || Is("Rolling"))
       return;
 
+    facingLeftBeforeRoll = Sprite.FacingLeft;
     Sprite.FacingLeft = true;
     State("Roll");
   }
 
   protected override void RightTriggerPressed() {
-    if (Is("Rolling"))
+    if (RollTimer.Enabled || Is("Rolling"))
       return;
 
+    facingLeftBeforeRoll = Sprite.FacingLeft;
     Sprite.FacingRight = true;
     State("Roll");
   }
@@ -377,5 +387,10 @@ public class Player_Base : InputObj {
   public Timer ShieldTimer { get { return Timer3; } }
   protected override void Timer3Elapsed(object source, ElapsedEventArgs e) {
     ShieldTimer.Enabled = false;
+  }
+
+  public Timer RollTimer { get { return Timer4; } }
+  protected override void Timer4Elapsed(object source, ElapsedEventArgs e) {
+    RollTimer.Enabled = false;
   }
 }

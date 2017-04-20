@@ -64,9 +64,17 @@ public class Player_Sprite : SpriteObj {
   }
 
   public void RollEnd() {
+    (Base as Player_Base).RollTimer.Enabled = true;
+
     Play("Idle");
     if (Base.HasFooting)
       Base.Physics.hspeed = 0;
+
+    // Face the direction that the player was facing before the roll started.
+    if ((Base as Player_Base).FacingLeftBeforeRoll)
+      Base.Sprite.FacingLeft = true;
+    else
+      Base.Sprite.FacingRight = true;
   }
 
   /***********************************
