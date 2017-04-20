@@ -1,4 +1,8 @@
-﻿
+﻿// Upgrade NOTE: replaced '_LightMatrix0' with 'unity_WorldToLight'
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+
 
 Shader "SpriteLamp/Palette"
 {
@@ -66,7 +70,7 @@ Shader "SpriteLamp/Palette"
             uniform float _AttenuationMultiplier;
             
             
-            uniform float4x4 _LightMatrix0; // transformation
+            uniform float4x4 unity_WorldToLight; // transformation
 
             struct VertexInput
             {
@@ -88,12 +92,12 @@ Shader "SpriteLamp/Palette"
             {
                 VertexOutput output;
 
-                output.posWorld = mul(_Object2World, input.vertex);
-                output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
+                output.posWorld = mul(unity_ObjectToWorld, input.vertex);
+                output.pos = UnityObjectToClipPos(input.vertex);
                 
                 output.uv = input.uv.xy;
                 output.color = input.color;
-				output.posLight = mul(_LightMatrix0, output.posWorld);
+				output.posLight = mul(unity_WorldToLight, output.posWorld);
 				
                 return output;
             }
@@ -139,7 +143,7 @@ Shader "SpriteLamp/Palette"
                 if (0.0 == _WorldSpaceLightPos0.w) // directional light?
 	            {
 	            	//This handles directional lights
-                	lightDirection = float3(mul(float4(_WorldSpaceLightPos0.xyz, 1.0), _Object2World).xyz);
+                	lightDirection = float3(mul(float4(_WorldSpaceLightPos0.xyz, 1.0), unity_ObjectToWorld).xyz);
 	              	lightDirection = normalize(lightDirection);
                	   	attenuation = 1.0;
 	            } 
@@ -151,7 +155,7 @@ Shader "SpriteLamp/Palette"
 	            	
 	            	float lightDistance = length(vertexToLightSource);
 	            	
-	            	if (1.0 != _LightMatrix0[3][3]) //If this is a spotlight, calculate cookie attenuation.
+	            	if (1.0 != unity_WorldToLight[3][3]) //If this is a spotlight, calculate cookie attenuation.
 		            {
 		            	//This number, 'distance from centre', is the distance this fragment is from the centre line
 		            	//of the spot light. If it is greater than 1.0, this fragment is outside the light cone and shouldn't be
@@ -170,7 +174,7 @@ Shader "SpriteLamp/Palette"
 		            	}
 		            }
 	            	
-                	lightDirection = float3(mul(float4(vertexToLightSource, 1.0), _Object2World).xyz);
+                	lightDirection = float3(mul(float4(vertexToLightSource, 1.0), unity_ObjectToWorld).xyz);
                 	lightDirection = normalize(lightDirection);
 
 	                //Linear attenuation at the moment. I'd like to calculate this using Unity's built in attenuation texture
@@ -280,7 +284,7 @@ Shader "SpriteLamp/Palette"
             uniform float _LightWrap;
             uniform float _AttenuationMultiplier;
             
-            uniform float4x4 _LightMatrix0; // transformation
+            uniform float4x4 unity_WorldToLight; // transformation
 
             struct VertexInput
             {
@@ -302,12 +306,12 @@ Shader "SpriteLamp/Palette"
             {
                 VertexOutput output;
 
-                output.posWorld = mul(_Object2World, input.vertex);
-                output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
+                output.posWorld = mul(unity_ObjectToWorld, input.vertex);
+                output.pos = UnityObjectToClipPos(input.vertex);
                 
                 output.uv = input.uv.xy;
                 output.color = input.color;
-				output.posLight = mul(_LightMatrix0, output.posWorld);
+				output.posLight = mul(unity_WorldToLight, output.posWorld);
 				
                 return output;
             }
@@ -344,7 +348,7 @@ Shader "SpriteLamp/Palette"
                 if (0.0 == _WorldSpaceLightPos0.w) // directional light?
 	            {
 	            	//This handles directional lights
-                	lightDirection = float3(mul(float4(_WorldSpaceLightPos0.xyz, 1.0), _Object2World).xyz);
+                	lightDirection = float3(mul(float4(_WorldSpaceLightPos0.xyz, 1.0), unity_ObjectToWorld).xyz);
 	              	lightDirection = normalize(lightDirection);
                	   	attenuation = 1.0;
 	            } 
@@ -356,7 +360,7 @@ Shader "SpriteLamp/Palette"
 	            	
 	            	float lightDistance = length(vertexToLightSource);
 	            	
-	            	if (1.0 != _LightMatrix0[3][3]) //If this is a spotlight, calculate cookie attenuation.
+	            	if (1.0 != unity_WorldToLight[3][3]) //If this is a spotlight, calculate cookie attenuation.
 		            {
 		            	//This number, 'distance from centre', is the distance this fragment is from the centre line
 		            	//of the spot light. If it is greater than 1.0, this fragment is outside the light cone and shouldn't be
@@ -375,7 +379,7 @@ Shader "SpriteLamp/Palette"
 		            	}
 		            }
 	            	
-                	lightDirection = float3(mul(float4(vertexToLightSource, 1.0), _Object2World).xyz);
+                	lightDirection = float3(mul(float4(vertexToLightSource, 1.0), unity_ObjectToWorld).xyz);
                 	lightDirection = normalize(lightDirection);
 
 	                //Linear attenuation at the moment. I'd like to calculate this using Unity's built in attenuation texture

@@ -147,7 +147,7 @@ public class Player_Base : InputObj {
     Physics.hspeed += this.accelerationSpeed;
   }
 
-  protected override void JumpPressed () {
+  protected override void UnoPressed () {
     if (Is("Pouncing") || Is("Torpedoing"))
       return;
 
@@ -169,7 +169,7 @@ public class Player_Base : InputObj {
       State("DoubleJump");
   }
 
-  protected override void JumpReleased () {
+  protected override void UnoReleased () {
     if (Is("Flying") || Is("Swimming"))
       return;
 
@@ -177,7 +177,7 @@ public class Player_Base : InputObj {
       Physics.vspeed = 2;
   }
 
-  protected override void AttackPressed () {
+  protected override void DosPressed () {
     if (Is("Pouncing") || Is("Swimming") || Is("Torpedoing"))
       return;
 
@@ -187,7 +187,7 @@ public class Player_Base : InputObj {
       State("Shoot");
   }
 
-  protected override void AttackHeld () {
+  protected override void DosHeld () {
     if (!Is("Shooting"))
       return;
 
@@ -198,7 +198,7 @@ public class Player_Base : InputObj {
     GrowChargeAura();
   }
 
-  protected override void AttackReleased () {
+  protected override void DosReleased () {
     if (!Is("Shooting"))
       return;
 
@@ -223,14 +223,14 @@ public class Player_Base : InputObj {
     ResetChargeAura();
   }
 
-  protected override void SkatePressed () {
+  protected override void TresPressed () {
     if (Is("Torpedoing") || Is("Ducking") || Is("Pouncing") || Is("Climbing"))
       return;
 
     State("Torpedo");
   }
 
-  protected override void GrindPressed () {
+  protected override void CuatroPressed () {
     if (Is("Torpedoing") || Is("Pouncing") || Is("Shielding"))
       return;
 
@@ -345,7 +345,7 @@ public class Player_Base : InputObj {
    * STATE CHECKERS
    **********************************/
 
-  public bool IsPouncing() { return Sprite.IsPlaying("pounce"); }
+  public bool IsPouncing() { return Sprite.IsPlaying("roll"); }
   public bool IsDucking() { return Sprite.IsPlaying("duck"); }
   public bool IsShooting() { return ShootTimer.Enabled; }
   public bool IsClimbing() { return Physics.Climbing; }

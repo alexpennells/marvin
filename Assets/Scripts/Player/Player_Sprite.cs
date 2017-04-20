@@ -99,7 +99,7 @@ public class Player_Sprite : SpriteObj {
   }
 
   public void PlayPounce() {
-    Animate("pounce", 1f);
+    Animate("roll", 1f);
   }
 
   public void PlayClimb() {
