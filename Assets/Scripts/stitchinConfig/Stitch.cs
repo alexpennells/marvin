@@ -17,7 +17,7 @@ public class Stitch : MonoBehaviour
   public static bool SHOW_ENTRANCES = true;
 
   /***********************************
-   * GAME CONSTANTS
+   * GAME GLOBALS
    **********************************/
 
   void Awake() {
@@ -33,4 +33,26 @@ public class Stitch : MonoBehaviour
   public Player_Base LocalPlayer { get { return Player; } }
   public static Player_Base Player { get { return Stitch.Instance.LocalPlayer; } }
 
+  private static int shield = 100;
+  public static int Shield { get { return shield; } set { shield = value; } }
+
+  private static int maxShield = 3;
+  public static int MaxShield { get { return maxShield; } }
+
+  private static int curShield = 2;
+  public static int CurShield { get { return curShield; } set { curShield = value; } }
+  public static Color CurShieldColor {
+    get {
+      switch (curShield) {
+        case 1:
+          return Color.magenta;
+        case 2:
+          return Color.cyan;
+        case 3:
+          return Color.green;
+        default:
+          return Color.red;
+      }
+    }
+  }
 }

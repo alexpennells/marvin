@@ -32,6 +32,12 @@ public class CollisionStubs : CollisionObj
       case eObjectType.SHIP:
         ShipCollision(other as Ship_Base);
         break;
+      case eObjectType.WORM:
+        WormCollision(other as Worm_Base);
+        break;
+      case eObjectType.WORM_BODY:
+        WormBodyCollision(other as WormBody_Base);
+        break;
     }
   }
 
@@ -59,6 +65,8 @@ public class CollisionStubs : CollisionObj
   protected virtual void LaserCollision(Laser_Base other) {}
   protected virtual void TorpedoCollision(Torpedo_Base other) {}
   protected virtual void ShipCollision(Ship_Base other) {}
+  protected virtual void WormCollision(Worm_Base other) {}
+  protected virtual void WormBodyCollision(WormBody_Base other) {}
   protected virtual void PlayerExit(Player_Base other) {}
   protected virtual void LadderExit(Ladder_Base other) {}
   protected virtual void WaterExit(Water_Base other) {}

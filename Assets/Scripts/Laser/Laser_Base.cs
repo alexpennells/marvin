@@ -16,7 +16,7 @@ public class Laser_Base : BaseObj {
   public void StateImpact() {
     Physics.hspeed = 0;
     Physics.vspeed = 0;
-    Game.CreateParticle(transform.localScale.y > 0.9f ? "LaserCollideLarge" : "LaserCollideSmall", Mask.Center);
+    Game.CreateParticle(Is("Charged") ? "LaserCollideLarge" : "LaserCollideSmall", Mask.Center);
     DestroySelf();
   }
 
@@ -38,4 +38,5 @@ public class Laser_Base : BaseObj {
    **********************************/
 
   public bool IsSubmerged() { return submerged; }
+  public bool IsCharged() { return transform.localScale.y > 0.9f; }
 }

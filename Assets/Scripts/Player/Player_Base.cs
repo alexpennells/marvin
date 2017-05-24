@@ -27,8 +27,9 @@ public class Player_Base : InputObj {
   protected override void Init() {
     ShootTimer.Interval = 800;
     TorpedoTimer.Interval = 200;
-    ShieldTimer.Interval = 2000;
     RollTimer.Interval = 25;
+    HurtTimer.Interval = 250;
+    InvincibleTimer.Interval = 800;
 
     chargeAura = transform.Find("ChargeAura").gameObject.GetComponent<SpriteObj>();
     chargeLight = chargeAura.transform.Find("Light").gameObject;
@@ -36,16 +37,15 @@ public class Player_Base : InputObj {
   }
 
   protected override void Step () {
-    if (!Is("Rolling"))
+    if (Is("Rolling"))
+      Physics.SkipNextFrictionUpdate();
+    else
       Physics.hspeedMax = 5;
 
     if (Is("Torpedoing")) {
       Physics.SkipNextGravityUpdate();
       Physics.SkipNextFrictionUpdate();
     }
-
-    if (Is("Rolling"))
-      Physics.SkipNextFrictionUpdate();
 
     if (Is("Flying")) {
       Physics.SkipNextGravityUpdate();
@@ -124,7 +124,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void LeftHeld (float val) {
-    if (Is("Rolling") || Is("Torpedoing"))
+    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt"))
       return;
 
     if (Is("Climbing")) {
@@ -136,7 +136,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void RightHeld (float val) {
-    if (Is("Rolling") || Is("Torpedoing"))
+    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt"))
       return;
 
     if (Is("Climbing")) {
@@ -148,7 +148,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void UnoPressed () {
-    if (Is("Rolling") || Is("Torpedoing"))
+    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt"))
       return;
 
     if (Is("Flying")) {
@@ -178,19 +178,14 @@ public class Player_Base : InputObj {
   }
 
   protected override void DosPressed () {
-    if (Is("Rolling") || Is("Swimming") || Is("Torpedoing") || Is("Climbing"))
-      return;
-
     State("Shoot");
   }
 
   protected override void DosHeld () {
-    if (!Is("Shooting")) {
-      if (Is("Rolling") || Is("Swimming") || Is("Torpedoing") || Is("Climbing"))
-        return;
-      else
-        State("Shoot");
-    }
+    if (!Is("Shooting"))
+      State("Shoot");
+    if (!Is("Shooting"))
+      return;
 
     // Reset timer until it's released
     ShootTimer.Enabled = false;
@@ -225,42 +220,32 @@ public class Player_Base : InputObj {
   }
 
   protected override void TresPressed () {
-    if (Is("Torpedoing") || Is("Rolling") || Is("Climbing"))
-      return;
-
     State("Torpedo");
   }
 
   protected override void CuatroPressed () {
-    if (Is("Torpedoing") || Is("Rolling") || Is("Shielding"))
-      return;
-
-    State("Shield");
+    // State("Shield");
   }
 
   protected override void LeftTriggerPressed() {
-    if (RollTimer.Enabled || Is("Rolling"))
-      return;
-
-    facingLeftBeforeRoll = Sprite.FacingLeft;
-    Sprite.FacingLeft = true;
-    State("Roll");
+    State("Roll", true);
   }
 
   protected override void RightTriggerPressed() {
-    if (RollTimer.Enabled || Is("Rolling"))
-      return;
-
-    facingLeftBeforeRoll = Sprite.FacingLeft;
-    Sprite.FacingRight = true;
-    State("Roll");
+    State("Roll", false);
   }
 
   /***********************************
    * STATE CHANGE FUNCTIONS
    **********************************/
 
-  public void StateRoll() {
+  public void StateRoll(bool rollLeft) {
+    if (!HasFooting || RollTimer.Enabled || Is("Rolling"))
+      return;
+
+    facingLeftBeforeRoll = Sprite.FacingLeft;
+    Sprite.FacingLeft = rollLeft;
+
     ShootTimer.Enabled = false;
     ResetChargeAura();
 
@@ -280,6 +265,9 @@ public class Player_Base : InputObj {
   }
 
   public void StateShoot() {
+    if (Is("Rolling") || Is("Swimming") || Is("Torpedoing") || Is("Climbing") || Is("Hurt"))
+      return;
+
     ShootTimer.Enabled = false;
     ShootTimer.Enabled = true;
     ResetChargeAura();
@@ -313,6 +301,9 @@ public class Player_Base : InputObj {
   }
 
   public void StateTorpedo() {
+    if (Is("Torpedoing") || Is("Rolling") || Is("Climbing") || Is("Hurt"))
+      return;
+
     ShootTimer.Enabled = false;
     ResetChargeAura();
 
@@ -337,12 +328,6 @@ public class Player_Base : InputObj {
     }
   }
 
-  public void StateShield() {
-    GameObject p = Game.CreateParticle("ShieldAura", Mask.Center);
-    p.transform.parent = transform;
-    ShieldTimer.Enabled = true;
-  }
-
   public void StateFlying() {
     Sprite.Play("Flying");
     ShootTimer.Enabled = false;
@@ -357,6 +342,30 @@ public class Player_Base : InputObj {
     Physics.vspeed = 0;
   }
 
+  public void StateHurt(bool moveLeft, int damage) {
+    if (Is("Hurt") || Is("Invincible"))
+      return;
+
+    Game.HUD.ReduceShield(damage);
+    Sprite.FacingLeft = !moveLeft;
+
+    ShootTimer.Enabled = false;
+    ResetChargeAura();
+
+    Sprite.Play("Hurt");
+    Physics.vspeed = 0;
+
+    if (Sprite.FacingLeft)
+      Physics.hspeed = 2;
+    else if (Sprite.FacingRight)
+      Physics.hspeed = -2;
+
+    HurtTimer.Enabled = true;
+    InvincibleTimer.Enabled = true;
+
+    Game.CreateParticle("Blood", Mask.Center);
+  }
+
   /***********************************
    * STATE CHECKERS
    **********************************/
@@ -366,9 +375,10 @@ public class Player_Base : InputObj {
   public bool IsClimbing() { return Physics.Climbing; }
   public bool IsSwimming() { return Physics.Swimming; }
   public bool IsTorpedoing() { return TorpedoTimer.Enabled; }
-  public bool IsShielding() { return ShieldTimer.Enabled; }
   public bool IsFlying() { return flying; }
   public bool IsWallSliding() { return SolidPhysics.Walljump.Sliding; }
+  public bool IsHurt() { return HurtTimer.Enabled; }
+  public bool IsInvincible() { return InvincibleTimer.Enabled; }
 
   /***********************************
    * TIMER HANDLERS
@@ -384,13 +394,18 @@ public class Player_Base : InputObj {
     TorpedoTimer.Enabled = false;
   }
 
-  public Timer ShieldTimer { get { return Timer3; } }
-  protected override void Timer3Elapsed(object source, ElapsedEventArgs e) {
-    ShieldTimer.Enabled = false;
-  }
-
   public Timer RollTimer { get { return Timer4; } }
   protected override void Timer4Elapsed(object source, ElapsedEventArgs e) {
     RollTimer.Enabled = false;
+  }
+
+  public Timer HurtTimer { get { return Timer5; } }
+  protected override void Timer5Elapsed(object source, ElapsedEventArgs e) {
+    HurtTimer.Enabled = false;
+  }
+
+  public Timer InvincibleTimer { get { return Timer6; } }
+  protected override void Timer6Elapsed(object source, ElapsedEventArgs e) {
+    InvincibleTimer.Enabled = false;
   }
 }

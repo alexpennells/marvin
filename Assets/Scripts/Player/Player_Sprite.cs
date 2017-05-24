@@ -7,7 +7,7 @@ public class Player_Sprite : SpriteObj {
   public override void Step() {
     ToggleAdditives();
 
-    if (Base.Is("Torpedoing"))
+    if (Base.Is("Torpedoing") || Base.Is("Hurt"))
       return;
 
     if (Base.Is("WallSliding")) {
@@ -128,6 +128,10 @@ public class Player_Sprite : SpriteObj {
 
   public void PlayWallSlide() {
     Animate(Base.Is("Shooting") ? "wall_slide_shoot" : "wall_slide", 1f);
+  }
+
+  public void PlayHurt() {
+    Animate("hurt", 0f);
   }
 
   /***********************************

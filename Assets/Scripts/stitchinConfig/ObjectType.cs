@@ -16,5 +16,7 @@ public enum eObjectType
   WATER,
   LASER,
   TORPEDO,
-  SHIP
+  SHIP,
+  WORM,
+  WORM_BODY
 };

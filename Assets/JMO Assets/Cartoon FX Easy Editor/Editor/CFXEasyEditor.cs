@@ -4,12 +4,12 @@ using System.Collections;
 using System.Reflection;
 
 // Cartoon FX Easy Editor
-// (c) 2013-2015 - Jean Moreno
+// (c) 2013-2017 - Jean Moreno
 
 public class CFXEasyEditor : EditorWindow
 {
 	static private CFXEasyEditor SingleWindow;
-
+	
 	[MenuItem("Window/CartoonFX Easy Editor")]
 	static void ShowWindow()
 	{
@@ -18,46 +18,46 @@ public class CFXEasyEditor : EditorWindow
 		window.maxSize = new Vector2(300, 8);
 		window.foldoutChanged = true;
 	}
-
+	
 	//Change Start Color
 	private bool AffectAlpha = true;
 	private Color ColorValue = Color.white;
 	private Color ColorValue2 = Color.white;
-
+	
 	//Scale
 	private float ScalingValue = 2.0f;
 	private float LTScalingValue = 1.0f;
-
+	
 	//Delay
 	private float DelayValue = 1.0f;
-
+	
 	//Duration
 	private float DurationValue = 5.0f;
-
+	
 	//Tint
 	private bool TintStartColor = true;
 	private bool TintColorModule = true;
 	private bool TintColorSpeedModule = true;
 	private Color TintColorValue = Color.white;
-
+	
 	//Change Lightness
 	private int LightnessStep = 10;
-
+	
 	//Module copying
 	private ParticleSystem sourceObject;
 	private Color ColorSelected = new Color(0.8f,0.95f,1.0f,1.0f);
 	private bool[] b_modules = new bool[21];
-
+	
 	//Foldouts
 	bool basicFoldout = false;
 	bool colorFoldout = false;
 	bool copyFoldout = false;
 	bool foldoutChanged;
-
+	
 	//Editor Prefs
 	private bool pref_ShowAsToolbox;
 	private bool pref_IncludeChildren;
-
+	
 	void OnEnable()
 	{
 		//Load Settings
@@ -67,7 +67,7 @@ public class CFXEasyEditor : EditorWindow
 		colorFoldout = EditorPrefs.GetBool("CFX_ColorFoldout", false);
 		copyFoldout = EditorPrefs.GetBool("CFX_CopyFoldout", false);
 	}
-
+	
 	void OnDisable()
 	{
 		//Save Settings
@@ -75,11 +75,11 @@ public class CFXEasyEditor : EditorWindow
 		EditorPrefs.SetBool("CFX_ColorFoldout", colorFoldout);
 		EditorPrefs.SetBool("CFX_CopyFoldout", copyFoldout);
 	}
-
+	
 	void OnGUI()
 	{
 		GUILayout.Space(4);
-
+		
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("CARTOON FX Easy Editor", EditorStyles.boldLabel);
 		pref_ShowAsToolbox = GUILayout.Toggle(pref_ShowAsToolbox, new GUIContent("Toolbox", "If enabled, the window will be displayed as an external toolbox.\nIf false, it will act as a dockable Unity window."), GUILayout.Width(65));
@@ -91,19 +91,19 @@ public class CFXEasyEditor : EditorWindow
 		}
 		GUILayout.EndHorizontal();
 		GUILayout.Label("Easily change properties of any Particle System!", EditorStyles.miniLabel);
-
+		
 	//----------------------------------------------------------------
-
+		
 		pref_IncludeChildren = GUILayout.Toggle(pref_IncludeChildren, new GUIContent("Include Children", "If checked, changes will affect every Particle Systems from each child of the selected GameObject(s)"));
 		if(GUI.changed)
 		{
 			EditorPrefs.SetBool("CFX_IncludeChildren", pref_IncludeChildren);
 		}
-
+		
 		EditorGUILayout.BeginHorizontal();
-
+		
 		GUILayout.Label("Test effect(s):");
-
+		
 		if(GUILayout.Button("Play", EditorStyles.miniButtonLeft, GUILayout.Width(50f)))
 		{
 			foreach(GameObject go in Selection.gameObjects)
@@ -147,15 +147,15 @@ public class CFXEasyEditor : EditorWindow
 				}
 			}
 		}
-
+		
 		GUILayout.FlexibleSpace();
 		EditorGUILayout.EndHorizontal();
-
+		
 	//----------------------------------------------------------------
-
+		
 		//Separator
 		GUILayout.Box("",GUILayout.Width(this.position.width - 12), GUILayout.Height(3));
-
+		
 		EditorGUI.BeginChangeCheck();
 		basicFoldout = EditorGUILayout.Foldout(basicFoldout, "QUICK EDIT");
 		if(EditorGUI.EndChangeCheck())
@@ -164,9 +164,9 @@ public class CFXEasyEditor : EditorWindow
 		}
 		if(basicFoldout)
 		{
-
+		
 		//----------------------------------------------------------------
-
+			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Scale Size", "Changes the size of the Particle System(s) and other values accordingly (speed, gravity, etc.)"), GUILayout.Width(120)))
 			{
@@ -176,9 +176,9 @@ public class CFXEasyEditor : EditorWindow
 			ScalingValue = EditorGUILayout.FloatField(ScalingValue,GUILayout.Width(50));
 			if(ScalingValue <= 0) ScalingValue = 0.1f;
 			GUILayout.EndHorizontal();
-
+			
 		//----------------------------------------------------------------
-
+			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Set Speed", "Changes the simulation speed of the Particle System(s)\n1 = default speed"), GUILayout.Width(120)))
 			{
@@ -189,9 +189,9 @@ public class CFXEasyEditor : EditorWindow
 			if(LTScalingValue < 0.0f) LTScalingValue = 0.0f;
 			else if(LTScalingValue > 9999) LTScalingValue = 9999;
 			GUILayout.EndHorizontal();
-
+			
 		//----------------------------------------------------------------
-
+			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Set Duration", "Changes the duration of the Particle System(s)"), GUILayout.Width(120)))
 			{
@@ -202,9 +202,9 @@ public class CFXEasyEditor : EditorWindow
 			if(DurationValue < 0.1f) DurationValue = 0.1f;
 			else if(DurationValue > 9999) DurationValue = 9999;
 			GUILayout.EndHorizontal();
-
+			
 		//----------------------------------------------------------------
-
+			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Set Delay", "Changes the delay of the Particle System(s)"), GUILayout.Width(120)))
 			{
@@ -215,11 +215,11 @@ public class CFXEasyEditor : EditorWindow
 			if(DelayValue < 0.0f) DelayValue = 0.0f;
 			else if(DelayValue > 9999f) DelayValue = 9999f;
 			GUILayout.EndHorizontal();
-
+			
 		//----------------------------------------------------------------
-
+			
 			GUILayout.Space(2);
-
+			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Loop", "Loop the effect (might not work properly on some effects such as explosions)"), EditorStyles.miniButtonLeft))
 			{
@@ -238,16 +238,16 @@ public class CFXEasyEditor : EditorWindow
 				prewarmEffect(false);
 			}
 			GUILayout.EndHorizontal();
-
+			
 			GUILayout.Space(2);
-
+		
 	//----------------------------------------------------------------
-
+		
 		}
-
+		
 		//Separator
 		GUILayout.Box("",GUILayout.Width(this.position.width - 12), GUILayout.Height(3));
-
+		
 		EditorGUI.BeginChangeCheck();
 		colorFoldout = EditorGUILayout.Foldout(colorFoldout, "COLOR EDIT");
 		if(EditorGUI.EndChangeCheck())
@@ -256,9 +256,9 @@ public class CFXEasyEditor : EditorWindow
 		}
 		if(colorFoldout)
 		{
-
+		
 		//----------------------------------------------------------------
-
+			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Set Start Color(s)", "Changes the color(s) of the Particle System(s)\nSecond Color is used when Start Color is 'Random Between Two Colors'."),GUILayout.Width(120)))
 			{
@@ -268,9 +268,9 @@ public class CFXEasyEditor : EditorWindow
 			ColorValue2 = EditorGUILayout.ColorField(ColorValue2);
 			AffectAlpha = GUILayout.Toggle(AffectAlpha, new GUIContent("Alpha", "If checked, the alpha value will also be changed"));
 			GUILayout.EndHorizontal();
-
+			
 		//----------------------------------------------------------------
-
+			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Tint Colors", "Tints the colors of the Particle System(s), including gradients!\n(preserving their saturation and lightness)"),GUILayout.Width(120)))
 			{
@@ -279,18 +279,18 @@ public class CFXEasyEditor : EditorWindow
 			TintColorValue = EditorGUILayout.ColorField(TintColorValue);
 			TintColorValue = HSLColor.FromRGBA(TintColorValue).VividColor();
 			GUILayout.EndHorizontal();
-
+			
 		//----------------------------------------------------------------
-
+			
 			/*
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Add/Substract Lightness:");
-
+			
 			LightnessStep = EditorGUILayout.IntField(LightnessStep, GUILayout.Width(30));
 			if(LightnessStep > 99) LightnessStep = 99;
 			else if(LightnessStep < 1) LightnessStep = 1;
 			GUILayout.Label("%");
-
+			
 			if(GUILayout.Button("-", EditorStyles.miniButtonLeft, GUILayout.Width(22)))
 			{
 				addLightness(true);
@@ -302,34 +302,34 @@ public class CFXEasyEditor : EditorWindow
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			*/
-
+			
 		//----------------------------------------------------------------
-
+			
 			GUILayout.Label("Color Modules to affect:");
-
+			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-
+			
 			GUI.color = TintStartColor ? ColorSelected : Color.white; if(GUILayout.Button(new GUIContent("Start Color", "If checked, the \"Start Color\" value(s) will be affected."), EditorStyles.toolbarButton, GUILayout.Width(70))) TintStartColor = !TintStartColor;
 			GUI.color = TintColorModule ? ColorSelected : Color.white; if(GUILayout.Button(new GUIContent("Color over Lifetime", "If checked, the \"Color over Lifetime\" value(s) will be affected."), EditorStyles.toolbarButton, GUILayout.Width(110))) TintColorModule = !TintColorModule;
 			GUI.color = TintColorSpeedModule ? ColorSelected : Color.white; if(GUILayout.Button(new GUIContent("Color by Speed", "If checked, the \"Color by Speed\" value(s) will be affected."), EditorStyles.toolbarButton, GUILayout.Width(100))) TintColorSpeedModule = !TintColorSpeedModule;
 			GUI.color = Color.white;
-
+			
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
-
+			
 			GUILayout.Space(4);
-
+			
 		//----------------------------------------------------------------
-
+			
 		}
-
+		
 		//Separator
 		GUILayout.Box("",GUILayout.Width(this.position.width - 12), GUILayout.Height(3));
 //		GUILayout.Space(6);
-
+		
 	//----------------------------------------------------------------
-
+		
 		EditorGUI.BeginChangeCheck();
 		copyFoldout = EditorGUILayout.Foldout(copyFoldout, "COPY MODULES");
 		if(EditorGUI.EndChangeCheck())
@@ -338,16 +338,16 @@ public class CFXEasyEditor : EditorWindow
 		}
 		if(copyFoldout)
 		{
-
+		
 			GUILayout.Label("Copy properties from a Particle System to others!", EditorStyles.miniLabel);
-
+			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Source Object:", GUILayout.Width(110));
 			sourceObject = (ParticleSystem)EditorGUILayout.ObjectField(sourceObject, typeof(ParticleSystem), true);
 			GUILayout.EndHorizontal();
-
+			
 			EditorGUILayout.LabelField("Modules to Copy:");
-
+			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button("ALL", EditorStyles.miniButtonLeft, GUILayout.Width(120)))
@@ -360,7 +360,7 @@ public class CFXEasyEditor : EditorWindow
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
-
+			
 			GUILayout.Space(4);
 
 			GUILayout.BeginHorizontal();
@@ -430,9 +430,9 @@ public class CFXEasyEditor : EditorWindow
 			GUI.color = b_modules[15] ? ColorSelected : Color.white;	if(GUILayout.Button("Renderer", EditorStyles.toolbarButton, GUILayout.Width(90))) b_modules[15] = !b_modules[15];
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
-
+			
 			GUI.color = Color.white;
-
+			
 			GUILayout.Space(4);
 			if(GUILayout.Button("Copy properties to selected Object(s)"))
 			{
@@ -442,35 +442,35 @@ public class CFXEasyEditor : EditorWindow
 					ParticleSystem[] systems;
 					if(pref_IncludeChildren)		systems = go.GetComponentsInChildren<ParticleSystem>(true);
 					else 					systems = go.GetComponents<ParticleSystem>();
-
+					
 					if(systems.Length == 0) continue;
-
+					
 					foundPs = true;
 					foreach(ParticleSystem system in systems)	CopyModules(sourceObject, system);
 				}
-
+				
 				if(!foundPs)
 				{
 					Debug.LogWarning("CartoonFX Easy Editor: No Particle System found in the selected GameObject(s)!");
 				}
 			}
 		}
-
+			
 		//----------------------------------------------------------------
-
+		
 		GUILayout.Space(8);
-
+		
 		//Resize window
 		if(foldoutChanged && Event.current.type == EventType.repaint)
 		{
 			foldoutChanged = false;
-
+			
 			Rect r = GUILayoutUtility.GetLastRect();
 			this.minSize = new Vector2(300,r.y + 8);
 			this.maxSize = new Vector2(300,r.y + 8);
 		}
 	}
-
+	
 	//Loop effects
 	private void loopEffect(bool setLoop)
 	{
@@ -482,7 +482,7 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			foreach(ParticleSystem ps in systems)
 			{
 				SerializedObject so = new SerializedObject(ps);
@@ -491,7 +491,7 @@ public class CFXEasyEditor : EditorWindow
 			}
 		}
 	}
-
+	
 	//Prewarm effects
 	private void prewarmEffect(bool setPrewarm)
 	{
@@ -503,7 +503,7 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			foreach(ParticleSystem ps in systems)
 			{
 				SerializedObject so = new SerializedObject(ps);
@@ -512,7 +512,7 @@ public class CFXEasyEditor : EditorWindow
 			}
 		}
 	}
-
+	
 	//Scale Size
 	private void applyScale()
 	{
@@ -524,12 +524,12 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			foreach(ParticleSystem ps in systems)
 			{
 				ScaleParticleValues(ps, go);
 			}
-
+			
 			//Scale Lights' range
 			Light[] lights = go.GetComponentsInChildren<Light>();
 			foreach(Light light in lights)
@@ -539,7 +539,7 @@ public class CFXEasyEditor : EditorWindow
 			}
 		}
 	}
-
+	
 	//Change Color
 	private void applyColor()
 	{
@@ -550,7 +550,7 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			foreach(ParticleSystem ps in systems)
 			{
 				SerializedObject psSerial = new SerializedObject(ps);
@@ -568,9 +568,9 @@ public class CFXEasyEditor : EditorWindow
 			}
 		}
 	}
-
+	
 	//TINT COLORS ================================================================================================================================
-
+	
 	private void tintColor()
 	{
 		if(!TintStartColor && !TintColorModule && !TintColorSpeedModule)
@@ -578,9 +578,9 @@ public class CFXEasyEditor : EditorWindow
 			Debug.LogWarning("CartoonFX Easy Editor: You must toggle at least one of the three Color Modules to be able to tint anything!");
 			return;
 		}
-
+		
 		float hue = HSLColor.FromRGBA(TintColorValue).h;
-
+		
 		foreach(GameObject go in Selection.gameObjects)
 		{
 			ParticleSystem[] systems;
@@ -588,25 +588,25 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			foreach(ParticleSystem ps in systems)
 			{
 				SerializedObject psSerial = new SerializedObject(ps);
-
+				
 				if(TintStartColor)
 					GenericTintColorProperty(psSerial.FindProperty("InitialModule.startColor"), hue);
-
+				
 				if(TintColorModule)
 					GenericTintColorProperty(psSerial.FindProperty("ColorModule.gradient"), hue);
-
+				
 				if(TintColorSpeedModule)
 					GenericTintColorProperty(psSerial.FindProperty("ColorBySpeedModule.gradient"), hue);
-
+				
 				psSerial.ApplyModifiedProperties();
 			}
 		}
 	}
-
+	
 	private void GenericTintColorProperty(SerializedProperty colorProperty, float hue)
 	{
 		int state = colorProperty.FindPropertyRelative("minMaxState").intValue;
@@ -616,18 +616,18 @@ public class CFXEasyEditor : EditorWindow
 		case 0:
 			colorProperty.FindPropertyRelative("maxColor").colorValue = HSLColor.FromRGBA(colorProperty.FindPropertyRelative("maxColor").colorValue).ColorWithHue(hue);
 			break;
-
+			
 			//Gradient
 		case 1:
 			TintGradient(colorProperty.FindPropertyRelative("maxGradient"), hue);
 			break;
-
+			
 			//Random between 2 Colors
 		case 2:
 			colorProperty.FindPropertyRelative("minColor").colorValue = HSLColor.FromRGBA(colorProperty.FindPropertyRelative("minColor").colorValue).ColorWithHue(hue);
 			colorProperty.FindPropertyRelative("maxColor").colorValue = HSLColor.FromRGBA(colorProperty.FindPropertyRelative("maxColor").colorValue).ColorWithHue(hue);
 			break;
-
+			
 			//Random between 2 Gradients
 		case 3:
 			TintGradient(colorProperty.FindPropertyRelative("maxGradient"), hue);
@@ -635,7 +635,7 @@ public class CFXEasyEditor : EditorWindow
 			break;
 		}
 	}
-
+	
 	private void TintGradient(SerializedProperty gradientProperty, float hue)
 	{
 		gradientProperty.FindPropertyRelative("key0").colorValue = HSLColor.FromRGBA(gradientProperty.FindPropertyRelative("key0").colorValue).ColorWithHue(hue);
@@ -647,9 +647,9 @@ public class CFXEasyEditor : EditorWindow
 		gradientProperty.FindPropertyRelative("key6").colorValue = HSLColor.FromRGBA(gradientProperty.FindPropertyRelative("key6").colorValue).ColorWithHue(hue);
 		gradientProperty.FindPropertyRelative("key7").colorValue = HSLColor.FromRGBA(gradientProperty.FindPropertyRelative("key7").colorValue).ColorWithHue(hue);
 	}
-
+	
 	//LIGHTNESS OFFSET ================================================================================================================================
-
+	
 	private void addLightness(bool substract)
 	{
 		if(!TintStartColor && !TintColorModule && !TintColorSpeedModule)
@@ -657,11 +657,11 @@ public class CFXEasyEditor : EditorWindow
 			Debug.LogWarning("CartoonFX Easy Editor: You must toggle at least one of the three Color Modules to be able to change lightness!");
 			return;
 		}
-
+		
 		float lightness = (float)(LightnessStep/100f);
 		if(substract)
 			lightness *= -1f;
-
+		
 		foreach(GameObject go in Selection.gameObjects)
 		{
 			ParticleSystem[] systems;
@@ -669,26 +669,26 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			foreach(ParticleSystem ps in systems)
 			{
 				SerializedObject psSerial = new SerializedObject(ps);
-
+				
 				if(TintStartColor)
 					GenericAddLightness(psSerial.FindProperty("InitialModule.startColor"), lightness);
-
+				
 				if(TintColorModule)
 					GenericAddLightness(psSerial.FindProperty("ColorModule.gradient"), lightness);
-
+				
 				if(TintColorSpeedModule)
 					GenericAddLightness(psSerial.FindProperty("ColorBySpeedModule.gradient"), lightness);
-
+				
 				psSerial.ApplyModifiedProperties();
 				psSerial.Update();
 			}
 		}
 	}
-
+	
 	private void GenericAddLightness(SerializedProperty colorProperty, float lightness)
 	{
 		int state = colorProperty.FindPropertyRelative("minMaxState").intValue;
@@ -698,18 +698,18 @@ public class CFXEasyEditor : EditorWindow
 		case 0:
 			colorProperty.FindPropertyRelative("maxColor").colorValue = HSLColor.FromRGBA(colorProperty.FindPropertyRelative("maxColor").colorValue).ColorWithLightnessOffset(lightness);
 			break;
-
+			
 			//Gradient
 		case 1:
 			AddLightnessGradient(colorProperty.FindPropertyRelative("maxGradient"), lightness);
 			break;
-
+			
 			//Random between 2 Colors
 		case 2:
 			colorProperty.FindPropertyRelative("minColor").colorValue = HSLColor.FromRGBA(colorProperty.FindPropertyRelative("minColor").colorValue).ColorWithLightnessOffset(lightness);
 			colorProperty.FindPropertyRelative("maxColor").colorValue = HSLColor.FromRGBA(colorProperty.FindPropertyRelative("maxColor").colorValue).ColorWithLightnessOffset(lightness);
 			break;
-
+			
 			//Random between 2 Gradients
 		case 3:
 			AddLightnessGradient(colorProperty.FindPropertyRelative("maxGradient"), lightness);
@@ -717,7 +717,7 @@ public class CFXEasyEditor : EditorWindow
 			break;
 		}
 	}
-
+	
 	private void AddLightnessGradient(SerializedProperty gradientProperty, float lightness)
 	{
 		gradientProperty.FindPropertyRelative("key0").colorValue = HSLColor.FromRGBA(gradientProperty.FindPropertyRelative("key0").colorValue).ColorWithLightnessOffset(lightness);
@@ -729,7 +729,7 @@ public class CFXEasyEditor : EditorWindow
 		gradientProperty.FindPropertyRelative("key6").colorValue = HSLColor.FromRGBA(gradientProperty.FindPropertyRelative("key6").colorValue).ColorWithLightnessOffset(lightness);
 		gradientProperty.FindPropertyRelative("key7").colorValue = HSLColor.FromRGBA(gradientProperty.FindPropertyRelative("key7").colorValue).ColorWithLightnessOffset(lightness);
 	}
-
+	
 	//RGB / HSL Conversions
 	private struct HSLColor
 	{
@@ -737,7 +737,7 @@ public class CFXEasyEditor : EditorWindow
 		public float s;
 		public float l;
 		public float a;
-
+		
 		public HSLColor(float h, float s, float l, float a)
 		{
 			this.h = h;
@@ -745,7 +745,7 @@ public class CFXEasyEditor : EditorWindow
 			this.l = l;
 			this.a = a;
 		}
-
+		
 		public HSLColor(float h, float s, float l)
 		{
 			this.h = h;
@@ -753,7 +753,7 @@ public class CFXEasyEditor : EditorWindow
 			this.l = l;
 			this.a = 1f;
 		}
-
+		
 		public HSLColor(Color c)
 		{
 			HSLColor temp = FromRGBA(c);
@@ -762,17 +762,17 @@ public class CFXEasyEditor : EditorWindow
 			l = temp.l;
 			a = temp.a;
 		}
-
+		
 		public static HSLColor FromRGBA(Color c)
 		{
 			float h, s, l, a;
 			a = c.a;
-
+			
 			float cmin = Mathf.Min(Mathf.Min(c.r, c.g), c.b);
 			float cmax = Mathf.Max(Mathf.Max(c.r, c.g), c.b);
-
+			
 			l = (cmin + cmax) / 2f;
-
+			
 			if (cmin == cmax)
 			{
 				s = 0;
@@ -781,11 +781,11 @@ public class CFXEasyEditor : EditorWindow
 			else
 			{
 				float delta = cmax - cmin;
-
+				
 				s = (l <= .5f) ? (delta / (cmax + cmin)) : (delta / (2f - (cmax + cmin)));
-
+				
 				h = 0;
-
+				
 				if (c.r == cmax)
 				{
 					h = (c.g - c.b) / delta;
@@ -798,23 +798,23 @@ public class CFXEasyEditor : EditorWindow
 				{
 					h = 4f + (c.r - c.g) / delta;
 				}
-
+				
 				h = Mathf.Repeat(h * 60f, 360f);
 			}
-
+			
 			return new HSLColor(h, s, l, a);
 		}
-
+		
 		public Color ToRGBA()
 		{
 			float r, g, b, a;
 			a = this.a;
-
+			
 			float m1, m2;
-
+			
 			m2 = (l <= .5f) ? (l * (1f + s)) : (l + s - l * s);
 			m1 = 2f * l - m2;
-
+			
 			if (s == 0f)
 			{
 				r = g = b = l;
@@ -825,14 +825,14 @@ public class CFXEasyEditor : EditorWindow
 				g = Value(m1, m2, h);
 				b = Value(m1, m2, h - 120f);
 			}
-
+			
 			return new Color(r, g, b, a);
 		}
-
+		
 		static float Value(float n1, float n2, float hue)
 		{
 			hue = Mathf.Repeat(hue, 360f);
-
+			
 			if (hue < 60f)
 			{
 				return n1 + (n2 - n1) * hue / 60f;
@@ -850,40 +850,40 @@ public class CFXEasyEditor : EditorWindow
 				return n1;
 			}
 		}
-
+		
 		public Color VividColor()
 		{
 			this.l = 0.5f;
 			this.s = 1.0f;
 			return this.ToRGBA();
 		}
-
+		
 		public Color ColorWithHue(float hue)
 		{
 			this.h = hue;
 			return this.ToRGBA();
 		}
-
+		
 		public Color ColorWithLightnessOffset(float lightness)
 		{
 			this.l += lightness;
 			if(this.l > 1.0f) this.l = 1.0f;
 			else if(this.l < 0.0f) this.l = 0.0f;
-
+			
 			return this.ToRGBA();
 		}
-
+		
 		public static implicit operator HSLColor(Color src)
 		{
 			return FromRGBA(src);
 		}
-
+		
 		public static implicit operator Color(HSLColor src)
 		{
 			return src.ToRGBA();
 		}
 	}
-
+	
 	//Scale Lifetime only
 	private void applySpeed()
 	{
@@ -894,7 +894,7 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			//Scale Lifetime
 			foreach(ParticleSystem ps in systems)
 			{
@@ -907,7 +907,7 @@ public class CFXEasyEditor : EditorWindow
 			}
 		}
 	}
-
+	
 	//Set Duration
 	private void applyDuration()
 	{
@@ -919,7 +919,7 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			foreach(ParticleSystem ps in systems)
 			{
 				SerializedObject so = new SerializedObject(ps);
@@ -928,7 +928,7 @@ public class CFXEasyEditor : EditorWindow
 			}
 		}
 	}
-
+	
 	//Change delay
 	private void applyDelay()
 	{
@@ -939,7 +939,7 @@ public class CFXEasyEditor : EditorWindow
 				systems = go.GetComponentsInChildren<ParticleSystem>(true);
 			else
 				systems = go.GetComponents<ParticleSystem>();
-
+			
 			//Scale Lifetime
 			foreach(ParticleSystem ps in systems)
 			{
@@ -952,7 +952,7 @@ public class CFXEasyEditor : EditorWindow
 			}
 		}
 	}
-
+	
 	//Copy Selected Modules
 	private void CopyModules(ParticleSystem source, ParticleSystem dest)
 	{
@@ -961,17 +961,17 @@ public class CFXEasyEditor : EditorWindow
 			Debug.LogWarning("CartoonFX Easy Editor: Select a source Particle System to copy properties from first!");
 			return;
 		}
-
+		
 		SerializedObject psSource = new SerializedObject(source);
 		SerializedObject psDest = new SerializedObject(dest);
-
+		
 		//Initial Module
 		if(b_modules[0])
 		{
 			psDest.FindProperty("prewarm").boolValue = psSource.FindProperty("prewarm").boolValue;
 			psDest.FindProperty("lengthInSec").floatValue = psSource.FindProperty("lengthInSec").floatValue;
 			psDest.FindProperty("moveWithTransform").boolValue = psSource.FindProperty("moveWithTransform").boolValue;
-
+			
 			GenericModuleCopy(psSource.FindProperty("InitialModule"), psDest.FindProperty("InitialModule"));
 
 #if UNITY_5_5_OR_NEWER
@@ -1002,7 +1002,7 @@ public class CFXEasyEditor : EditorWindow
 			dest.gravityModifier = source.gravityModifier;
 #endif
 		}
-
+		
 		if(b_modules[1])	GenericModuleCopy(psSource.FindProperty("EmissionModule"), psDest.FindProperty("EmissionModule"));
 		if(b_modules[2])	GenericModuleCopy(psSource.FindProperty("ShapeModule"), psDest.FindProperty("ShapeModule"));
 		if(b_modules[3])	GenericModuleCopy(psSource.FindProperty("VelocityModule"), psDest.FindProperty("VelocityModule"));
@@ -1028,20 +1028,20 @@ public class CFXEasyEditor : EditorWindow
 		{
 			ParticleSystemRenderer rendSource = source.GetComponent<ParticleSystemRenderer>();
 			ParticleSystemRenderer rendDest = dest.GetComponent<ParticleSystemRenderer>();
-
+			
 			psSource = new SerializedObject(rendSource);
 			psDest = new SerializedObject(rendDest);
-
+			
 			SerializedProperty ss = psSource.GetIterator();
 			ss.Next(true);
-
+			
 			SerializedProperty sd = psDest.GetIterator();
 			sd.Next(true);
-
+			
 			GenericModuleCopy(ss, sd, false);
 		}
 	}
-
+	
 	//Copy One Module's Values
 	private void GenericModuleCopy(SerializedProperty ss, SerializedProperty sd, bool depthBreak = true)
 	{
@@ -1053,15 +1053,15 @@ public class CFXEasyEditor : EditorWindow
 				break;
 			}
 			sd.NextVisible(true);
-
+			
 			//If end of module: break
 			if(depthBreak && ss.depth == 0)
 			{
 				break;
 			}
-
+			
 			bool found = true;
-
+			
 			switch(ss.propertyType)
 			{
 				case SerializedPropertyType.Boolean : 			sd.boolValue = ss.boolValue; break;
@@ -1079,28 +1079,28 @@ public class CFXEasyEditor : EditorWindow
 #if !UNITY_3_5
 				case SerializedPropertyType.Gradient :			copyGradient(ss,sd); break;
 #endif
-
+				
 				default: found = false; break;
 			}
-
+			
 			if(!found)
 			{
 				found = true;
-
+				
 				switch(ss.type)
 				{
 					default: found = false; break;
 				}
 			}
 		}
-
+		
 		//Apply Changes
 		sd.serializedObject.ApplyModifiedProperties();
-
+		
 		ss.Dispose();
 		sd.Dispose();
 	}
-
+	
 #if !UNITY_3_5
 	private void copyGradient(SerializedProperty ss, SerializedProperty sd)
 	{
@@ -1122,12 +1122,12 @@ public class CFXEasyEditor : EditorWindow
 		while(gradient.depth > 2);
 	}
 #endif
-
+	
 	//Specific Copy for Sub Emitters Module (duplicate Sub Particle Systems)
 	private void SubModuleCopy(SerializedObject source, SerializedObject dest)
 	{
 		dest.FindProperty("SubModule.enabled").boolValue = source.FindProperty("SubModule.enabled").boolValue;
-
+		
 		GameObject copy;
 #if UNITY_5_5_OR_NEWER
 		int arraySize = source.FindProperty("SubModule.subEmitters.Array.size").intValue;
@@ -1160,7 +1160,7 @@ public class CFXEasyEditor : EditorWindow
 		{
 			//Duplicate sub Particle Emitter
 			copy = (GameObject)Instantiate((source.FindProperty("SubModule.subEmitterBirth").objectReferenceValue as ParticleSystem).gameObject);
-
+			
 			//Set as child of destination
 			Vector3 localPos = copy.transform.localPosition;
 			Vector3 localScale = copy.transform.localScale;
@@ -1169,16 +1169,16 @@ public class CFXEasyEditor : EditorWindow
 			copy.transform.localPosition = localPos;
 			copy.transform.localScale = localScale;
 			copy.transform.localEulerAngles = localAngles;
-
+			
 			//Assign as sub Particle Emitter
 			dest.FindProperty("SubModule.subEmitterBirth").objectReferenceValue = copy;
 		}
-
+		
 		if(source.FindProperty("SubModule.subEmitterDeath").objectReferenceValue != null)
 		{
 			//Duplicate sub Particle Emitter
 			copy = (GameObject)Instantiate((source.FindProperty("SubModule.subEmitterDeath").objectReferenceValue as ParticleSystem).gameObject);
-
+			
 			//Set as child of destination
 			Vector3 localPos = copy.transform.localPosition;
 			Vector3 localScale = copy.transform.localScale;
@@ -1187,16 +1187,16 @@ public class CFXEasyEditor : EditorWindow
 			copy.transform.localPosition = localPos;
 			copy.transform.localScale = localScale;
 			copy.transform.localEulerAngles = localAngles;
-
+			
 			//Assign as sub Particle Emitter
 			dest.FindProperty("SubModule.subEmitterDeath").objectReferenceValue = copy;
 		}
-
+		
 		if(source.FindProperty("SubModule.subEmitterCollision").objectReferenceValue != null)
 		{
 			//Duplicate sub Particle Emitter
 			copy = (GameObject)Instantiate((source.FindProperty("SubModule.subEmitterCollision").objectReferenceValue as ParticleSystem).gameObject);
-
+			
 			//Set as child of destination
 			Vector3 localPos = copy.transform.localPosition;
 			Vector3 localScale = copy.transform.localScale;
@@ -1205,7 +1205,7 @@ public class CFXEasyEditor : EditorWindow
 			copy.transform.localPosition = localPos;
 			copy.transform.localScale = localScale;
 			copy.transform.localEulerAngles = localAngles;
-
+			
 			//Assign as sub Particle Emitter
 			dest.FindProperty("SubModule.subEmitterCollision").objectReferenceValue = copy;
 		}
@@ -1214,7 +1214,7 @@ public class CFXEasyEditor : EditorWindow
 		//Apply Changes
 		dest.ApplyModifiedProperties();
 	}
-
+	
 	//Scale System
 	private void ScaleParticleValues(ParticleSystem ps, GameObject parent)
 	{
@@ -1224,87 +1224,29 @@ public class CFXEasyEditor : EditorWindow
 
 		SerializedObject psSerial = new SerializedObject(ps);
 
-		//Start Size
-		psSerial.FindProperty("InitialModule.startSize.scalar").floatValue *= ScalingValue;
-
-		//Start Speed
-		psSerial.FindProperty("InitialModule.startSpeed.scalar").floatValue *= ScalingValue;
-
-#if UNITY_5_5_OR_NEWER
-		//Scale Emission Distance Rate
-		if (psSerial.FindProperty("EmissionModule.enabled").boolValue)
+		foreach(var path in PropertiesToScale)
 		{
-			psSerial.FindProperty("EmissionModule.rateOverDistance.scalar").floatValue /= ScalingValue;
-		}
-#else
-		//Scale Emission Rate if set on Distance
-		if(psSerial.FindProperty("EmissionModule.enabled").boolValue && psSerial.FindProperty("EmissionModule.m_Type").intValue == 1)
-		{
-			psSerial.FindProperty("EmissionModule.rate.scalar").floatValue /= ScalingValue;
-		}
-#endif
-
-		//Scale Size By Speed Module
-		if(psSerial.FindProperty("SizeBySpeedModule.enabled").boolValue)
-		{
-			psSerial.FindProperty("SizeBySpeedModule.range.x").floatValue *= ScalingValue;
-			psSerial.FindProperty("SizeBySpeedModule.range.y").floatValue *= ScalingValue;
+			var prop = psSerial.FindProperty(path);
+			if(prop != null)
+			{
+				if(prop.propertyType == SerializedPropertyType.Float)
+				{
+					prop.floatValue *= ScalingValue;
+				}
+				else
+				{
+					Debug.LogWarning("Property in ParticleSystem is not a float: " + path + "\n");
+				}
+			}
+			else
+			{
+				Debug.LogWarning("Property doesn't exist in ParticleSystem: " + path + "\n");
+			}
 		}
 
-		//Scale Velocity Module
-		if(psSerial.FindProperty("VelocityModule.enabled").boolValue)
-		{
-			psSerial.FindProperty("VelocityModule.x.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("VelocityModule.x.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("VelocityModule.x.maxCurve").animationCurveValue);
-			psSerial.FindProperty("VelocityModule.y.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("VelocityModule.y.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("VelocityModule.y.maxCurve").animationCurveValue);
-			psSerial.FindProperty("VelocityModule.z.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("VelocityModule.z.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("VelocityModule.z.maxCurve").animationCurveValue);
-		}
-
-		//Scale Limit Velocity Module
-		if(psSerial.FindProperty("ClampVelocityModule.enabled").boolValue)
-		{
-			psSerial.FindProperty("ClampVelocityModule.x.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("ClampVelocityModule.x.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("ClampVelocityModule.x.maxCurve").animationCurveValue);
-			psSerial.FindProperty("ClampVelocityModule.y.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("ClampVelocityModule.y.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("ClampVelocityModule.y.maxCurve").animationCurveValue);
-			psSerial.FindProperty("ClampVelocityModule.z.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("ClampVelocityModule.z.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("ClampVelocityModule.z.maxCurve").animationCurveValue);
-
-			psSerial.FindProperty("ClampVelocityModule.magnitude.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("ClampVelocityModule.magnitude.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("ClampVelocityModule.magnitude.maxCurve").animationCurveValue);
-		}
-
-		//Scale Force Module
-		if(psSerial.FindProperty("ForceModule.enabled").boolValue)
-		{
-			psSerial.FindProperty("ForceModule.x.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("ForceModule.x.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("ForceModule.x.maxCurve").animationCurveValue);
-			psSerial.FindProperty("ForceModule.y.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("ForceModule.y.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("ForceModule.y.maxCurve").animationCurveValue);
-			psSerial.FindProperty("ForceModule.z.scalar").floatValue *= ScalingValue;
-			//IterateKeys(psSerial.FindProperty("ForceModule.z.minCurve").animationCurveValue);
-			//IterateKeys(psSerial.FindProperty("ForceModule.z.maxCurve").animationCurveValue);
-		}
-
-		//Scale Shape Module
+		//Shape Module special case
 		if(psSerial.FindProperty("ShapeModule.enabled").boolValue)
 		{
-			psSerial.FindProperty("ShapeModule.boxX").floatValue *= ScalingValue;
-			psSerial.FindProperty("ShapeModule.boxY").floatValue *= ScalingValue;
-			psSerial.FindProperty("ShapeModule.boxZ").floatValue *= ScalingValue;
-			psSerial.FindProperty("ShapeModule.radius").floatValue *= ScalingValue;
-
 			//(ShapeModule.type 6 == Mesh)
 			if(psSerial.FindProperty("ShapeModule.type").intValue == 6)
 			{
@@ -1313,39 +1255,50 @@ public class CFXEasyEditor : EditorWindow
 				EditorUtility.SetDirty(ps.transform);
 			}
 		}
-
+		
 		//Apply Modified Properties
 		psSerial.ApplyModifiedProperties();
 	}
 
-	//Iterate and Scale Keys (Animation Curve)
-	private void IterateKeys(AnimationCurve curve)
+	//Properties to scale, with per-version differences
+	private string[] PropertiesToScale = new string[]
 	{
-		for(int i = 0; i < curve.keys.Length; i++)
-		{
-			curve.keys[i].value *= ScalingValue;
-		}
-	}
+		//Initial
+		"InitialModule.startSize.scalar",
+		"InitialModule.startSpeed.scalar",
+		//Size by Speed
+		"SizeBySpeedModule.range.x",
+		"SizeBySpeedModule.range.y",
+		//Velocity over Lifetime
+		"VelocityModule.x.scalar",
+		"VelocityModule.y.scalar",
+		"VelocityModule.z.scalar",
+		//Limit Velocity over Lifetime
+		"ClampVelocityModule.x.scalar",
+		"ClampVelocityModule.y.scalar",
+		"ClampVelocityModule.z.scalar",
+		"ClampVelocityModule.magnitude.scalar",
+		//Force over Lifetime
+		"ForceModule.x.scalar",
+		"ForceModule.y.scalar",
+		"ForceModule.z.scalar",
+		//Shape
+		"ShapeModule.boxX",
+		"ShapeModule.boxY",
+		"ShapeModule.boxZ",
 
-	//Create Scaled Mesh
-	private Mesh DuplicateAndScaleMesh(Mesh mesh, float Scale)
-	{
-		Mesh scaledMesh = new Mesh();
-
-		Vector3[] scaledVertices = new Vector3[mesh.vertices.Length];
-		for(int i = 0; i < scaledVertices.Length; i++)
-		{
-			scaledVertices[i] = mesh.vertices[i] * Scale;
-		}
-		scaledMesh.vertices = scaledVertices;
-
-		scaledMesh.normals = mesh.normals;
-		scaledMesh.tangents = mesh.tangents;
-		scaledMesh.triangles = mesh.triangles;
-		scaledMesh.uv = mesh.uv;
-		scaledMesh.uv2 = mesh.uv2;
-		scaledMesh.colors = mesh.colors;
-
-		return scaledMesh;
-	}
+		//Special cases per Unity version
+#if UNITY_5_6_OR_NEWER
+		"ShapeModule.radius.value",
+#else
+		"ShapeModule.radius",
+#endif
+#if UNITY_5_5_OR_NEWER
+		"EmissionModule.rateOverDistance.scalar",
+		"InitialModule.gravityModifier.scalar",
+#else
+		"InitialModule.gravityModifier",
+		"EmissionModule.rate.scalar",
+#endif
+	};
 }

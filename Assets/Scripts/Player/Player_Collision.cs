@@ -34,4 +34,12 @@ public class Player_Collision : CollisionStubs
       other.DestroySelf();
     }
   }
+
+  protected override void WormCollision(Worm_Base other) {
+    Base.State("Hurt", other.x >= Base.x, 50);
+  }
+
+  protected override void WormBodyCollision(WormBody_Base other) {
+    Base.State("Hurt", other.x >= Base.x, 50);
+  }
 }
