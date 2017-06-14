@@ -23,6 +23,7 @@ public class Player_Base : InputObj {
   private bool flying = false;
   private SpriteObj chargeAura = null;
   private GameObject chargeLight = null;
+  private bool deadTimerExpired = false;
 
   protected override void Init() {
     ShootTimer.Interval = 800;
@@ -30,6 +31,7 @@ public class Player_Base : InputObj {
     RollTimer.Interval = 25;
     HurtTimer.Interval = 250;
     InvincibleTimer.Interval = 800;
+    DeadTimer.Interval = 1000;
 
     chargeAura = transform.Find("ChargeAura").gameObject.GetComponent<SpriteObj>();
     chargeLight = chargeAura.transform.Find("Light").gameObject;
@@ -37,6 +39,11 @@ public class Player_Base : InputObj {
   }
 
   protected override void Step () {
+    if (deadTimerExpired) {
+      deadTimerExpired = false;
+      Game.ChangeScene("MainHub", 0, "CatHead");
+    }
+
     if (Is("Rolling"))
       Physics.SkipNextFrictionUpdate();
     else
@@ -57,6 +64,10 @@ public class Player_Base : InputObj {
 
     if (HasFooting)
       canDoubleJump = true;
+  }
+
+  public void StartDeadTimer() {
+    DeadTimer.Enabled = true;
   }
 
   private void ResetChargeAura () {
@@ -124,7 +135,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void LeftHeld (float val) {
-    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt"))
+    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt") || Is("Dead"))
       return;
 
     if (Is("Climbing")) {
@@ -136,7 +147,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void RightHeld (float val) {
-    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt"))
+    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt") || Is("Dead"))
       return;
 
     if (Is("Climbing")) {
@@ -148,7 +159,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void UnoPressed () {
-    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt"))
+    if (Is("Rolling") || Is("Torpedoing") || Is("Hurt") || Is("Dead"))
       return;
 
     if (Is("Flying")) {
@@ -170,7 +181,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void UnoReleased () {
-    if (Is("Flying") || Is("Swimming"))
+    if (Is("Flying") || Is("Swimming") || Is("Dead"))
       return;
 
     if (Physics.vspeed > 2)
@@ -224,7 +235,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void CuatroPressed () {
-    // State("Shield");
+    State("Hurt", true, 100);
   }
 
   protected override void LeftTriggerPressed() {
@@ -265,7 +276,7 @@ public class Player_Base : InputObj {
   }
 
   public void StateShoot() {
-    if (Is("Rolling") || Is("Swimming") || Is("Torpedoing") || Is("Climbing") || Is("Hurt"))
+    if (Is("Rolling") || Is("Swimming") || Is("Torpedoing") || Is("Climbing") || Is("Hurt") || Is("Dead"))
       return;
 
     ShootTimer.Enabled = false;
@@ -301,7 +312,7 @@ public class Player_Base : InputObj {
   }
 
   public void StateTorpedo() {
-    if (Is("Torpedoing") || Is("Rolling") || Is("Climbing") || Is("Hurt"))
+    if (Is("Torpedoing") || Is("Rolling") || Is("Climbing") || Is("Hurt") || Is("Dead"))
       return;
 
     ShootTimer.Enabled = false;
@@ -343,7 +354,7 @@ public class Player_Base : InputObj {
   }
 
   public void StateHurt(bool moveLeft, int damage) {
-    if (Is("Hurt") || Is("Invincible"))
+    if (Is("Hurt") || Is("Invincible") || Is("Dead"))
       return;
 
     Game.HUD.ReduceShield(damage);
@@ -352,7 +363,6 @@ public class Player_Base : InputObj {
     ShootTimer.Enabled = false;
     ResetChargeAura();
 
-    Sprite.Play("Hurt");
     Physics.vspeed = 0;
 
     if (Sprite.FacingLeft)
@@ -360,10 +370,21 @@ public class Player_Base : InputObj {
     else if (Sprite.FacingRight)
       Physics.hspeed = -2;
 
-    HurtTimer.Enabled = true;
-    InvincibleTimer.Enabled = true;
-
     Game.CreateParticle("Blood", Mask.Center);
+
+    if (Game.HUD.IsDead()) {
+      State("Die");
+    } else {
+      Sprite.Play("Hurt");
+      HurtTimer.Enabled = true;
+      InvincibleTimer.Enabled = true;
+    }
+  }
+
+  public void StateDie() {
+    Sprite.Play("Die");
+    Physics.vspeed = 2;
+    Stitch.CurShield = 1;
   }
 
   /***********************************
@@ -379,6 +400,7 @@ public class Player_Base : InputObj {
   public bool IsWallSliding() { return SolidPhysics.Walljump.Sliding; }
   public bool IsHurt() { return HurtTimer.Enabled; }
   public bool IsInvincible() { return InvincibleTimer.Enabled; }
+  public bool IsDead() { return Sprite.IsPlaying("die_fall", "die_land"); }
 
   /***********************************
    * TIMER HANDLERS
@@ -392,6 +414,12 @@ public class Player_Base : InputObj {
   public Timer TorpedoTimer { get { return Timer2; } }
   protected override void Timer2Elapsed(object source, ElapsedEventArgs e) {
     TorpedoTimer.Enabled = false;
+  }
+
+  public Timer DeadTimer { get { return Timer3; } }
+  protected override void Timer3Elapsed(object source, ElapsedEventArgs e) {
+    deadTimerExpired = true;
+    DeadTimer.Enabled = false;
   }
 
   public Timer RollTimer { get { return Timer4; } }

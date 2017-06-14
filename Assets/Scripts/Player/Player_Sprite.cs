@@ -4,6 +4,8 @@ using System.Collections;
 
 public class Player_Sprite : SpriteObj {
 
+  private bool deathFallComplete = false;
+
   public override void Step() {
     ToggleAdditives();
 
@@ -20,12 +22,18 @@ public class Player_Sprite : SpriteObj {
       FaceFooting();
     else {
       float angle = Base.Physics.vspeed * 2;
-      if (Base.Is("Flying") || Base.Is("Swimming"))
+      if (Base.Is("Flying") || Base.Is("Swimming") || Base.Is("Dead"))
         angle *= 2;
 
-      if (FacingLeft)
+      if ((!Base.Is("Dead") && FacingLeft) || (Base.Is("Dead") && FacingRight))
         angle *= -1;
       FaceAngle(angle);
+    }
+
+    if (Base.Is("Dead")) {
+      if (Base.HasFooting && deathFallComplete)
+        Play("DieLanding");
+      return;
     }
 
     if (Base.Is("Rolling"))
@@ -77,6 +85,10 @@ public class Player_Sprite : SpriteObj {
       Base.Sprite.FacingRight = true;
   }
 
+  public void DeathFallEnd() {
+    deathFallComplete = true;
+  }
+
   /***********************************
    * ANIMATION DEFINITIONS
    **********************************/
@@ -85,7 +97,7 @@ public class Player_Sprite : SpriteObj {
     if (Base.Is("Shooting"))
       Animate("idle_gun", Base.Is("Swimming") ? 0.25f : 0.5f);
     else
-      Animate("idle1", Base.Is("Swimming") ? 0.25f : 0.5f);
+      Animate("idle", Base.Is("Swimming") ? 0.25f : 0.5f);
   }
 
   public void PlayWalk() {
@@ -132,6 +144,14 @@ public class Player_Sprite : SpriteObj {
 
   public void PlayHurt() {
     Animate("hurt", 0f);
+  }
+
+  public void PlayDie() {
+    Animate("die_fall", 1f);
+  }
+
+  public void PlayDieLanding() {
+    Animate("die_land", 1f);
   }
 
   /***********************************

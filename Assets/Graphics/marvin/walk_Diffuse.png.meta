@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: fa74a895ceb6745fb866b23f5e5d31b4
-timeCreated: 1485713880
+guid: 50a1c393afa0e47f791e8a912668cf59
+timeCreated: 1497386795
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: walk_0
-    21300002: walk_1
-    21300004: walk_2
-    21300006: walk_3
-  serializedVersion: 2
+    21300000: walk_Diffuse_0
+    21300002: walk_Diffuse_1
+    21300004: walk_Diffuse_2
+    21300006: walk_Diffuse_3
+  serializedVersion: 4
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
+    sRGBTexture: 1
     linearTexture: 0
-    correctGamma: 0
     fadeOut: 0
     borderMipMap: 0
     mipMapFadeDistanceStart: 1
@@ -25,23 +25,19 @@ TextureImporter:
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
-  generateCubemap: 0
+  generateCubemap: 6
   cubemapConvolution: 0
-  cubemapConvolutionSteps: 7
-  cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -3
+  textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
     filterMode: 0
     aniso: 16
     mipBias: -1
-    wrapMode: 1
+    wrapMode: -1
   nPOTScale: 0
   lightmap: 0
-  rGBM: 0
   compressionQuality: 50
-  allowsAlphaSplitting: 0
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
@@ -49,12 +45,52 @@ TextureImporter:
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
+  alphaUsage: 1
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
-  buildTargetSettings: []
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: WebGL
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: walk_0
+    - serializedVersion: 2
+      name: walk_Diffuse_0
       rect:
         serializedVersion: 2
         x: 0
@@ -64,17 +100,10 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -7, y: 30}
-        - {x: -12, y: 28}
-        - {x: -13, y: 19}
-        - {x: -13, y: 5}
-        - {x: -8, y: 0}
-        - {x: 8, y: 0}
-        - {x: 10, y: 12}
-        - {x: 10, y: 21}
-        - {x: 1, y: 30}
-    - name: walk_1
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: walk_Diffuse_1
       rect:
         serializedVersion: 2
         x: 48
@@ -84,13 +113,10 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -14, y: 31}
-        - {x: -14, y: 0}
-        - {x: 10, y: 0}
-        - {x: 10, y: 23}
-        - {x: 1, y: 31}
-    - name: walk_2
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: walk_Diffuse_2
       rect:
         serializedVersion: 2
         x: 96
@@ -100,16 +126,10 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -14, y: 2}
-        - {x: -12, y: 0}
-        - {x: 11, y: 0}
-        - {x: 11, y: 23}
-        - {x: 7, y: 31}
-        - {x: -10, y: 31}
-        - {x: -12, y: 30}
-        - {x: -14, y: 17}
-    - name: walk_3
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: walk_Diffuse_3
       rect:
         serializedVersion: 2
         x: 144
@@ -119,15 +139,8 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -7, y: 30}
-        - {x: -12, y: 28}
-        - {x: -14, y: 14}
-        - {x: -14, y: 5}
-        - {x: -9, y: 0}
-        - {x: 10, y: 0}
-        - {x: 10, y: 24}
-        - {x: 4, y: 30}
+      outline: []
+      tessellationDetail: 0
     outline: []
   spritePackingTag: 
   userData: 

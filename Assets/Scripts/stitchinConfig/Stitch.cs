@@ -39,7 +39,7 @@ public class Stitch : MonoBehaviour
   private static int maxShield = 3;
   public static int MaxShield { get { return maxShield; } }
 
-  private static int curShield = 2;
+  private static int curShield = 1;
   public static int CurShield { get { return curShield; } set { curShield = value; } }
   public static Color CurShieldColor {
     get {

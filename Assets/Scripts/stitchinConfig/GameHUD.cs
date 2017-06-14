@@ -33,6 +33,7 @@ public class GameHUD : MonoBehaviour {
     SetShieldBar();
     SetDamageBar(0);
     SetColor(Stitch.CurShieldColor);
+    ToggleElectricity();
   }
 
   void Start() {
@@ -76,12 +77,16 @@ public class GameHUD : MonoBehaviour {
     ToggleElectricity();
   }
 
+  public bool IsDead() {
+    return (Stitch.CurShield == 0 && Stitch.Shield == 0);
+  }
+
   /***********************************
    * PRIVATE HELPERS
    **********************************/
 
   private void CreateLowShieldPulse() {
-    if (Stitch.CurShield != 0)
+    if (Stitch.CurShield > 0)
       return;
 
     if (this.pulse == null) {
