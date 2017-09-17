@@ -18,5 +18,8 @@ public enum eObjectType
   TORPEDO,
   SHIP,
   WORM,
-  WORM_BODY
+  WORM_BODY,
+  REAPER,
+  SPEECH_BUBBLE,
+  BULLET
 };

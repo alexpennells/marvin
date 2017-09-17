@@ -3,7 +3,7 @@ using System;
 using System.Timers;
 using System.Collections.Generic;
 
-public class Worm_Base : BaseObj {
+public class Worm_Base : EnemyObj {
   [Tooltip("Number of body segments on this worm")]
   public int length = 3;
 
