@@ -7,7 +7,7 @@ namespace Target {
     protected override void HandleCollision(eObjectType otherType, BaseObj other) {
       switch (otherType) {
         case eObjectType.BULLET:
-          BulletCollision(other as Bullet_Base);
+          BulletCollision(other as Bullet.Base);
           break;
       }
     }
@@ -16,7 +16,7 @@ namespace Target {
      * HANDLERS
      **********************************/
 
-    private void BulletCollision(Bullet_Base other) {
+    private void BulletCollision(Bullet.Base other) {
       if (other.impacted)
         return;
 

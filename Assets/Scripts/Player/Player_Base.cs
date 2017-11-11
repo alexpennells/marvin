@@ -89,7 +89,7 @@ public class Player_Base : InputObj {
       return;
     this.lastbulletTime = Time.time;
 
-    Bullet_Base bullet = Game.Create("Bullet", BulletGlobalPosition()) as Bullet_Base;
+    Bullet.Base bullet = Game.Create("Bullet", BulletGlobalPosition()) as Bullet.Base;
     bullet.Sprite.StartBlur(0.0001f, 0.2f, 0.05f, 0.15f);
 
     float scaleSize = 0.8f;
