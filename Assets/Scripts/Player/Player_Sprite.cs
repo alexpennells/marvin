@@ -9,7 +9,7 @@ public class Player_Sprite : SpriteObj {
   public override void Step() {
     base.Step();
 
-    if (Base.Is("Torpedoing") || Base.Is("Hurt"))
+    if (Base.Is("Hurt"))
       return;
 
     if (Base.Is("WallSliding")) {
@@ -46,15 +46,12 @@ public class Player_Sprite : SpriteObj {
       return;
     }
 
-    if (Base.Is("Slashing"))
-      return;
-
     if (Base.HasFooting) {
       if (Game.paused) {
         // If the game is paused, just continue the current animation
-        if (IsPlaying("walk", "walk_gun", "walk_reaper"))
+        if (IsPlaying("walk", "gun_walk"))
           Play("Walk");
-        else if (IsPlaying("idle", "idle_gun", "idle_reaper"))
+        else if (IsPlaying("idle", "gun_idle"))
           Play("Idle");
       } else {
         if (Game.LeftHeld || Game.RightHeld) {
@@ -68,9 +65,6 @@ public class Player_Sprite : SpriteObj {
   }
 
   public override void FireAnimationEndHandlers() {
-    if (animationEndSideSlash)
-      AnimationEndSideSlashHandler();
-
     if (animationEndDeathFall)
       AnimationEndDeathFallHandler();
   }
@@ -78,10 +72,10 @@ public class Player_Sprite : SpriteObj {
   public override void ToggleAdditives() {
     ToggleGunAdditives();
 
-    if (Base.Is("Climbing") && !AdditiveExists("climb_tail"))
-      CreateAdditive("climb_tail", "climbing_tail", new Vector2(0, 0), 1);
-    else if (!Base.Is("Climbing") && AdditiveExists("climb_tail"))
-      DeleteAdditive("climb_tail");
+    if (Base.Is("Climbing") && !AdditiveExists("climbing_tail"))
+      CreateAdditive("climbing_tail", "climbing_tail", new Vector2(0, 0), 1);
+    else if (!Base.Is("Climbing") && AdditiveExists("climbing_tail"))
+      DeleteAdditive("climbing_tail");
   }
 
   /***********************************
@@ -89,29 +83,31 @@ public class Player_Sprite : SpriteObj {
    **********************************/
 
   public void PlayIdle() {
-    if (Base.Is("Reaper"))
-      Animate("idle_reaper", 0.5f);
-    else if (Base.Is("Shooting"))
-      Animate("idle_gun", 0.5f);
+    if (Base.Is("Shooting"))
+      Animate("gun_idle", 0.5f);
     else
       Animate("idle", 0.5f);
   }
 
   public void PlayWalk() {
-    if (Base.Is("Reaper"))
-      Animate("walk_reaper", WalkSpeed());
-    else if (Base.Is("Shooting"))
-      Animate("walk_gun", WalkSpeed());
-    else
-      Animate("walk", WalkSpeed());
+    if (Base.Is("Shooting")) {
+      if (Base.Is("Running"))
+        Animate("gun_run", RunSpeed());
+      else
+        Animate("gun_walk", 0.25f);
+    }
+    else {
+      if (Base.Is("Running"))
+        Animate("run", RunSpeed());
+      else
+        Animate("walk", 0.25f);
+    }
   }
 
   public void PlayJump() {
     string spriteName = "jump";
-    if (Base.Is("Reaper"))
-      spriteName = "jump_reaper";
-    else if (Base.Is("Shooting"))
-      spriteName = "jump_gun";
+    if (Base.Is("Shooting"))
+      spriteName = "gun_jump";
 
     if (Base.Physics.vspeed > 3)
       Animate(spriteName, 0f, 0f);
@@ -125,16 +121,10 @@ public class Player_Sprite : SpriteObj {
     Animate("climb", ClimbSpeed());
   }
 
-  public void PlayTorpedo() {
-    Animate("torpedo", 0f);
-  }
-
   public void PlayWallSlide() {
-    string spriteName = "wall_slide";
-    if (Base.Is("Reaper"))
-      spriteName = "wall_slide_reaper";
-    else if (Base.Is("Shooting"))
-      spriteName = "wall_slide_shoot";
+    string spriteName = "slide";
+    if (Base.Is("Shooting"))
+      spriteName = "gun_slide";
 
     if (Base.Physics.vspeed > 3)
       Animate(spriteName, 0f, 0f);
@@ -156,15 +146,6 @@ public class Player_Sprite : SpriteObj {
     Animate("die_land", 1f);
   }
 
-  public void PlaySlash() {
-    (Base as Player_Base).QueuedSlash = false;
-
-    if (IsPlaying("slash_side_one"))
-      Animate("slash_side_two", 1f);
-    else
-      Animate("slash_side_one", 1f);
-  }
-
   /***********************************
    * ANIMATION END DEFINITIONS
    **********************************/
@@ -176,22 +157,12 @@ public class Player_Sprite : SpriteObj {
     deathFallComplete = true;
   }
 
-  private bool animationEndSideSlash = false;
-  public bool AnimationEndSideSlash { set { animationEndSideSlash = true; } }
-  private void AnimationEndSideSlashHandler() {
-    animationEndSideSlash = false;
-    if ((Base as Player_Base).QueuedSlash)
-      Play("Slash");
-    else
-      Play("Idle");
-  }
-
   /***********************************
    * PRIVATE DEFINITIONS
    **********************************/
 
-  private float WalkSpeed() {
-    return 3f - Math.Abs(Base.Physics.hspeed) / Base.Physics.hspeedMax;
+  private float RunSpeed() {
+    return 2.5f - Math.Abs(Base.Physics.hspeed) / Base.Physics.hspeedMax;
   }
 
   private float ClimbSpeed() {
@@ -199,40 +170,34 @@ public class Player_Sprite : SpriteObj {
   }
 
   private void ToggleGunAdditives() {
-    string currentGun = (Base as Player_Base).CurrentGun;
-    if (currentGun != "laser" && AdditiveExists("laser"))
-      DeleteAdditive("laser");
-    if (currentGun != "launcher" && AdditiveExists("launcher"))
-      DeleteAdditive("launcher");
-    if (currentGun != "pistol" && AdditiveExists("pistol"))
-      DeleteAdditive("pistol");
-    if (currentGun != "steamer" && AdditiveExists("steamer"))
-      DeleteAdditive("steamer");
+    if (!AdditiveExists("laser") && IsPlaying("gun_idle", "gun_walk", "gun_run", "gun_jump", "gun_slide"))
+      CreateAdditive("laser", "laser", new Vector2(0.07f, 0.083f), 1);
 
-    if (!AdditiveExists(currentGun) && IsPlaying("idle_gun", "walk_gun", "jump_gun", "torpedo", "wall_slide_shoot"))
-      CreateAdditive(currentGun, currentGun, new Vector2(0.07f, 0.083f), 1);
-
-    if (AdditiveExists(currentGun)) {
-      if (IsPlaying("idle_gun"))
-        Additive(currentGun).Position(0.04f, 0.08f);
-      else if (IsPlaying("torpedo"))
-        Additive(currentGun).Position(0.02f, 0.09f);
-      else if (IsPlaying("wall_slide_shoot"))
-        Additive(currentGun).Position(0.05f, 0.1f);
-      else if (IsPlaying("walk_gun")) {
-        if (GetAnimationTime() < 0.25f || GetAnimationTime() > 0.75f)
-          Additive(currentGun).Position(0.04f, 0.07f);
+    if (AdditiveExists("laser")) {
+      if (IsPlaying("gun_idle"))
+        Additive("laser").Position(0.04f, 0.08f);
+      else if (IsPlaying("gun_slide"))
+        Additive("laser").Position(0.05f, 0.1f);
+      else if (IsPlaying("gun_walk")) {
+        if (GetAnimationTime() < 0.125f || (GetAnimationTime() > 0.375f && GetAnimationTime() < 0.625f) || GetAnimationTime() > 0.875f)
+          Additive("laser").Position(0.04f, 0.07f);
         else
-          Additive(currentGun).Position(0.04f, 0.08f);
+          Additive("laser").Position(0.04f, 0.08f);
       }
-      else if (IsPlaying("jump_gun")) {
-        if (GetAnimationTime() < 0.33f)
-          Additive(currentGun).Position(0.02f, 0.1f);
+      else if (IsPlaying("gun_run")) {
+        if (GetAnimationTime() < 0.25f || GetAnimationTime() > 0.75f)
+          Additive("laser").Position(0.04f, 0.07f);
         else
-          Additive(currentGun).Position(0.02f, 0.09f);
+          Additive("laser").Position(0.04f, 0.08f);
+      }
+      else if (IsPlaying("gun_jump")) {
+        if (GetAnimationTime() < 0.33f)
+          Additive("laser").Position(0.02f, 0.1f);
+        else
+          Additive("laser").Position(0.02f, 0.09f);
       }
       else
-        DeleteAdditive(currentGun);
+        DeleteAdditive("laser");
     }
   }
 }

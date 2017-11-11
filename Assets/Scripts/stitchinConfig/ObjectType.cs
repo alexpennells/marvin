@@ -21,5 +21,6 @@ public enum eObjectType
   WORM_BODY,
   REAPER,
   SPEECH_BUBBLE,
-  BULLET
+  BULLET,
+  TARGET
 };

@@ -23,12 +23,6 @@ public class CollisionStubs : CollisionObj
       case eObjectType.WATER:
         WaterCollision(other as Water_Base);
         break;
-      case eObjectType.LASER:
-        LaserCollision(other as Laser_Base);
-        break;
-      case eObjectType.TORPEDO:
-        TorpedoCollision(other as Torpedo_Base);
-        break;
       case eObjectType.WORM:
         WormCollision(other as Worm_Base);
         break;
@@ -43,6 +37,9 @@ public class CollisionStubs : CollisionObj
         break;
       case eObjectType.BULLET:
         BulletCollision(other as Bullet_Base);
+        break;
+      case eObjectType.TARGET:
+        TargetCollision(other as Target_Base);
         break;
     }
   }
@@ -68,13 +65,13 @@ public class CollisionStubs : CollisionObj
   protected virtual void PlayerCollision(Player_Base other) {}
   protected virtual void LadderCollision(Ladder_Base other) {}
   protected virtual void WaterCollision(Water_Base other) {}
-  protected virtual void LaserCollision(Laser_Base other) {}
-  protected virtual void TorpedoCollision(Torpedo_Base other) {}
   protected virtual void WormCollision(Worm_Base other) {}
   protected virtual void WormBodyCollision(WormBody_Base other) {}
   protected virtual void ReaperCollision(Reaper_Base other) {}
   protected virtual void SpeechBubbleCollision(SpeechBubble_Base other) {}
   protected virtual void BulletCollision(Bullet_Base other) {}
+  protected virtual void TargetCollision(Target_Base other) {}
+
   protected virtual void PlayerExit(Player_Base other) {}
   protected virtual void LadderExit(Ladder_Base other) {}
   protected virtual void WaterExit(Water_Base other) {}

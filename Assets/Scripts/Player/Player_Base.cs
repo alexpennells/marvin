@@ -8,42 +8,31 @@ public class Player_Base : InputObj {
   [Tooltip("Vertical speed of the player when jumping")]
   public float jumpSpeed = 6;
 
-  [Tooltip("Vertical speed of the player when double jumping")]
-  public float doubleJumpSpeed = 5;
-
   [Tooltip("The amount of speed the player picks up per step")]
   public float accelerationSpeed = 0.3f;
-
-  private bool canDoubleJump = true;
-  public bool CanDoubleJump { get { return canDoubleJump; } set { canDoubleJump = value; } }
-
-  private string currentGun = "pistol";
-  public string CurrentGun {
-    get { return currentGun; }
-    set {
-      ShootTimer.Enabled = false;
-      ShootTimer.Enabled = true;
-      currentGun = value;
+  public float TrueAccelerationSpeed {
+    get {
+      if (!Is("Running") && HasFooting)
+        return this.accelerationSpeed / 1.5f;
+      else
+        return this.accelerationSpeed;
     }
   }
 
-  private bool queuedSlash = false;
-  public bool QueuedSlash { get { return queuedSlash; } set { queuedSlash = value; } }
+  [Tooltip("This max hspeed when walking")]
+  public float maxWalkingHspeed = 3f;
 
-  private SpriteObj chargeAura = null;
-  private GameObject chargeLight = null;
+  private Transform bulletRoot = null;
+  private float lastbulletTime = -0.5f;
   private bool deadTimerExpired = false;
 
   protected override void Init() {
     ShootTimer.Interval = 2000;
-    TorpedoTimer.Interval = 200;
     HurtTimer.Interval = 250;
     InvincibleTimer.Interval = 800;
     DeadTimer.Interval = 1000;
 
-    chargeAura = transform.Find("ChargeAura").gameObject.GetComponent<SpriteObj>();
-    chargeLight = chargeAura.transform.Find("Light").gameObject;
-    ResetChargeAura();
+    bulletRoot = transform.Find("BulletRoot");
   }
 
   protected override void Step () {
@@ -52,38 +41,27 @@ public class Player_Base : InputObj {
       Game.ChangeScene("MainHub", 0, "CatHead");
     }
 
-    if (Is("Torpedoing")) {
-      Physics.SkipNextGravityUpdate();
-      Physics.SkipNextFrictionUpdate();
+    if (Is("WallSliding")) {
+      Sound.StartLoop("Slide");
+    } else if (HasFooting && Physics.hspeed != 0 && !Game.LeftHeld && !Game.RightHeld) {
+      Sound.StartLoop("Slide");
+    } else {
+      Sound.StopLoop("Slide");
     }
 
-    if (Is("Slashing") && HasFooting) {
-      if (Sprite.FacingLeft) {
-        Physics.hspeed = Math.Min(Physics.hspeed, -0.5f);
-        Physics.hspeed = Math.Max(Physics.hspeed, -2);
-      }
-      else if (Sprite.FacingRight) {
-        Physics.hspeed = Math.Max(Physics.hspeed, 0.5f);
-        Physics.hspeed = Math.Min(Physics.hspeed, 2);
-      }
+    // Adjust max speed based on running
+    if (!Is("Running") && Math.Abs(this.Physics.hspeed) > 3f) {
+      if (this.Physics.hspeed > 0)
+        this.Physics.hspeed = Math.Max(this.Physics.hspeed, this.Physics.hspeed - 0.05f);
+      else
+        this.Physics.hspeed = Math.Min(this.Physics.hspeed, this.Physics.hspeed + 0.05f);
     }
 
     base.Step();
-
-    if (HasFooting)
-      canDoubleJump = true;
   }
 
   public void StartDeadTimer() {
     DeadTimer.Enabled = true;
-  }
-
-  private void ResetChargeAura () {
-    chargeAura.SetAlpha(0f);
-    chargeAura.SetSpeed(1.5f);
-    chargeAura.transform.localScale = Vector3.zero;
-
-    chargeLight.SetActive(false);
   }
 
   /***********************************
@@ -91,87 +69,41 @@ public class Player_Base : InputObj {
    **********************************/
 
   private Vector3 BulletGlobalPosition () {
-    return chargeAura.transform.position;
+    return bulletRoot.position;
   }
 
   private Vector3 BulletLocalPosition () {
-    if (Sprite.IsPlaying("idle_gun"))
+    if (Sprite.IsPlaying("gun_idle"))
       return new Vector3(14, 10.5f, z) / 100f;
-    else if (Sprite.IsPlaying("walk_gun"))
+    else if (Sprite.IsPlaying("gun_run"))
       return new Vector3(14, 10.5f, z) / 100f;
-    else if (Sprite.IsPlaying("torpedo"))
-      return new Vector3(14, 11.5f, z) / 100f;
-    else if (Sprite.IsPlaying("wall_slide_shoot"))
+    else if (Sprite.IsPlaying("gun_slide"))
       return new Vector3(16, 12.5f, z) / 100f;
     else
       return new Vector3(14, 10.5f, z) / 100f;
   }
 
   private void CreateBullet() {
-    GameObject p = Game.CreateParticle("Gunshot", Vector3.zero);
-    p.transform.parent = transform;
-    p.transform.localPosition = BulletLocalPosition();
+    // Limit the fire rate.
+    if (Time.time - this.lastbulletTime < 0.5f)
+      return;
+    this.lastbulletTime = Time.time;
 
     Bullet_Base bullet = Game.Create("Bullet", BulletGlobalPosition()) as Bullet_Base;
+    bullet.Sprite.StartBlur(0.0001f, 0.2f, 0.05f, 0.15f);
+
+    float scaleSize = 0.8f;
+    bullet.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
+    bullet.Sprite.FacingLeft = Sprite.FacingLeft;
     bullet.Sprite.SetAngle(Sprite.currentRotationAngle);
 
     float destX = Sprite.FacingRight ? 1f : -1f;
     float destY = (float)Math.Tan(Math.PI * Sprite.currentRotationAngle / 180f) * destX;
-    bullet.Physics.MoveTo(new Vector2(chargeAura.transform.position.x + destX, chargeAura.transform.position.y + destY), 16f);
+    bullet.Physics.MoveTo(new Vector2(bulletRoot.position.x + destX, bulletRoot.position.y + destY), 7f);
   }
 
-  private void CreateTorpedo() {
-    Torpedo_Base torpedo = Game.Create("Torpedo", BulletGlobalPosition()) as Torpedo_Base;
-    torpedo.Sprite.FacingLeft = Sprite.FacingLeft;
-    torpedo.Sprite.SetAngle(Sprite.currentRotationAngle);
-
-    float destX = Sprite.FacingRight ? 4f : -4f;
-    float destY = (float)Math.Tan(Math.PI * Sprite.currentRotationAngle / 180f) * destX;
-    torpedo.Physics.MoveTo(new Vector2(chargeAura.transform.position.x + destX, chargeAura.transform.position.y + destY), 1f);
-
-    Physics.hspeed = -torpedo.Physics.hspeed * 2;
-    if (!HasFooting)
-      Physics.vspeed = -torpedo.Physics.vspeed * 2;
-  }
-
-  private void CreateLaser() {
-    Laser_Base laser = Game.Create("Laser", BulletGlobalPosition()) as Laser_Base;
-    laser.Sprite.SetAlpha(0.8f);
-    laser.Sprite.StartBlur(0.01f, 0.4f, 0.1f);
-
-    float scaleSize = chargeAura.transform.localScale.y > 0.75f ? 1f : 0.4f;
-    laser.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
-    laser.Sprite.FacingLeft = Sprite.FacingLeft;
-    laser.Sprite.SetAngle(Sprite.currentRotationAngle);
-
-    float destX = Sprite.FacingRight ? 1f : -1f;
-    float destY = (float)Math.Tan(Math.PI * Sprite.currentRotationAngle / 180f) * destX;
-    laser.Physics.MoveTo(new Vector2(chargeAura.transform.position.x + destX, chargeAura.transform.position.y + destY), 8f);
-
-    chargeLight.GetComponent<Light>().intensity = Math.Max(chargeLight.GetComponent<Light>().intensity, 0.5f);
-    GameObject laserLight = Instantiate(chargeLight) as GameObject;
-    laserLight.transform.parent = laser.transform;
-    laserLight.transform.localPosition = new Vector3(0, 0, 0);
-
-    ResetChargeAura();
-  }
-
-  private void UpdateChargeAuraPosition () {
-    chargeAura.transform.localPosition = BulletLocalPosition();
-    chargeAura.FacingLeft = Sprite.FacingLeft;
-  }
-
-  private void GrowChargeAura () {
-    float chargeSpeed = 50f;
-    chargeAura.SetAlpha(Math.Min(1f, chargeAura.GetAlpha() + 1f / chargeSpeed));
-
-    float scaleSize = chargeAura.transform.localScale.y;
-    scaleSize = Math.Min(0.8f, scaleSize + 0.8f / chargeSpeed);
-    chargeAura.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
-    UpdateChargeAuraPosition();
-
-    chargeLight.SetActive(true);
-    chargeLight.GetComponent<Light>().intensity = scaleSize * 3;
+  private void UpdateBulletPosition () {
+    bulletRoot.localPosition = BulletLocalPosition();
   }
 
   /***********************************
@@ -189,7 +121,7 @@ public class Player_Base : InputObj {
   }
 
   protected override void LeftHeld (float val) {
-    if (Is("Torpedoing") || Is("Hurt") || Is("Dead"))
+    if (Is("Hurt") || Is("Dead"))
       return;
 
     if (Is("Climbing")) {
@@ -197,11 +129,18 @@ public class Player_Base : InputObj {
       return;
     }
 
-    Physics.hspeed -= this.accelerationSpeed;
+    if (SolidPhysics.Walljump.IsJumping())
+      return;
+
+    // Don't increase speed if walk speed is maxed out.
+    if (!Is("Running") && Physics.hspeed <= -maxWalkingHspeed)
+      return;
+
+    Physics.hspeed -= TrueAccelerationSpeed;
   }
 
   protected override void RightHeld (float val) {
-    if (Is("Torpedoing") || Is("Hurt") || Is("Dead"))
+    if (Is("Hurt") || Is("Dead"))
       return;
 
     if (Is("Climbing")) {
@@ -209,55 +148,47 @@ public class Player_Base : InputObj {
       return;
     }
 
-    Physics.hspeed += this.accelerationSpeed;
+    if (SolidPhysics.Walljump.IsJumping())
+      return;
+
+    // Don't increase speed if walk speed is maxed out.
+    if (!Is("Running") && Physics.hspeed >= maxWalkingHspeed)
+      return;
+
+    Physics.hspeed += TrueAccelerationSpeed;
   }
 
   protected override void UnoPressed () {
-    if (Is("Torpedoing") || Is("Hurt") || Is("Dead"))
+    if (Is("Hurt") || Is("Dead"))
       return;
 
     if (Is("WallSliding")) {
+      Sound.Play("Jump");
       SolidPhysics.Walljump.ActuallyWalljump();
     } else if (HasFooting || Is("Climbing")) {
       Physics.vspeed = this.jumpSpeed;
+      Sound.Play("Jump");
       SolidPhysics.Collider.ClearFooting();
       Physics.Climb.Stop();
-    } else if (canDoubleJump)
-      State("DoubleJump");
+    }
   }
 
   protected override void UnoReleased () {
     if (Is("Dead"))
       return;
 
-    if (Physics.vspeed > 2)
+    if (!SolidPhysics.Walljump.IsJumping() && Physics.vspeed > 2)
       Physics.vspeed = 2;
   }
 
   protected override void DosPressed () {
-    if (Is("Reaper"))
-      State("Slash");
-    else
-      State("Shoot");
+    State("Shoot");
   }
 
   protected override void DosHeld () {
-    if (!Is("Shooting"))
-      State("Shoot");
-    if (!Is("Shooting"))
-      return;
-
-    // Reset timer until it's released
-    ShootTimer.Enabled = false;
-    ShootTimer.Enabled = true;
-
-    if (currentGun == "laser")
-      GrowChargeAura();
   }
 
   protected override void DosReleased () {
-    if (Is("Shooting") && currentGun == "laser")
-      CreateLaser();
   }
 
   protected override void TresPressed () {
@@ -266,50 +197,30 @@ public class Player_Base : InputObj {
   protected override void CuatroPressed () {
   }
 
-  protected override void LeftTriggerPressed() {
+  protected override void LeftTriggerHeld(float val) {
   }
 
-  protected override void RightTriggerPressed() {
+  protected override void RightTriggerHeld(float val) {
+
   }
 
   /***********************************
    * STATE CHANGE FUNCTIONS
    **********************************/
 
-  public void StateDoubleJump() {
-    canDoubleJump = false;
-    Physics.vspeed = this.doubleJumpSpeed;
-    Game.CreateParticle("AirRipple", Mask.Center);
-  }
-
   public void StateShoot() {
-    if (Is("Torpedoing") || Is("Climbing") || Is("Hurt") || Is("Dead"))
+    if (Is("Climbing") || Is("Hurt") || Is("Dead"))
       return;
 
     ShootTimer.Enabled = false;
     ShootTimer.Enabled = true;
-    UpdateChargeAuraPosition();
-
-    switch (currentGun) {
-      case "pistol":
-        CreateBullet();
-        break;
-      case "launcher":
-        Sprite.Play("Torpedo");
-        CreateTorpedo();
-        TorpedoTimer.Enabled = true;
-        break;
-      case "laser":
-        ResetChargeAura();
-        break;
-    }
+    UpdateBulletPosition();
+    CreateBullet();
   }
 
   public void StateClimb(Ladder_Base other) {
     Sprite.Play("Climb");
     ShootTimer.Enabled = false;
-    ResetChargeAura();
-    canDoubleJump = true;
     Sprite.StopBlur();
     Physics.Climb.Begin(other);
   }
@@ -318,11 +229,10 @@ public class Player_Base : InputObj {
     if (Is("Hurt") || Is("Invincible") || Is("Dead"))
       return;
 
-    Game.HUD.ReduceShield(damage);
+    // Game.HUD.ReduceShield(damage);
     Sprite.FacingLeft = !moveLeft;
 
     ShootTimer.Enabled = false;
-    ResetChargeAura();
 
     Physics.vspeed = 0;
 
@@ -333,37 +243,27 @@ public class Player_Base : InputObj {
 
     Game.CreateParticle("Blood", Mask.Center);
 
-    if (Game.HUD.IsDead()) {
-      State("Die");
-    } else {
+    // if (Game.HUD.IsDead()) {
+      // State("Die");
+    // } else {
       Sprite.Play("Hurt");
       HurtTimer.Enabled = true;
       InvincibleTimer.Enabled = true;
-    }
+    // }
   }
 
   public void StateDie() {
     Sprite.Play("Die");
     Physics.vspeed = 2;
-    Stitch.CurShield = 1;
-  }
-
-  public void StateSlash() {
-    if (Is("Slashing"))
-      QueuedSlash = true;
-    else
-      Sprite.Play("Slash");
   }
 
   /***********************************
    * STATE CHECKERS
    **********************************/
 
-  public bool IsReaper() { return currentGun == "scythe"; }
-  public bool IsSlashing() { return Sprite.IsPlaying("slash_side_one", "slash_side_two"); }
+  public bool IsRunning() { return Game.RightTriggerHeld; }
   public bool IsShooting() { return ShootTimer.Enabled; }
   public bool IsClimbing() { return Physics.Climbing; }
-  public bool IsTorpedoing() { return TorpedoTimer.Enabled; }
   public bool IsWallSliding() { return SolidPhysics.Walljump.Sliding; }
   public bool IsHurt() { return HurtTimer.Enabled; }
   public bool IsInvincible() { return InvincibleTimer.Enabled; }
@@ -376,11 +276,6 @@ public class Player_Base : InputObj {
   public Timer ShootTimer { get { return Timer1; } }
   protected override void Timer1Elapsed(object source, ElapsedEventArgs e) {
     ShootTimer.Enabled = false;
-  }
-
-  public Timer TorpedoTimer { get { return Timer2; } }
-  protected override void Timer2Elapsed(object source, ElapsedEventArgs e) {
-    TorpedoTimer.Enabled = false;
   }
 
   public Timer DeadTimer { get { return Timer3; } }
