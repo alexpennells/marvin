@@ -18,5 +18,7 @@ public enum eObjectType
 
   // Project specific
   BULLET,
-  TARGET
+  TARGET,
+  TARGET_MONSTER,
+  TARGET_WIND,
 };
