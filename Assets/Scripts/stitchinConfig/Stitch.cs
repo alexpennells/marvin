@@ -18,15 +18,12 @@ public class Stitch : MonoBehaviour
   public static bool SHOW_EXIT_BOUNDS = true;
   public static bool SHOW_ENTRANCES = true;
 
-  private Player_Base player;
-
   /***********************************
    * GAME GLOBALS
    **********************************/
 
   void Awake() {
     instance = this;
-    player = GameObject.Find("Player").GetComponent<Player_Base>();
   }
 
   // Treat this class as a singleton. This will hold the instance of the class.

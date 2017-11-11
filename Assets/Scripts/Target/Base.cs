@@ -9,11 +9,11 @@ namespace Target {
     // Whether this is a basic target or will attack the player.
     public bool posessed = true;
 
-    private Player_Base player;
+    private Player.Base player;
     private Vector2 attackRange = new Vector2(1.5f, 0.8f);
 
     protected override void LoadReferences() {
-      player = GameObject.Find("Player").GetComponent<Player_Base>();
+      player = GameObject.Find("Player").GetComponent<Player.Base>();
     }
 
     protected override void Init() {

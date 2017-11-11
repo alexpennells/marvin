@@ -4,7 +4,7 @@ using System;
 namespace Wisp {
   public class Base : BaseObj {
     private BaseObj follow = null;
-    private Player_Base player;
+    private Player.Base player;
 
     private ParticleSystem fire;
     new private Light light;
@@ -17,7 +17,7 @@ namespace Wisp {
     }
 
     protected override void Init() {
-      this.player = GameObject.Find("Player").GetComponent<Player_Base>();
+      this.player = GameObject.Find("Player").GetComponent<Player.Base>();
       this.follow = this.player;
       JumpToDesiredPosition();
     }
