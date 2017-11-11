@@ -1,6 +1,4 @@
 using UnityEngine;
 using System;
 
-public class Reaper_Base : BaseObj {
-
-}
+public class Reaper_Base : BaseObj { }

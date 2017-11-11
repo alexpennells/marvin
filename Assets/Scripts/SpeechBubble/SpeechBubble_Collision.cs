@@ -2,10 +2,28 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class SpeechBubble_Collision : CollisionStubs {
-  public override eObjectType Type { get { return eObjectType.SPEECH_BUBBLE; } }
+public class SpeechBubble_Collision : CollisionHandler {
+  protected override void HandleCollision(eObjectType otherType, BaseObj other) {
+    switch (otherType) {
+      case eObjectType.PLAYER:
+        PlayerCollision(other as Player_Base);
+        break;
+    }
+  }
 
-  protected override void PlayerCollision(Player_Base other) {
+  protected override void HandleExitCollision(eObjectType otherType, BaseObj other) {
+    switch (otherType) {
+      case eObjectType.PLAYER:
+        PlayerExit(other as Player_Base);
+        break;
+    }
+  }
+
+  /***********************************
+   * HANDLERS
+   **********************************/
+
+  private void PlayerCollision(Player_Base other) {
     Base.Sprite.Play("Open");
 
     if (Game.UpHeld && other.HasFooting) {
@@ -15,7 +33,7 @@ public class SpeechBubble_Collision : CollisionStubs {
     }
   }
 
-  protected override void PlayerExit(Player_Base other) {
+  private void PlayerExit(Player_Base other) {
     Base.Sprite.Play("Close");
   }
 }

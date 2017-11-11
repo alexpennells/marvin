@@ -2,11 +2,20 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Target_Collision : CollisionStubs
-{
-  public override eObjectType Type { get { return eObjectType.TARGET; } }
+public class Target_Collision : CollisionHandler {
+  protected override void HandleCollision(eObjectType otherType, BaseObj other) {
+    switch (otherType) {
+      case eObjectType.BULLET:
+        BulletCollision(other as Bullet_Base);
+        break;
+    }
+  }
 
-  protected override void BulletCollision(Bullet_Base other) {
+  /***********************************
+   * HANDLERS
+   **********************************/
+
+  private void BulletCollision(Bullet_Base other) {
     if (other.impacted)
       return;
 

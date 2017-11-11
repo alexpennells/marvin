@@ -11,16 +11,12 @@ public enum eObjectType
 {
   NONE,
   PLAYER,
+  SPEECH_BUBBLE,
   SCENE_EXIT,
   LADDER,
   WATER,
-  LASER,
-  TORPEDO,
-  SHIP,
-  WORM,
-  WORM_BODY,
-  REAPER,
-  SPEECH_BUBBLE,
+
+  // Project specific
   BULLET,
   TARGET
 };
