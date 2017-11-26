@@ -5,21 +5,22 @@ using System.Timers;
 namespace Target {
   [RequireComponent (typeof (Sprite))]
   [RequireComponent (typeof (Sound))]
-  public class Base : BaseObj {
+  public class Base : EnemyObj {
     // Whether this is a basic target or will attack the player.
     public bool posessed = true;
 
     private Player.Base player;
-    private Vector2 attackRange = new Vector2(1.5f, 0.8f);
+    private ParticleSystem tornado;
+    private Vector2 attackRange = new Vector2(1.8f, 0.8f);
 
     protected override void LoadReferences() {
       player = GameObject.Find("Player").GetComponent<Player.Base>();
+      tornado = transform.Find("Tornado").GetComponent<ParticleSystem>();
     }
 
     protected override void Init() {
       State("Idle");
       AppearTimer.Interval = 2000;
-      DisappearTimer.Interval = 1000;
     }
 
     protected override void Step() {
@@ -44,6 +45,9 @@ namespace Target {
     }
 
     public void StateStretch() {
+      if (Is("Inhaling") && tornado.isStopped)
+        tornado.Play();
+
       if (Is("Inhaling") || Is("Shrinking"))
         return;
 
@@ -51,14 +55,12 @@ namespace Target {
       if (AppearTimer.Enabled)
         return;
 
-      DisappearTimer.Enabled = false;
-      DisappearTimer.Enabled = true;
-
       Sprite.Play("Stretch");
     }
 
     public void StateHurt() {
-      DisappearTimer.Enabled = false;
+      tornado.Stop();
+      tornado.Clear();
       AppearTimer.Enabled = false;
       AppearTimer.Enabled = true;
       State("Shrink");
@@ -68,15 +70,17 @@ namespace Target {
       if (Is("Idle"))
         return;
 
-      // Don't shrink if just done stretching.
-      if (DisappearTimer.Enabled)
+      // Don't shrink until the tornado is gone.
+      tornado.Stop();
+      if (tornado.IsAlive())
         return;
 
       Sprite.Play("Shrink");
     }
 
-    public void StateInhaling() {
+    public void StateInhale() {
       Sprite.Play("Inhale");
+      tornado.Play();
     }
 
     public void StateBreak() {
@@ -106,11 +110,6 @@ namespace Target {
     public Timer AppearTimer { get { return Timer1; } }
     protected override void Timer1Elapsed(object source, ElapsedEventArgs e) {
       AppearTimer.Enabled = false;
-    }
-
-    public Timer DisappearTimer { get { return Timer2; } }
-    protected override void Timer2Elapsed(object source, ElapsedEventArgs e) {
-      DisappearTimer.Enabled = false;
     }
   }
 }

@@ -3,10 +3,6 @@ using System.Collections.Generic;
 
 namespace Player {
   public class SolidCollider : SolidColliderObj {
-    protected override bool GenericCollision(SolidObj other) {
-      return true;
-    }
-
     protected override void WallCollision(SolidObj wall) {
       base.WallCollision(wall);
 
