@@ -50,9 +50,9 @@ namespace Player {
       if (Base.HasFooting) {
         if (Game.paused) {
           // If the game is paused, just continue the current animation
-          if (IsPlaying("walk", "gun_walk"))
+          if (IsPlaying("walk"))
             Play("Walk");
-          else if (IsPlaying("idle", "gun_idle"))
+          else if (IsPlaying("idle"))
             Play("Idle");
         } else {
           if (Game.LeftHeld || Game.RightHeld) {
@@ -71,8 +71,6 @@ namespace Player {
     }
 
     public override void ToggleAdditives() {
-      ToggleGunAdditives();
-
       if (Base.Is("Climbing") && !AdditiveExists("climbing_tail"))
         CreateAdditive("climbing_tail", "climbing_tail", new Vector2(0, 0), 1);
       else if (!Base.Is("Climbing") && AdditiveExists("climbing_tail"))
@@ -84,38 +82,23 @@ namespace Player {
      **********************************/
 
     public void PlayIdle() {
-      if (Base.Is("Shooting"))
-        Animate("gun_idle", 0.5f);
-      else
-        Animate("idle", 0.5f);
+      Animate("idle", 0.5f);
     }
 
     public void PlayWalk() {
-      if (Base.Is("Shooting")) {
-        if (Base.Is("Running"))
-          Animate("gun_run", RunSpeed());
-        else
-          Animate("gun_walk", 0.25f);
-      }
-      else {
-        if (Base.Is("Running"))
-          Animate("run", RunSpeed());
-        else
-          Animate("walk", 0.25f);
-      }
+      if (Base.Is("Running"))
+        Animate("run", RunSpeed());
+      else
+        Animate("walk", 0.25f);
     }
 
     public void PlayJump() {
-      string spriteName = "jump";
-      if (Base.Is("Shooting"))
-        spriteName = "gun_jump";
-
       if (Base.Physics.vspeed > 3)
-        Animate(spriteName, 0f, 0f);
+        Animate("jump", 0f, 0f);
       else if (Base.Physics.vspeed > 0f)
-        Animate(spriteName, 0f, 0.4f);
+        Animate("jump", 0f, 0.4f);
       else
-        Animate(spriteName, 0f, 0.8f);
+        Animate("jump", 0f, 0.8f);
     }
 
     public void PlayClimb() {
@@ -123,16 +106,12 @@ namespace Player {
     }
 
     public void PlayWallSlide() {
-      string spriteName = "slide";
-      if (Base.Is("Shooting"))
-        spriteName = "gun_slide";
-
       if (Base.Physics.vspeed > 3)
-        Animate(spriteName, 0f, 0f);
+        Animate("slide", 0f, 0f);
       else if (Base.Physics.vspeed > 0f)
-        Animate(spriteName, 0f, 0.4f);
+        Animate("slide", 0f, 0.4f);
       else
-        Animate(spriteName, 0f, 0.8f);
+        Animate("slide", 0f, 0.8f);
     }
 
     public void PlayHurt() {
@@ -168,38 +147,6 @@ namespace Player {
 
     private float ClimbSpeed() {
       return Math.Max(Math.Abs(Base.Physics.vspeed), Math.Abs(Base.Physics.hspeed)) / 4;
-    }
-
-    private void ToggleGunAdditives() {
-      if (!AdditiveExists("laser") && IsPlaying("gun_idle", "gun_walk", "gun_run", "gun_jump", "gun_slide"))
-        CreateAdditive("laser", "laser", new Vector2(0.07f, 0.083f), 1);
-
-      if (AdditiveExists("laser")) {
-        if (IsPlaying("gun_idle"))
-          Additive("laser").Position(0.04f, 0.08f);
-        else if (IsPlaying("gun_slide"))
-          Additive("laser").Position(0.05f, 0.1f);
-        else if (IsPlaying("gun_walk")) {
-          if (GetAnimationTime() < 0.125f || (GetAnimationTime() > 0.375f && GetAnimationTime() < 0.625f) || GetAnimationTime() > 0.875f)
-            Additive("laser").Position(0.04f, 0.07f);
-          else
-            Additive("laser").Position(0.04f, 0.08f);
-        }
-        else if (IsPlaying("gun_run")) {
-          if (GetAnimationTime() < 0.25f || GetAnimationTime() > 0.75f)
-            Additive("laser").Position(0.04f, 0.07f);
-          else
-            Additive("laser").Position(0.04f, 0.08f);
-        }
-        else if (IsPlaying("gun_jump")) {
-          if (GetAnimationTime() < 0.33f)
-            Additive("laser").Position(0.02f, 0.1f);
-          else
-            Additive("laser").Position(0.02f, 0.09f);
-        }
-        else
-          DeleteAdditive("laser");
-      }
     }
   }
 }

@@ -26,17 +26,12 @@ namespace Player {
     [Tooltip("This max hspeed when walking")]
     public float maxWalkingHspeed = 3f;
 
-    private Transform bulletRoot = null;
-    private float lastbulletTime = -0.5f;
     private bool deadTimerExpired = false;
 
     protected override void Init() {
-      ShootTimer.Interval = 2000;
       HurtTimer.Interval = 250;
       InvincibleTimer.Interval = 800;
       DeadTimer.Interval = 1000;
-
-      bulletRoot = transform.Find("BulletRoot");
     }
 
     protected override void Step () {
@@ -66,48 +61,6 @@ namespace Player {
 
     public void StartDeadTimer() {
       DeadTimer.Enabled = true;
-    }
-
-    /***********************************
-     * PROJECTILE CREATION LOGIC
-     **********************************/
-
-    private Vector3 BulletGlobalPosition () {
-      return bulletRoot.position;
-    }
-
-    private Vector3 BulletLocalPosition () {
-      if (Sprite.IsPlaying("gun_idle"))
-        return new Vector3(14, 10.5f, z) / 100f;
-      else if (Sprite.IsPlaying("gun_run"))
-        return new Vector3(14, 10.5f, z) / 100f;
-      else if (Sprite.IsPlaying("gun_slide"))
-        return new Vector3(16, 12.5f, z) / 100f;
-      else
-        return new Vector3(14, 10.5f, z) / 100f;
-    }
-
-    private void CreateBullet() {
-      // Limit the fire rate.
-      if (Time.time - this.lastbulletTime < 0.5f)
-        return;
-      this.lastbulletTime = Time.time;
-
-      Bullet.Base bullet = Game.Create("Bullet", BulletGlobalPosition()) as Bullet.Base;
-      bullet.Sprite.StartBlur(0.0001f, 0.2f, 0.05f, 0.15f);
-
-      float scaleSize = 0.8f;
-      bullet.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
-      bullet.Sprite.FacingLeft = Sprite.FacingLeft;
-      bullet.Sprite.SetAngle(Sprite.currentRotationAngle);
-
-      float destX = Sprite.FacingRight ? 1f : -1f;
-      float destY = (float)Math.Tan(Math.PI * Sprite.currentRotationAngle / 180f) * destX;
-      bullet.Physics.MoveTo(new Vector2(bulletRoot.position.x + destX, bulletRoot.position.y + destY), 7f);
-    }
-
-    private void UpdateBulletPosition () {
-      bulletRoot.localPosition = BulletLocalPosition();
     }
 
     /***********************************
@@ -186,7 +139,6 @@ namespace Player {
     }
 
     protected override void DosPressed () {
-      State("Shoot");
     }
 
     protected override void DosHeld () {
@@ -212,19 +164,8 @@ namespace Player {
      * STATE CHANGE FUNCTIONS
      **********************************/
 
-    public void StateShoot() {
-      if (Is("Climbing") || Is("Hurt") || Is("Dead"))
-        return;
-
-      ShootTimer.Enabled = false;
-      ShootTimer.Enabled = true;
-      UpdateBulletPosition();
-      CreateBullet();
-    }
-
     public void StateClimb(Ladder_Base other) {
       Sprite.Play("Climb");
-      ShootTimer.Enabled = false;
       Sprite.StopBlur();
       Physics.Climb.Begin(other);
     }
@@ -235,8 +176,6 @@ namespace Player {
 
       // Game.HUD.ReduceShield(damage);
       Sprite.FacingLeft = !moveLeft;
-
-      ShootTimer.Enabled = false;
 
       Physics.vspeed = 0;
 
@@ -266,7 +205,6 @@ namespace Player {
      **********************************/
 
     public bool IsRunning() { return Game.RightTriggerHeld; }
-    public bool IsShooting() { return ShootTimer.Enabled; }
     public bool IsClimbing() { return Physics.Climbing; }
     public bool IsWallSliding() { return SolidPhysics.Walljump.Sliding; }
     public bool IsHurt() { return HurtTimer.Enabled; }
@@ -276,11 +214,6 @@ namespace Player {
     /***********************************
      * TIMER HANDLERS
      **********************************/
-
-    public Timer ShootTimer { get { return Timer1; } }
-    protected override void Timer1Elapsed(object source, ElapsedEventArgs e) {
-      ShootTimer.Enabled = false;
-    }
 
     public Timer DeadTimer { get { return Timer3; } }
     protected override void Timer3Elapsed(object source, ElapsedEventArgs e) {

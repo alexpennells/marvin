@@ -21,8 +21,8 @@ namespace Target {
 
       protected override void HandleCollision(eObjectType otherType, BaseObj other) {
         switch (otherType) {
-          case eObjectType.BULLET:
-            BulletCollision(other as Bullet.Base);
+          case eObjectType.WILLY_FIST:
+            WillyFistCollision(other as WillyFist.Base);
             break;
         }
       }
@@ -31,11 +31,9 @@ namespace Target {
        * HANDLERS
        **********************************/
 
-      private void BulletCollision(Bullet.Base other) {
-        if (other.impacted)
-          return;
+      private void WillyFistCollision(WillyFist.Base other) {
+        other.State("Impact");
 
-        other.impacted = true;
         if (Base.Is("Inhaling") || Base.Is("Stretching")) {
           Base.State("Hurt");
         } else {
