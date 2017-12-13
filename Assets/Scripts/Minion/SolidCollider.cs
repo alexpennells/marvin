@@ -8,5 +8,14 @@ namespace Minion {
       Base.Physics.hspeed = 0;
       (Base as Minion.Base).ChangeDirection();
     }
+
+    protected override void FootingCollision(SolidObj footing) {
+      base.FootingCollision(footing);
+
+      if (!Base.HasFooting)
+        Base.Sound.Play("Land");
+
+      Base.Physics.vspeed = 0;
+    }
   }
 }

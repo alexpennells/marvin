@@ -5,7 +5,13 @@ namespace Minion {
     public override Type Lib { get { return typeof(Minion.SFX); } }
 
     public void PlayStep() {
-      Game.SFX.Play("MinionStep" + Variation(3), 0.1f);
+      if (Game.Camera.InView(Base))
+        Game.SFX.Play("MinionStep" + Variation(3), 0.2f);
+    }
+
+    public void PlayLand() {
+      if (Game.Camera.InView(Base))
+        Game.SFX.Play("MinionStep" + Variation(3), 0.5f);
     }
   }
 }

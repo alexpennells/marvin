@@ -22,4 +22,7 @@ public enum eObjectType
   TARGET_MONSTER,
   TARGET_WIND,
   WILLY_FIST,
+  MINION,
+  SOUL,
+  BALLOON,
 };

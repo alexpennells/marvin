@@ -19,8 +19,9 @@ namespace Player {
     protected override void FootingCollision(SolidObj footing) {
       base.FootingCollision(footing);
 
-      if (!Base.HasFooting)
+      if (!Base.HasFooting) {
         Base.Sound.Play("Land");
+      }
 
       Base.Physics.vspeed = 0;
     }

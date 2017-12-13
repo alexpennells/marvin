@@ -44,6 +44,7 @@ namespace Player {
         Sound.StartLoop("Slide");
       } else if (HasFooting && Physics.hspeed != 0 && !Game.LeftHeld && !Game.RightHeld) {
         Sound.StartLoop("Slide");
+        CreateWalkPuffs(1);
       } else {
         Sound.StopLoop("Slide");
       }
@@ -56,11 +57,27 @@ namespace Player {
           this.Physics.hspeed = Math.Min(this.Physics.hspeed, this.Physics.hspeed + 0.05f);
       }
 
+      if (Game.LeftHeld || Game.RightHeld)
+        Physics.SkipNextFrictionUpdate();
+
+      // Cap the max walk speed.
+      if (!Is("Running")) {
+        if (Physics.hspeed > maxWalkingHspeed)
+          Physics.hspeed = Math.Max(Physics.hspeed - 0.1f, -maxWalkingHspeed);
+        else if (Physics.hspeed < -maxWalkingHspeed)
+          Physics.hspeed = Math.Min(Physics.hspeed + 0.1f, -maxWalkingHspeed);
+      }
+
       base.Step();
     }
 
     public void StartDeadTimer() {
       DeadTimer.Enabled = true;
+    }
+
+    public void CreateWalkPuffs(int count) {
+      for (int i = 0; i < count; i++)
+        Game.CreateParticle("Puff", Position);
     }
 
     /***********************************
@@ -170,13 +187,11 @@ namespace Player {
       Physics.Climb.Begin(other);
     }
 
-    public void StateHurt(bool moveLeft, int damage) {
+    public void StateHurt(bool moveLeft) {
       if (Is("Hurt") || Is("Invincible") || Is("Dead"))
         return;
 
-      // Game.HUD.ReduceShield(damage);
       Sprite.FacingLeft = !moveLeft;
-
       Physics.vspeed = 0;
 
       if (Sprite.FacingLeft)

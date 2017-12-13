@@ -14,14 +14,12 @@ namespace Player {
     }
 
     public void PlayFootstep() {
+      (Base as Player.Base).CreateWalkPuffs(2);
       Game.SFX.Play("Footstep" + Variation(6), 0.1f);
     }
 
-    public void PlayLoudFootstep() {
-      Game.SFX.Play("Footstep" + Variation(6), 0.2f);
-    }
-
     public void PlayLand() {
+      (Base as Player.Base).CreateWalkPuffs(8);
       Game.SFX.Play("Footstep" + Variation(6), 0.5f);
     }
 
@@ -30,7 +28,7 @@ namespace Player {
      **********************************/
 
     public void StartSlide() {
-      Loops["Slide"].volume = 0.2f;
+      Loops["Slide"].volume = 0.15f;
     }
 
     public void StopSlide() {
