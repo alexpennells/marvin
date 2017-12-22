@@ -89,7 +89,7 @@ namespace Player {
       if (Base.Is("Running"))
         Animate("run", RunSpeed());
       else
-        Animate("walk", 0.25f);
+        Animate("walk", 0.75f);
     }
 
     public void PlayJump() {

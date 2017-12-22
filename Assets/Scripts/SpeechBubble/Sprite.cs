@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using System.Timers;
 
 namespace SpeechBubble {
   public class Sprite : SpriteObj {

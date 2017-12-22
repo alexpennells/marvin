@@ -1,6 +1,6 @@
 using UnityEngine;
 using System;
-using System.Timers;
+using System.Collections;
 
 namespace Target {
   [RequireComponent (typeof (Sprite))]
@@ -12,6 +12,7 @@ namespace Target {
     private Player.Base player;
     private ParticleSystem tornado;
     private Vector2 attackRange = new Vector2(1.8f, 0.8f);
+    private bool appearDelay = false;
 
     protected override void LoadReferences() {
       player = GameObject.Find("Player").GetComponent<Player.Base>();
@@ -20,7 +21,6 @@ namespace Target {
 
     protected override void Init() {
       State("Idle");
-      AppearTimer.Interval = 2000;
     }
 
     protected override void Step() {
@@ -52,7 +52,7 @@ namespace Target {
         return;
 
       // Can't stretch out if recently damaged.
-      if (AppearTimer.Enabled)
+      if (appearDelay)
         return;
 
       Sprite.Play("Stretch");
@@ -61,8 +61,7 @@ namespace Target {
     public void StateHurt() {
       tornado.Stop();
       tornado.Clear();
-      AppearTimer.Enabled = false;
-      AppearTimer.Enabled = true;
+      RestartCoroutine("AppearDelay");
       State("Shrink");
     }
 
@@ -104,12 +103,14 @@ namespace Target {
     public bool IsBroken() { return Sprite.IsPlaying("break"); }
 
     /***********************************
-     * TIMER HANDLERS
+     * CO-ROUTINES
      **********************************/
 
-    public Timer AppearTimer { get { return Timer1; } }
-    protected override void Timer1Elapsed(object source, ElapsedEventArgs e) {
-      AppearTimer.Enabled = false;
+    private IEnumerator AppearDelay() {
+      appearDelay = true;
+      yield return new WaitForSeconds(2);
+      appearDelay = false;
     }
+
   }
 }

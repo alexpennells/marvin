@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using System.Timers;
 
 namespace Willy {
   public class Base : InputObj {
@@ -11,8 +10,6 @@ namespace Willy {
     public float maxDist = 0.1f;
 
     protected override void Init() {
-      PunchTimer.Interval = 1000;
-
       this.player = GameObject.Find("Player").GetComponent<Player.Base>();
       this.follow = this.player;
       JumpToDesiredPosition();
@@ -128,7 +125,6 @@ namespace Willy {
       if (Is("Punching"))
         return;
 
-      PunchTimer.Enabled = true;
       Sprite.Play("Punch");
       grow = true;
 
@@ -143,15 +139,6 @@ namespace Willy {
      **********************************/
 
     public bool IsPunching() { return Sprite.IsPlaying("punch"); }
-
-    /***********************************
-     * TIMER HANDLERS
-     **********************************/
-
-    public Timer PunchTimer { get { return Timer1; } }
-    protected override void Timer1Elapsed(object source, ElapsedEventArgs e) {
-      PunchTimer.Enabled = false;
-    }
 
     /***********************************
      * EDITOR NONSENSE

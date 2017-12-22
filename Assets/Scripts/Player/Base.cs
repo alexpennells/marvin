@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using System.Timers;
 using System.Collections;
 
 namespace Player {
@@ -26,20 +25,12 @@ namespace Player {
     [Tooltip("This max hspeed when walking")]
     public float maxWalkingHspeed = 3f;
 
-    private bool deadTimerExpired = false;
-
-    protected override void Init() {
-      HurtTimer.Interval = 250;
-      InvincibleTimer.Interval = 800;
-      DeadTimer.Interval = 1000;
-    }
+    private bool jumpPress = false;
+    private bool invincible = false;
+    private bool hurt = false;
+    private bool dead = false;
 
     protected override void Step () {
-      if (deadTimerExpired) {
-        deadTimerExpired = false;
-        Game.ChangeScene("MainHub", 0, "CatHead");
-      }
-
       if (Is("WallSliding")) {
         Sound.StartLoop("Slide");
       } else if (HasFooting && Physics.hspeed != 0 && !Game.LeftHeld && !Game.RightHeld) {
@@ -69,10 +60,6 @@ namespace Player {
       }
 
       base.Step();
-    }
-
-    public void StartDeadTimer() {
-      DeadTimer.Enabled = true;
     }
 
     public void CreateWalkPuffs(int count) {
@@ -133,6 +120,8 @@ namespace Player {
     }
 
     protected override void UnoPressed () {
+      RestartCoroutine("JumpPress");
+
       if (Is("Hurt") || Is("Dead"))
         return;
 
@@ -205,14 +194,19 @@ namespace Player {
         // State("Die");
       // } else {
         Sprite.Play("Hurt");
-        HurtTimer.Enabled = true;
-        InvincibleTimer.Enabled = true;
+        StartCoroutine("Invincible");
+        StartCoroutine("Hurt");
       // }
     }
 
     public void StateDie() {
       Sprite.Play("Die");
       Physics.vspeed = 2;
+      StartCoroutine("Dead");
+    }
+
+    public void StateBounce() {
+      Physics.vspeed = this.jumpPress ? 5 : 3;
     }
 
     /***********************************
@@ -222,28 +216,36 @@ namespace Player {
     public bool IsRunning() { return Game.RightTriggerHeld; }
     public bool IsClimbing() { return Physics.Climbing; }
     public bool IsWallSliding() { return SolidPhysics.Walljump.Sliding; }
-    public bool IsHurt() { return HurtTimer.Enabled; }
-    public bool IsInvincible() { return InvincibleTimer.Enabled; }
-    public bool IsDead() { return Sprite.IsPlaying("die_fall", "die_land"); }
+    public bool IsHurt() { return hurt; }
+    public bool IsInvincible() { return invincible; }
+    public bool IsDead() { return dead; }
 
     /***********************************
-     * TIMER HANDLERS
+     * CO-ROUTINES
      **********************************/
 
-    public Timer DeadTimer { get { return Timer3; } }
-    protected override void Timer3Elapsed(object source, ElapsedEventArgs e) {
-      deadTimerExpired = true;
-      DeadTimer.Enabled = false;
+    private IEnumerator JumpPress() {
+      jumpPress = true;
+      yield return new WaitForSeconds(0.25f);
+      jumpPress = false;
     }
 
-    public Timer HurtTimer { get { return Timer5; } }
-    protected override void Timer5Elapsed(object source, ElapsedEventArgs e) {
-      HurtTimer.Enabled = false;
+    private IEnumerator Invincible() {
+      invincible = true;
+      yield return new WaitForSeconds(0.8f);
+      invincible = false;
     }
 
-    public Timer InvincibleTimer { get { return Timer6; } }
-    protected override void Timer6Elapsed(object source, ElapsedEventArgs e) {
-      InvincibleTimer.Enabled = false;
+    private IEnumerator Hurt() {
+      hurt = true;
+      yield return new WaitForSeconds(0.25f);
+      hurt = false;
+    }
+
+    private IEnumerator Dead() {
+      dead = true;
+      yield return new WaitForSeconds(1);
+      Game.ChangeScene("MainHub", 0, "CatHead");
     }
   }
 }

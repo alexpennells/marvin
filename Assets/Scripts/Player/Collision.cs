@@ -9,6 +9,9 @@ namespace Player {
         case eObjectType.LADDER:
           LadderCollision(other as Ladder_Base);
           break;
+        case eObjectType.RAT:
+          RatCollision(other as Rat.Base);
+          break;
         case eObjectType.MINION:
           MinionCollision(other as Minion.Base);
           break;
@@ -40,6 +43,19 @@ namespace Player {
 
     private void MinionCollision(Minion.Base other) {
       Base.State("Hurt", true);
+    }
+
+    private void RatCollision(Rat.Base other) {
+      if (other.Is("Dead"))
+        return;
+
+      if (!Base.HasFooting && Base.y > other.y) {
+        Base.State("Bounce");
+        Game.CreateParticle("Impact", Base.Position);
+        other.State("Die");
+      }
+      else
+        Base.State("Hurt", true);
     }
 
     private void SoulCollision(Soul.Base other) {

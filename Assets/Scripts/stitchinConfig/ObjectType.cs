@@ -25,4 +25,5 @@ public enum eObjectType
   MINION,
   SOUL,
   BALLOON,
+  RAT,
 };
