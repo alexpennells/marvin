@@ -26,4 +26,5 @@ public enum eObjectType
   SOUL,
   BALLOON,
   RAT,
+  SKULL,
 };

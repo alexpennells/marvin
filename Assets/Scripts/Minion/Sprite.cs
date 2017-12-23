@@ -4,10 +4,12 @@ using System;
 namespace Minion {
   public class Sprite : SpriteObj {
     public override void Step() {
-      if (Math.Abs(Base.Physics.hspeed) < 0.5f)
-        Play("Idle");
-      else
-        Play("Walk");
+      if (!Base.Is("Dead")) {
+        if (Math.Abs(Base.Physics.hspeed) < 0.5f)
+          Play("Idle");
+        else
+          Play("Walk");
+      }
 
       if (Base.HasFooting)
         FaceFooting();
@@ -16,10 +18,12 @@ namespace Minion {
         FaceAngle(angle);
       }
 
-      if (Base.Physics.hspeed < 0)
-        FacingLeft = true;
-      else if (Base.Physics.hspeed > 0)
-        FacingRight = true;
+      if (!Base.Is("Dead")) {
+        if (Base.Physics.hspeed < 0)
+          FacingLeft = true;
+        else if (Base.Physics.hspeed > 0)
+          FacingRight = true;
+      }
     }
 
     public void PlayIdle() {
@@ -28,6 +32,10 @@ namespace Minion {
 
     public void PlayWalk() {
       Animate("walk", 0.15f);
+    }
+
+    public void PlayFall() {
+      Animate("fall", 1f);
     }
   }
 }

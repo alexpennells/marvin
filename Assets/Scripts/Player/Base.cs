@@ -48,11 +48,11 @@ namespace Player {
           this.Physics.hspeed = Math.Min(this.Physics.hspeed, this.Physics.hspeed + 0.05f);
       }
 
-      if (Game.LeftHeld || Game.RightHeld)
+      if (Game.LeftHeld || Game.RightHeld || !HasFooting)
         Physics.SkipNextFrictionUpdate();
 
       // Cap the max walk speed.
-      if (!Is("Running")) {
+      if (!Is("Running") || Is("Ziplining")) {
         if (Physics.hspeed > maxWalkingHspeed)
           Physics.hspeed = Math.Max(Physics.hspeed - 0.1f, -maxWalkingHspeed);
         else if (Physics.hspeed < -maxWalkingHspeed)
@@ -82,7 +82,7 @@ namespace Player {
     }
 
     protected override void LeftHeld (float val) {
-      if (Is("Hurt") || Is("Dead"))
+      if (Is("Hurt") || Is("Dead") || Is("Ziplining"))
         return;
 
       if (Is("Climbing")) {
@@ -101,7 +101,7 @@ namespace Player {
     }
 
     protected override void RightHeld (float val) {
-      if (Is("Hurt") || Is("Dead"))
+      if (Is("Hurt") || Is("Dead") || Is("Ziplining"))
         return;
 
       if (Is("Climbing")) {
@@ -125,7 +125,10 @@ namespace Player {
       if (Is("Hurt") || Is("Dead"))
         return;
 
-      if (Is("WallSliding")) {
+      if (Is("Ziplining")) {
+        Physics.Rail.StopGrinding();
+        Physics.vspeed = this.jumpSpeed;
+      } else if (Is("WallSliding")) {
         Sound.Play("Jump");
         SolidPhysics.Walljump.ActuallyWalljump();
       } else if (HasFooting || Is("Climbing")) {
@@ -218,6 +221,7 @@ namespace Player {
     public bool IsWallSliding() { return SolidPhysics.Walljump.Sliding; }
     public bool IsHurt() { return hurt; }
     public bool IsInvincible() { return invincible; }
+    public bool IsZiplining() { return Physics.Grinding; }
     public bool IsDead() { return dead; }
 
     /***********************************

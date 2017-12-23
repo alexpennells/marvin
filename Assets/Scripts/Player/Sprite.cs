@@ -13,6 +13,13 @@ namespace Player {
       if (Base.Is("Hurt"))
         return;
 
+      if (Base.Is("Ziplining")) {
+        Play("Zipline");
+        FacingRight = Base.Physics.hspeed >= 0;
+        FaceAngle(20 * (Base.Physics.hspeed >= 0 ? 1 : -1));
+        return;
+      }
+
       if (Base.Is("WallSliding")) {
         Play("WallSlide");
         FaceAngle(0);
@@ -112,6 +119,10 @@ namespace Player {
         Animate("slide", 0f, 0.4f);
       else
         Animate("slide", 0f, 0.8f);
+    }
+
+    public void PlayZipline() {
+      Animate("zipline", 1f);
     }
 
     public void PlayHurt() {

@@ -19,8 +19,10 @@ namespace Target {
        **********************************/
 
       private void PlayerCollision(Player.Base other) {
-        if (Base.Is("Inhaling"))
-          other.Physics.hspeed += 0.15f;
+        if (Base.Is("Inhaling")) {
+          other.Physics.SkipNextFrictionUpdate();
+          other.Physics.hspeed += 0.1f;
+        }
       }
     }
 

@@ -15,6 +15,9 @@ namespace Player {
         case eObjectType.MINION:
           MinionCollision(other as Minion.Base);
           break;
+        case eObjectType.SKULL:
+          SkullCollision(other as Skull.Base);
+          break;
         case eObjectType.SOUL:
           SoulCollision(other as Soul.Base);
           break;
@@ -42,7 +45,28 @@ namespace Player {
     }
 
     private void MinionCollision(Minion.Base other) {
-      Base.State("Hurt", true);
+      if (other.Is("Dead"))
+        return;
+
+      if (!Base.HasFooting && Base.y > other.y) {
+        Base.State("Bounce");
+        Game.CreateParticle("Impact", Base.Position);
+        other.State("Die");
+      }
+      else
+        Base.State("Hurt", true);
+    }
+
+    private void SkullCollision(Skull.Base other) {
+      if (other.Is("Invincible"))
+        return;
+
+      if (!Base.HasFooting && Base.y > other.y) {
+        Base.State("Bounce");
+        other.State("Die");
+      }
+      else
+        Base.State("Hurt", true);
     }
 
     private void RatCollision(Rat.Base other) {

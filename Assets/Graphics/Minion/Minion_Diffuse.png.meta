@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 864e438faa6734f57b8836a86c5ff752
-timeCreated: 1511291613
+timeCreated: 1514059183
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -16,6 +16,12 @@ TextureImporter:
     21300018: Minion_Diffuse_9
     21300020: Minion_Diffuse_10
     21300022: Minion_Diffuse_11
+    21300024: Minion_Diffuse_12
+    21300026: Minion_Diffuse_13
+    21300028: Minion_Diffuse_14
+    21300030: Minion_Diffuse_15
+    21300032: Minion_Diffuse_16
+    21300034: Minion_Diffuse_17
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -245,6 +251,84 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 528
+        y: 0
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Minion_Diffuse_12
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Minion_Diffuse_13
+      rect:
+        serializedVersion: 2
+        x: 624
+        y: 0
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Minion_Diffuse_14
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Minion_Diffuse_15
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 0
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Minion_Diffuse_16
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Minion_Diffuse_17
+      rect:
+        serializedVersion: 2
+        x: 816
         y: 0
         width: 48
         height: 48
