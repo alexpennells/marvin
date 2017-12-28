@@ -27,4 +27,5 @@ public enum eObjectType
   BALLOON,
   RAT,
   SKULL,
+  PLAYER_GHOST,
 };

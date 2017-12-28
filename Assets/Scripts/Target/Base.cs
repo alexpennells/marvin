@@ -11,7 +11,7 @@ namespace Target {
 
     private Player.Base player;
     private ParticleSystem tornado;
-    private Vector2 attackRange = new Vector2(1.8f, 0.8f);
+    private Vector2 attackRange = new Vector2(1.7f, 0.6f);
     private bool appearDelay = false;
 
     protected override void LoadReferences() {

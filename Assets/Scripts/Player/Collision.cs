@@ -24,6 +24,9 @@ namespace Player {
         case eObjectType.BALLOON:
           BalloonCollision(other as Balloon.Base);
           break;
+        case eObjectType.TARGET_MONSTER:
+          TargetMonsterCollision(other as Target.Base);
+          break;
       }
     }
 
@@ -54,7 +57,7 @@ namespace Player {
         other.State("Die");
       }
       else
-        Base.State("Hurt", true);
+        Base.State("Hurt", other.Mask.Center.x > Base.x);
     }
 
     private void SkullCollision(Skull.Base other) {
@@ -66,7 +69,7 @@ namespace Player {
         other.State("Die");
       }
       else
-        Base.State("Hurt", true);
+        Base.State("Hurt", other.Mask.Center.x > Base.x);
     }
 
     private void RatCollision(Rat.Base other) {
@@ -79,7 +82,7 @@ namespace Player {
         other.State("Die");
       }
       else
-        Base.State("Hurt", true);
+        Base.State("Hurt", other.Mask.Center.x > Base.x);
     }
 
     private void SoulCollision(Soul.Base other) {
@@ -88,6 +91,10 @@ namespace Player {
 
     private void BalloonCollision(Balloon.Base other) {
       other.DestroySelf();
+    }
+
+    private void TargetMonsterCollision(Target.Base other) {
+      Base.State("Hurt", true);
     }
 
     private void LadderExit(Ladder_Base other) {
