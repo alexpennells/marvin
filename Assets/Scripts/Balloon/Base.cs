@@ -5,6 +5,12 @@ namespace Balloon {
   public class Base : BaseObj {
     private bool moveUp = false;
 
+    protected override void LoadReferences() {
+      Sprite = new Sprite();
+      Sprite.enabled = true;
+      base.LoadReferences();
+    }
+
     protected override void Init () {
       Physics.vspeed = (float)Game.Random.Next(0, 101) / 400f - 0.125f;
     }
@@ -22,6 +28,9 @@ namespace Balloon {
     }
 
     public override void DestroySelf() {
+      for (int i = 0; i < 5; i++)
+        Game.Create("Soul", Mask.Center);
+
       Game.CreateParticle("BalloonPop", Mask.Center);
       Sound.Play("Pop");
       base.DestroySelf();

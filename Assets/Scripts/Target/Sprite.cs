@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 namespace Target {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
     public void PlayIdle() {
       Animate("idle", 1f);
     }

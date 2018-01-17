@@ -28,4 +28,7 @@ public enum eObjectType
   RAT,
   SKULL,
   PLAYER_GHOST,
+  COLLECTOR,
+  COIN,
+  DOOR,
 };

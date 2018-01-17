@@ -3,12 +3,16 @@ using System;
 using System.Collections;
 
 namespace Skull {
-  [RequireComponent (typeof (Sprite))]
-  [RequireComponent (typeof (Sound))]
   public class Base : EnemyObj {
     public float acceleration = 0.2f;
     private eDirection direction;
     private bool invincible = false;
+
+    protected override void LoadReferences() {
+      Sprite = new Sprite();
+      Sprite.enabled = true;
+      base.LoadReferences();
+    }
 
     protected override void Init() {
       if (Physics.hspeed > 0)
@@ -59,6 +63,7 @@ namespace Skull {
     }
 
     public void StateDie() {
+      Sound.Play("Die");
       Game.CreateParticle("SkullDie", Mask.Center);
       DestroySelf();
     }

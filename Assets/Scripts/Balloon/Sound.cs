@@ -6,6 +6,7 @@ namespace Balloon {
 
     public void PlayPop() {
       Game.SFX.Play("BalloonPop", 0.5f);
+      Game.SFX.Play("SoulsEscape", 1f);
     }
   }
 }

@@ -3,14 +3,14 @@ using System;
 using System.Collections;
 
 namespace Player {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
 
     private bool deathFallComplete = false;
 
     public override void Step() {
       base.Step();
 
-      if (Base.Is("Hurt"))
+      if (Game.disableInput)
         return;
 
       if (Base.Is("Ziplining")) {
@@ -68,7 +68,7 @@ namespace Player {
             Play("Idle");
           }
         }
-      } else
+      } else if (!IsPlaying("spin"))
         Play("Jump");
     }
 
@@ -130,11 +130,16 @@ namespace Player {
     }
 
     public void PlayDie() {
-      Animate("die_fall", 1f);
+      Game.CreateParticle("Blood", Base.Mask.Center);
+      Animate("die", 1f);
     }
 
-    public void PlayDieLanding() {
-      Animate("die_land", 1f);
+    public void PlaySpin() {
+      Animate("spin", 1.5f);
+    }
+
+    public void PlayRevive() {
+      Animate("revive", 1f);
     }
 
     /***********************************

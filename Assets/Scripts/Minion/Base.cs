@@ -2,8 +2,6 @@ using UnityEngine;
 using System;
 
 namespace Minion {
-  [RequireComponent (typeof (Sprite))]
-  [RequireComponent (typeof (Sound))]
   public class Base : EnemyObj {
     public float acceleration = 0.2f;
 
@@ -14,6 +12,12 @@ namespace Minion {
 
     private eDirection direction;
     private bool dead = false;
+
+    protected override void LoadReferences() {
+      Sprite = new Sprite();
+      Sprite.enabled = true;
+      base.LoadReferences();
+    }
 
     protected override void Init() {
       if (Physics.hspeed > 0)
@@ -65,6 +69,7 @@ namespace Minion {
       dead = true;
       Physics.friction = 0.05f;
       Sprite.Play("Fall");
+      Sound.Play("Laugh");
 
       Skull.Base skull = Game.Create("Skull", Mask.Center) as Skull.Base;
       skull.Physics.hspeed = Sprite.FacingLeft ? -1 : 1;
@@ -77,6 +82,10 @@ namespace Minion {
      **********************************/
 
     public bool IsDead() { return dead; }
+
+    /***********************************
+     * CO-ROUTINES
+     **********************************/
 
     protected override bool DrawGizmos() {
       Debug.DrawLine(new Vector3(MinPosition, Mask.Center.y - Game.UNIT/2, z), new Vector3(MinPosition, Mask.Center.y + Game.UNIT/2, z), Color.magenta, 0, false);

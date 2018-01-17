@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace Minion {
-  public class SolidCollider : SolidColliderObj {
+  public class SolidCollider : SolidColliderBlock {
     protected override void WallCollision(SolidObj wall) {
       base.WallCollision(wall);
       Base.Physics.hspeed = 0;

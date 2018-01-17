@@ -19,8 +19,11 @@ namespace Player {
     }
 
     public void PlayLand() {
-      (Base as Player.Base).CreateWalkPuffs(8);
       Game.SFX.Play("Footstep" + Variation(6), 0.5f);
+    }
+
+    public void PlayThump() {
+      Game.SFX.Play("Thump", 0.25f);
     }
 
     /***********************************

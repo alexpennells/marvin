@@ -8,5 +8,13 @@ namespace Skull {
       if (Game.Camera.InView(Base))
         Game.SFX.Play("MinionStep" + Variation(3), 0.5f);
     }
+
+    public void PlayDie() {
+      Game.SFX.Play("MinionDie", 0.1f);
+    }
+
+    public void PlayGiggle() {
+      Game.SFX.Play("MinionGiggle" + Variation(2), 0.5f);
+    }
   }
 }

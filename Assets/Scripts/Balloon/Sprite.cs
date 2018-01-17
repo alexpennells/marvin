@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 namespace Balloon {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
     public override void Init() {
       SetSpeed(0.5f);
     }

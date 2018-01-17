@@ -2,9 +2,9 @@ using UnityEngine;
 using System;
 
 namespace PlayerGhost {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
     public override void Init() {
-      Play("Idle");
+      Play("Spin");
     }
 
     public override void Step() {
@@ -15,7 +15,13 @@ namespace PlayerGhost {
         angle *= -1;
       FaceAngle(angle);
 
-      if (Base.Physics.hspeed > 0.5f) {
+      if (Base.Is("Spinning")) {
+        if (Base.Physics.hspeed > 0)
+          FacingLeft = true;
+        else if (Base.Physics.hspeed < 0)
+          FacingRight = true;
+      }
+      else if (Base.Physics.hspeed > 0.5f) {
         Play(Game.RightHeld ? "Forward" : "Backward");
         FacingRight = true;
       } else if (Base.Physics.hspeed < -0.5f) {
@@ -24,6 +30,10 @@ namespace PlayerGhost {
       }
       else
         Play("Idle");
+    }
+
+    public void PlaySpin() {
+      Animate("ghost_spin", 1.5f);
     }
 
     public void PlayIdle() {

@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 
 namespace SpeechBubble {
-  [RequireComponent (typeof (Sprite))]
   public class Base : BaseObj {
     [Tooltip("The text played when interacting with this speech bubble")]
     public string[] text = new string[1];
@@ -11,6 +10,10 @@ namespace SpeechBubble {
 
     protected override void LoadReferences() {
       this.teleprompter = GameObject.Find("Teleprompter").GetComponent<Teleprompter>();
+
+      Sprite = new Sprite();
+      Sprite.enabled = true;
+      base.LoadReferences();
     }
 
     public void StatePlayText() {

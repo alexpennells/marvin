@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 namespace Willy {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
     public void PlayIdle() {
       Animate("idle", 0.6f);
     }

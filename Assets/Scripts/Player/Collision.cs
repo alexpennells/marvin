@@ -21,11 +21,17 @@ namespace Player {
         case eObjectType.SOUL:
           SoulCollision(other as Soul.Base);
           break;
+        case eObjectType.COIN:
+          CoinCollision(other as Coin.Base);
+          break;
         case eObjectType.BALLOON:
           BalloonCollision(other as Balloon.Base);
           break;
         case eObjectType.TARGET_MONSTER:
           TargetMonsterCollision(other as Target.Base);
+          break;
+        case eObjectType.DOOR:
+          DoorCollision(other as Door.Base);
           break;
       }
     }
@@ -56,8 +62,10 @@ namespace Player {
         Game.CreateParticle("Impact", Base.Position);
         other.State("Die");
       }
-      else
+      else if (!Base.Is("Dead") && !Base.Is("Invincible")) {
+        other.Sound.Play("Giggle");
         Base.State("Hurt", other.Mask.Center.x > Base.x);
+      }
     }
 
     private void SkullCollision(Skull.Base other) {
@@ -68,8 +76,10 @@ namespace Player {
         Base.State("Bounce");
         other.State("Die");
       }
-      else
+      else if (!Base.Is("Dead") && !Base.Is("Invincible")) {
+        other.Sound.Play("Giggle");
         Base.State("Hurt", other.Mask.Center.x > Base.x);
+      }
     }
 
     private void RatCollision(Rat.Base other) {
@@ -86,6 +96,11 @@ namespace Player {
     }
 
     private void SoulCollision(Soul.Base other) {
+      if (other.Is("Collectable"))
+        other.DestroySelf();
+    }
+
+    private void CoinCollision(Coin.Base other) {
       other.DestroySelf();
     }
 
@@ -95,6 +110,11 @@ namespace Player {
 
     private void TargetMonsterCollision(Target.Base other) {
       Base.State("Hurt", true);
+    }
+
+    private void DoorCollision(Door.Base other) {
+      if (!Game.disableInput && Game.UpHeld && Base.HasFooting)
+        Base.State("Exit", other);
     }
 
     private void LadderExit(Ladder_Base other) {

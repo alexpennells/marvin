@@ -1,13 +1,21 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 namespace Rat {
-  [RequireComponent (typeof (Sprite))]
   public class Base : EnemyObj {
     public float acceleration = 0.2f;
     private eDirection direction;
 
+    protected override void LoadReferences() {
+      Sprite = new Sprite();
+      Sprite.enabled = true;
+      base.LoadReferences();
+    }
+
     protected override void Init() {
+      StartCoroutine("Squeak");
+
       if (Physics.hspeed > 0)
         direction = eDirection.RIGHT;
       else if (Physics.hspeed < 0)
@@ -40,6 +48,14 @@ namespace Rat {
         direction = eDirection.LEFT;
     }
 
+    public void CreateWalkPuffs(int count) {
+      if (Game.Camera.InView(this)) {
+        Sound.Play("Footstep");
+        for (int i = 0; i < count; i++)
+          Game.CreateParticle("Puff", Position);
+      }
+    }
+
     /***********************************
      * STATE CHANGE FUNCTIONS
      **********************************/
@@ -48,11 +64,12 @@ namespace Rat {
       if (Is("Dead"))
         return;
 
+      Sound.Play("Die");
       Sprite.Play("Die");
       Physics.hspeed = -Physics.hspeed / 4;
       Physics.vspeed = 2f;
       Physics.gravity = 0.1f;
-      Destroy(SolidPhysics.Collider);
+      SolidPhysics.Collider.enabled = false;
     }
 
     /***********************************
@@ -60,5 +77,16 @@ namespace Rat {
      **********************************/
 
     public bool IsDead() { return Sprite.IsPlaying("die"); }
+
+    /***********************************
+     * CO-ROUTINES
+     **********************************/
+
+    private IEnumerator Squeak() {
+      while (true) {
+        Sound.Play("Squeak");
+        yield return new WaitForSeconds(Game.Random.Next(1, 3));
+      }
+    }
   }
 }
