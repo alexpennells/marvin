@@ -6,6 +6,7 @@ namespace Balloon {
     public override List<Clip> GetSounds() {
       return new List<Clip>() {
         new Clip("BalloonPop", 1),
+        new Clip("SoulsEscape", 1),
       };
     }
   }

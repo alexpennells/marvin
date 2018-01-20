@@ -3,14 +3,15 @@ using System;
 using System.Collections;
 
 namespace Player {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
+    public Sprite() { enabled = true; }
 
     private bool deathFallComplete = false;
 
     public override void Step() {
       base.Step();
 
-      if (Base.Is("Hurt"))
+      if (Game.disableInput)
         return;
 
       if (Base.Is("Ziplining")) {
@@ -49,11 +50,6 @@ namespace Player {
       else if (Game.RightHeld && !Game.paused)
         FacingRight = true;
 
-      if (Base.Is("Climbing")) {
-        Play("Climb");
-        return;
-      }
-
       if (Base.HasFooting) {
         if (Game.paused) {
           // If the game is paused, just continue the current animation
@@ -68,20 +64,13 @@ namespace Player {
             Play("Idle");
           }
         }
-      } else
+      } else if (!IsPlaying("spin"))
         Play("Jump");
     }
 
     public override void FireAnimationEndHandlers() {
       if (animationEndDeathFall)
         AnimationEndDeathFallHandler();
-    }
-
-    public override void ToggleAdditives() {
-      if (Base.Is("Climbing") && !AdditiveExists("climbing_tail"))
-        CreateAdditive("climbing_tail", "climbing_tail", new Vector2(0, 0), 1);
-      else if (!Base.Is("Climbing") && AdditiveExists("climbing_tail"))
-        DeleteAdditive("climbing_tail");
     }
 
     /***********************************
@@ -108,10 +97,6 @@ namespace Player {
         Animate("jump", 0f, 0.8f);
     }
 
-    public void PlayClimb() {
-      Animate("climb", ClimbSpeed());
-    }
-
     public void PlayWallSlide() {
       if (Base.Physics.vspeed > 3)
         Animate("slide", 0f, 0f);
@@ -130,11 +115,16 @@ namespace Player {
     }
 
     public void PlayDie() {
-      Animate("die_fall", 1f);
+      Game.CreateParticle("Blood", Base.Mask.Center);
+      Animate("die", 1f);
     }
 
-    public void PlayDieLanding() {
-      Animate("die_land", 1f);
+    public void PlaySpin() {
+      Animate("spin", 1.5f);
+    }
+
+    public void PlayRevive() {
+      Animate("revive", 1f);
     }
 
     /***********************************
@@ -154,10 +144,6 @@ namespace Player {
 
     private float RunSpeed() {
       return 2.5f - Math.Abs(Base.Physics.hspeed) / Base.Physics.hspeedMax;
-    }
-
-    private float ClimbSpeed() {
-      return Math.Max(Math.Abs(Base.Physics.vspeed), Math.Abs(Base.Physics.hspeed)) / 4;
     }
   }
 }

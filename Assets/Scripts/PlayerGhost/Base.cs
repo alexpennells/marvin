@@ -3,26 +3,46 @@ using System;
 using System.Collections;
 
 namespace PlayerGhost {
-  [RequireComponent (typeof (Sprite))]
-  [RequireComponent (typeof (Sound))]
-  public class Base : InputObj {
+  public class Base : BaseObj {
     [Tooltip("The amount of speed the player picks up per step")]
     public Vector2 accelerationSpeed = new Vector2(0.1f, 0.05f);
 
-    protected override void LeftHeld (float val) {
-      Physics.hspeed -= accelerationSpeed.x;
+    private bool spinning = true;
+
+    public override void LoadReferences() {
+      Sprite = new Sprite();
+      Sound = new Sound();
+      Input = new Input();
+      Physics = new Physics(Physics);
+      base.LoadReferences();
     }
 
-    protected override void RightHeld (float val) {
-      Physics.hspeed += accelerationSpeed.x;
+    public override void Init() {
+      StartCoroutine("StopSpinning");
+      StartCoroutine("DelayParticles");
+      Game.Create("Collector", Position);
+      base.Init();
     }
 
-    protected override void UpHeld (float val) {
-      Physics.vspeed += accelerationSpeed.y;
+    /***********************************
+     * STATE CHECKERS
+     **********************************/
+
+    public bool IsSpinning() { return spinning; }
+
+    /***********************************
+     * CO-ROUTINES
+     **********************************/
+
+    private IEnumerator DelayParticles() {
+      yield return new WaitForSeconds(0.15f);
+      Game.CreateParticle("PlayerDie", Position);
     }
 
-    protected override void DownHeld (float val) {
-      Physics.vspeed -= accelerationSpeed.y;
+    private IEnumerator StopSpinning() {
+      yield return new WaitForSeconds(1.75f);
+      Physics.hspeedMax = 2f;
+      spinning = false;
     }
   }
 }

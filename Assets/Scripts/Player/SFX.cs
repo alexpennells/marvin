@@ -7,6 +7,7 @@ namespace Player {
       return new List<Clip>() {
         new Clip("Footstep", 6),
         new Clip("CatJump", 5),
+        new Clip("Thump", 1),
       };
     }
   }

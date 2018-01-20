@@ -2,7 +2,12 @@ using UnityEngine;
 using System;
 
 namespace Minion {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
+    public Sprite(SpriteBlock old) {
+      enabled = true;
+      mirrorToStart = old.mirrorToStart;
+    }
+
     public override void Step() {
       if (!Base.Is("Dead")) {
         if (Math.Abs(Base.Physics.hspeed) < 0.5f)

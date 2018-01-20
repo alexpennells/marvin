@@ -2,15 +2,18 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace Player {
-  public class SolidCollider : SolidColliderObj {
+  [System.Serializable]
+  public class SolidCollider : SolidColliderBlock {
+    public SolidCollider() { enabled = true; }
+
     protected override void WallCollision(SolidObj wall) {
       base.WallCollision(wall);
 
       if (wall.IsSticky && !Base.HasFooting) {
-        if (!Base.SolidPhysics.Walljump.Sliding)
+        if (!Base.Physics.Ground.WallJump.Sliding)
           Base.Sound.Play("Land");
 
-        Base.SolidPhysics.Walljump.StartSliding(wall);
+        Base.Physics.Ground.WallJump.StartSliding(wall);
       }
 
       Base.Physics.hspeed = 0;
@@ -19,7 +22,8 @@ namespace Player {
     protected override void FootingCollision(SolidObj footing) {
       base.FootingCollision(footing);
 
-      if (!Base.HasFooting) {
+      if (SceneStarted && !Base.HasFooting) {
+        (Base as Player.Base).CreateWalkPuffs(8);
         Base.Sound.Play("Land");
       }
 

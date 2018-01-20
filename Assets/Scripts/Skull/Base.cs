@@ -3,14 +3,19 @@ using System;
 using System.Collections;
 
 namespace Skull {
-  [RequireComponent (typeof (Sprite))]
-  [RequireComponent (typeof (Sound))]
-  public class Base : EnemyObj {
+  public class Base : BaseObj {
     public float acceleration = 0.2f;
     private eDirection direction;
     private bool invincible = false;
 
-    protected override void Init() {
+    public override void LoadReferences() {
+      Sprite = new Sprite();
+      Sound = new Sound();
+      Physics = new Physics(Physics);
+      base.LoadReferences();
+    }
+
+    public override void Init() {
       if (Physics.hspeed > 0)
         direction = eDirection.RIGHT;
       else if (Physics.hspeed < 0)
@@ -19,9 +24,11 @@ namespace Skull {
         direction = eDirection.LEFT;
       else
         direction = eDirection.RIGHT;
+
+      base.Init();
     }
 
-    protected override void Step() {
+    public override void Step() {
       if (!HasFooting) {
         Physics.SkipNextFrictionUpdate();
 
@@ -31,6 +38,8 @@ namespace Skull {
           Physics.hspeed += acceleration;
         }
       }
+
+      base.Step();
     }
 
     public void ChangeDirection() {
@@ -59,6 +68,7 @@ namespace Skull {
     }
 
     public void StateDie() {
+      Sound.Play("Die");
       Game.CreateParticle("SkullDie", Mask.Center);
       DestroySelf();
     }

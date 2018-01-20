@@ -2,7 +2,9 @@ using UnityEngine;
 using System;
 
 namespace Skull {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
+    public Sprite() { enabled = true; }
+
     public override void Init() {
       Play("Skull");
     }

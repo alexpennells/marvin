@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace PlayerGhost {
-  public class SolidCollider : SolidColliderObj {
+  public class SolidCollider : SolidColliderBlock {
+    public SolidCollider() { enabled = true; }
+
     protected override void WallCollision(SolidObj wall) {
       base.WallCollision(wall);
       Base.Physics.hspeed = 0;

@@ -17,7 +17,7 @@ Shader "SpriteLamp/Standard_NoAmbient"
         _NormalDepth ("Normal Depth", 2D) = "bump" {} 		//Normal information in the colour channels, depth in the alpha channel.
         _SpecGloss ("Specular Gloss", 2D) = "" {}			//Specular colour in the colour channels, and glossiness in the alpha channel.
         _EmissiveColour ("Emissive colour", 2D) = "" {}		//A colour image that is simply added over the final colour. Might eventually have AO packed into its alpha channel.
-       
+
         _SpecExponent ("Specular Exponent", Range (1.0,50.0)) = 10.0		//Multiplied by the alpha channel of the spec map to get the specular exponent.
         _SpecStrength ("Specular Strength", Range (0.0,5.0)) = 1.0		//Multiplier that affects the brightness of specular highlights
         _AmplifyDepth ("Amplify Depth", Range (0,1.0)) = 0.0	//Affects the 'severity' of the depth map - affects shadows (and shading to a lesser extent).
@@ -32,10 +32,10 @@ Shader "SpriteLamp/Standard_NoAmbient"
     SubShader
     {
 		Tags
-		{ 
-			"Queue"="Transparent" 
-			"IgnoreProjector"="True" 
-			"RenderType"="Transparent" 
+		{
+			"Queue"="Geometry"
+			"IgnoreProjector"="True"
+			"RenderType"="Geometry"
 			"PreviewType"="Plane"
 			"CanUseSpriteAtlas"="True"
 		}
@@ -46,16 +46,16 @@ Shader "SpriteLamp/Standard_NoAmbient"
 		Fog { Mode Off }
 		Blend SrcAlpha OneMinusSrcAlpha
 		AlphaTest NotEqual 0.0
-		
+
         Pass
-        {    
+        {
             Tags { "LightMode" = "ForwardBase" }
 
             CGPROGRAM
 
-            #pragma vertex vert  
-            #pragma fragment frag 
-			
+            #pragma vertex vert
+            #pragma fragment frag
+
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
 
@@ -74,8 +74,8 @@ Shader "SpriteLamp/Standard_NoAmbient"
             uniform float _SpecStrength;
             uniform float4x4 unity_WorldToLight; // transformation
 			uniform float _SpotlightHardness;
-         	
-           
+
+
             struct VertexInput
             {
                 float4 vertex : POSITION;
@@ -92,8 +92,8 @@ Shader "SpriteLamp/Standard_NoAmbient"
                 float4 posLight : TEXCOORD2;
             };
 
-            VertexOutput vert(VertexInput input) 
-            {                
+            VertexOutput vert(VertexInput input)
+            {
                 VertexOutput output;
 
                 output.pos = UnityObjectToClipPos(input.vertex);
@@ -109,26 +109,26 @@ Shader "SpriteLamp/Standard_NoAmbient"
             {
                 float4 diffuseColour = tex2D(_MainTex, input.uv);
                 float4 normalDepth = tex2D(_NormalDepth, input.uv);
-                float3 emissiveColour = tex2D(_EmissiveColour, input.uv).rgb;		
+                float3 emissiveColour = tex2D(_EmissiveColour, input.uv).rgb;
 				float4 specGlossValues = tex2D(_SpecGloss, input.uv);
-                
-        
+
+
                 float3 worldNormalDirection = (normalDepth.xyz - 0.5) * 2.0;
-                
+
                 worldNormalDirection = float3(mul(float4(worldNormalDirection, 1.0), unity_WorldToObject).xyz);
-                
-                
+
+
                 //We have to calculate illumination here too, because the first light that gets rendered
                 //gets folded into the ambient pass apparently.
-                //Get the real vector for the normal, 
+                //Get the real vector for the normal,
 		        float3 normalDirection = (normalDepth.xyz - 0.5) * 2.0;
                 normalDirection.z *= -1.0;
                 normalDirection = normalize(normalDirection);
-				
-				
-				
+
+
+
                 float depthColour = normalDepth.a;
-                
+
                 float3 posWorld = input.posWorld.xyz;
 
                 posWorld.z -= depthColour * _AmplifyDepth;	//The fragment's Z position is modified based on the depth map value.
@@ -141,29 +141,29 @@ Shader "SpriteLamp/Standard_NoAmbient"
                 	lightDirection = float3(mul(float4(_WorldSpaceLightPos0.xyz, 1.0), unity_ObjectToWorld).xyz);
 	              	lightDirection = normalize(lightDirection);
                	   	attenuation = 1.0;
-	            } 
+	            }
 	            else
 	            {
 	            	//This code is for point/spot lights. Note that light cookies aren't yet handled for spot lights yet (FIXME)
 	            	float cookieAttenuation = 1.0;
                 	vertexToLightSource = float3(_WorldSpaceLightPos0.xyz) - posWorld;
-	            	
+
 	            	float lightDistance = length(vertexToLightSource);
-	            	
+
 	            	if (1.0 != unity_WorldToLight[3][3]) //If this is a spotlight, calculate cookie attenuation.
 		            {
 		            	//This number, 'distance from centre', is the distance this fragment is from the centre line
 		            	//of the spot light. If it is greater than 1.0, this fragment is outside the light cone and shouldn't be
 		            	//illuminated.
 		            	float distanceFromCentre = length (float2(input.posLight.xy) / input.posLight.w) * 2.0;
-		            	
-		            	
+
+
 		            	//Fairly simplistic implementation of a default spotlight shape. Not total rubbish like the last one was,
 						//and doesn't require a texture lookup, but still probably not perfect.
 						cookieAttenuation = (1.0 - distanceFromCentre) * _SpotlightHardness * _SpotlightHardness;
 						cookieAttenuation = clamp(cookieAttenuation, 0.0, 1.0);
 		            }
-	            	
+
                 	lightDirection = float3(mul(float4(vertexToLightSource, 1.0), unity_ObjectToWorld).xyz);
                 	lightDirection = normalize(lightDirection);
 
@@ -172,18 +172,18 @@ Shader "SpriteLamp/Standard_NoAmbient"
 	                //for some reason.
 	                attenuation = (1.0 / (1.0 + lightDistance * lightDistance * _AttenuationMultiplier)) - 0.02;
 	                attenuation = clamp(attenuation, 0.0, 1.0);
-	                
+
 	                attenuation *= cookieAttenuation;
 	            }
-                                
-                
+
+
                 float aspectRatio = _TextureRes.x / _TextureRes.y;
-                
+
                 //We calculate shadows here. Magic numbers incoming (FIXME).
                 float shadowMult = 1.0;
                 float3 moveVec = lightDirection.xyz * 0.006 * float3(1.0, aspectRatio, -1.0);
                 float thisHeight = depthColour * _AmplifyDepth;
-               
+
                 float3 tapPos = float3(input.uv, thisHeight + 0.1);
                 //This loop traces along the light ray and checks if that ray is inside the depth map at each point.
                 //If it is, darken that pixel a bit.
@@ -197,17 +197,17 @@ Shader "SpriteLamp/Standard_NoAmbient"
 					}
 				}
                 shadowMult = clamp(shadowMult, 0.0, 1.0);
-                
-                
-                
-                
+
+
+
+
 
                 // Compute diffuse part of lighting
                 float normalDotLight = dot(normalDirection, lightDirection);
-                
+
                 //Slightly awkward maths for light wrap.
                 float diffuseLevel = clamp(normalDotLight + _LightWrap, 0.0, _LightWrap + 1.0) / (_LightWrap + 1.0) * attenuation * shadowMult;
-                
+
                 // Compute specular part of lighting
                 float specularLevel;
                 if (normalDotLight < 0.0)
@@ -234,11 +234,11 @@ Shader "SpriteLamp/Standard_NoAmbient"
 				//The easy bits - assemble the final values based on light and map colours and combine.
                 float3 diffuseReflection = diffuseColour.xyz * input.color.xyz * _LightColor0.xyz * diffuseLevel;
                 float3 specularReflection = _LightColor0.xyz * input.color.xyz * specularLevel * specGlossValues.rgb * _SpecStrength;
-                
+
                 float4 finalColour = float4(diffuseReflection + specularReflection, diffuseColour.a);
-                
+
                 return finalColour;
-                
+
 
             }
 
@@ -246,14 +246,14 @@ Shader "SpriteLamp/Standard_NoAmbient"
         }
 
         Pass
-        {    
+        {
             Tags { "LightMode" = "ForwardAdd" }
-            Blend One One // additive blending 
+            Blend One One // additive blending
 
             CGPROGRAM
 
-            #pragma vertex vert  
-            #pragma fragment frag 
+            #pragma vertex vert
+            #pragma fragment frag
 			#pragma target 3.0
 
             #include "UnityCG.cginc"
@@ -270,7 +270,7 @@ Shader "SpriteLamp/Standard_NoAmbient"
             uniform float _LightWrap;
             uniform float _AttenuationMultiplier;
             uniform float _SpecStrength;
-            
+
             uniform float4x4 unity_WorldToLight; // transformation
 			uniform float _SpotlightHardness;
 
@@ -307,17 +307,17 @@ Shader "SpriteLamp/Standard_NoAmbient"
             {
             	//Do texture reads first, because in theory that's a bit quicker...
                 float4 diffuseColour = tex2D(_MainTex, input.uv);
-				float4 normalDepth = tex2D(_NormalDepth, input.uv);				
+				float4 normalDepth = tex2D(_NormalDepth, input.uv);
 				float4 specGlossValues = tex2D(_SpecGloss, input.uv);
-				
-				//Get the real vector for the normal, 
+
+				//Get the real vector for the normal,
 		        float3 normalDirection = (normalDepth.xyz - 0.5) * 2.0;
                 normalDirection.z *= -1.0;
                 normalDirection = normalize(normalDirection);
-				
-				
+
+
                 float depthColour = normalDepth.a;
-                
+
                 float3 posWorld = input.posWorld.xyz;
 
                 posWorld.z -= depthColour * _AmplifyDepth;	//The fragment's Z position is modified based on the depth map value.
@@ -330,29 +330,29 @@ Shader "SpriteLamp/Standard_NoAmbient"
                 	lightDirection = float3(mul(float4(_WorldSpaceLightPos0.xyz, 1.0), unity_ObjectToWorld).xyz);
 	              	lightDirection = normalize(lightDirection);
                	   	attenuation = 1.0;
-	            } 
+	            }
 	            else
 	            {
 	            	//This code is for point/spot lights. Note that light cookies aren't yet handled for spot lights yet (FIXME)
 	            	float cookieAttenuation = 1.0;
                 	vertexToLightSource = float3(_WorldSpaceLightPos0.xyz) - posWorld;
-	            	
+
 	            	float lightDistance = length(vertexToLightSource);
-	            	
+
 	            	if (1.0 != unity_WorldToLight[3][3]) //If this is a spotlight, calculate cookie attenuation.
 		            {
 		            	//This number, 'distance from centre', is the distance this fragment is from the centre line
 		            	//of the spot light. If it is greater than 1.0, this fragment is outside the light cone and shouldn't be
 		            	//illuminated.
 		            	float distanceFromCentre = length (float2(input.posLight.xy) / input.posLight.w) * 2.0;
-		            	
-		            	
+
+
 		            	//Fairly simplistic implementation of a default spotlight shape. Not total rubbish like the last one was,
 						//and doesn't require a texture lookup, but still probably not perfect.
 						cookieAttenuation = (1.0 - distanceFromCentre) * _SpotlightHardness * _SpotlightHardness;
 						cookieAttenuation = clamp(cookieAttenuation, 0.0, 1.0);
 		            }
-	            	
+
                 	lightDirection = float3(mul(float4(vertexToLightSource, 1.0), unity_ObjectToWorld).xyz);
                 	lightDirection = normalize(lightDirection);
 
@@ -361,18 +361,18 @@ Shader "SpriteLamp/Standard_NoAmbient"
 	                //for some reason.
 	                attenuation = (1.0 / (1.0 + lightDistance * lightDistance * _AttenuationMultiplier)) - 0.02;
 	                attenuation = clamp(attenuation, 0.0, 1.0);
-	                
+
 	                attenuation *= cookieAttenuation;
 	            }
-                                
-                
+
+
                 float aspectRatio = _TextureRes.x / _TextureRes.y;
-                
+
                 //We calculate shadows here. Magic numbers incoming (FIXME).
                 float shadowMult = 1.0;
                 float3 moveVec = lightDirection.xyz * 0.006 * float3(1.0, aspectRatio, -1.0);
                 float thisHeight = depthColour * _AmplifyDepth;
-               
+
                 float3 tapPos = float3(input.uv, thisHeight + 0.1);
                 //This loop traces along the light ray and checks if that ray is inside the depth map at each point.
                 //If it is, darken that pixel a bit.
@@ -386,17 +386,17 @@ Shader "SpriteLamp/Standard_NoAmbient"
 					}
 				}
                 shadowMult = clamp(shadowMult, 0.0, 1.0);
-                
-                
-                
-                
+
+
+
+
 
                 // Compute diffuse part of lighting
                 float normalDotLight = dot(normalDirection, lightDirection);
-                
+
                 //Slightly awkward maths for light wrap.
                 float diffuseLevel = clamp(normalDotLight + _LightWrap, 0.0, _LightWrap + 1.0) / (_LightWrap + 1.0) * attenuation * shadowMult;
-                
+
                 // Compute specular part of lighting
                 float specularLevel;
                 if (normalDotLight < 0.0)
@@ -423,16 +423,16 @@ Shader "SpriteLamp/Standard_NoAmbient"
 				//The easy bits - assemble the final values based on light and map colours and combine.
                 float3 diffuseReflection = diffuseColour.xyz * input.color * _LightColor0.xyz * diffuseLevel;
                 float3 specularReflection = _LightColor0.xyz * input.color * specularLevel * specGlossValues.rgb * _SpecStrength;
-                
+
                 float4 finalColour = float4((diffuseReflection + specularReflection) * diffuseColour.a, 0.0);
                 return finalColour;
-                
+
              }
 
              ENDCG
         }
     }
-    // The definition of a fallback shader should be commented out 
+    // The definition of a fallback shader should be commented out
     // during development:
     Fallback "Transparent/Diffuse"
 }

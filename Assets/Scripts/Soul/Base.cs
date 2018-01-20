@@ -1,30 +1,51 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 namespace Soul {
   public class Base : BaseObj {
-    private bool moveUp = false;
+    private bool collectable = false;
 
-    protected override void Init () {
-      Physics.vspeed = (float)Game.Random.Next(0, 101) / 400f - 0.125f;
+    public override void LoadReferences() {
+      Sprite = new Sprite();
+      Sound = new Sound();
+      Physics = new Physics(Physics);
+      base.LoadReferences();
     }
 
-    protected override void Step () {
-      if (moveUp)
-        Physics.vspeed += 0.005f;
-      else
-        Physics.vspeed -= 0.005f;
+    public override void Init () {
+      Physics.hspeed = Game.Random.Next(0, 400) / 100f - 2f;
+      Physics.vspeed = Game.Random.Next(0, 100) / 100f - 0.5f;
+      StartCoroutine("Collectable");
+      base.Init();
+    }
 
-      if (Physics.vspeed > 0.125f)
-        moveUp = false;
-      else if (Physics.vspeed < -0.125f)
-        moveUp = true;
+    public override void Step () {
+      Physics.vspeed += 0.005f;
+      if (Math.Abs(Physics.hspeed) < 0.1f)
+        Physics.SkipNextFrictionUpdate();
+      base.Step();
     }
 
     public override void DestroySelf() {
       Game.CreateParticle("CollectSoul", Position);
       Sound.Play("Collect");
       base.DestroySelf();
+    }
+
+    /***********************************
+     * STATE CHECKERS
+     **********************************/
+
+    public bool IsCollectable() { return collectable; }
+
+    /***********************************
+     * CO-ROUTINES
+     **********************************/
+
+    private IEnumerator Collectable() {
+      yield return new WaitForSeconds(0.5f);
+      collectable = true;
     }
   }
 }

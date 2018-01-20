@@ -2,7 +2,9 @@ using UnityEngine;
 using System;
 
 namespace Rat {
-  public class Sprite : SpriteObj {
+  public class Sprite : SpriteBlock {
+    public Sprite() { enabled = true; }
+
     public override void Init() {
       Play("Walk");
     }

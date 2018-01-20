@@ -14,7 +14,7 @@ public class Circle_Ladder : Ladder_Base
 
   private float centerX, centerY;
 
-  protected override void Init() {
+  public override void Init() {
     centerX = x;
     centerY = y;
   }

@@ -6,11 +6,12 @@ namespace WillyFist {
   public class Base : BaseObj {
     private bool moveUp = false;
 
-    protected override void Init() {
+    public override void Init() {
       Sprite.StartBlur(0.025f, 1f, 0, 0.16f);
+      base.Init();
     }
 
-    protected override void Step() {
+    public override void Step() {
       if (moveUp)
         Physics.vspeed += 0.1f;
       else
@@ -26,9 +27,10 @@ namespace WillyFist {
       if (Sprite.FacingLeft)
         angle *= -1;
       Sprite.FaceAngle(angle);
+      base.Step();
     }
 
-    protected override void OffScreenStep() {
+    public override void OffScreenStep() {
       DestroySelf();
     }
 
