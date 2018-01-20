@@ -1,7 +1,8 @@
 using System;
 
 namespace Rat {
-  public class Sound : SoundObj {
+  public class Sound : SoundBlock {
+    public Sound() { enabled = true; }
     public override Type Lib { get { return typeof(Rat.SFX); } }
 
     public void PlayFootstep() {

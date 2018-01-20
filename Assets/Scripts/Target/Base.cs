@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 
 namespace Target {
-  public class Base : EnemyObj {
+  public class Base : BaseObj {
     // Whether this is a basic target or will attack the player.
     public bool posessed = true;
 
@@ -13,21 +13,22 @@ namespace Target {
     private bool appearDelay = false;
     private bool moveUp = false;
 
-    protected override void LoadReferences() {
+    public override void LoadReferences() {
       player = GameObject.Find("Player").GetComponent<Player.Base>();
       tornado = transform.Find("Tornado").GetComponent<ParticleSystem>();
 
       Sprite = new Sprite();
-      Sprite.enabled = true;
+      Sound = new Sound();
       base.LoadReferences();
     }
 
-    protected override void Init() {
+    public override void Init() {
       Physics.vspeed = (float)Game.Random.Next(0, 101) / 400f - 0.125f;
       State("Idle");
+      base.Init();
     }
 
-    protected override void Step() {
+    public override void Step() {
       if (moveUp)
         Physics.vspeed += 0.005f;
       else
@@ -48,6 +49,8 @@ namespace Target {
           State("Shrink");
         }
       }
+
+      base.Step();
     }
 
     /***********************************

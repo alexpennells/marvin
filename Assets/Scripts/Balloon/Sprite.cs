@@ -3,6 +3,8 @@ using System;
 
 namespace Balloon {
   public class Sprite : SpriteBlock {
+    public Sprite() { enabled = true; }
+
     public override void Init() {
       SetSpeed(0.5f);
     }

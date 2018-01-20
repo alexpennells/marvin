@@ -3,17 +3,18 @@ using System;
 using System.Collections;
 
 namespace Rat {
-  public class Base : EnemyObj {
+  public class Base : BaseObj {
     public float acceleration = 0.2f;
     private eDirection direction;
 
-    protected override void LoadReferences() {
+    public override void LoadReferences() {
       Sprite = new Sprite();
-      Sprite.enabled = true;
+      Sound = new Sound();
+      Physics = new Physics(Physics);
       base.LoadReferences();
     }
 
-    protected override void Init() {
+    public override void Init() {
       StartCoroutine("Squeak");
 
       if (Physics.hspeed > 0)
@@ -24,9 +25,11 @@ namespace Rat {
         direction = eDirection.LEFT;
       else
         direction = eDirection.RIGHT;
+
+      base.Init();
     }
 
-    protected override void Step() {
+    public override void Step() {
       if (!Is("Dead")) {
         if (direction == eDirection.LEFT) {
           Physics.hspeed -= acceleration;
@@ -34,11 +37,15 @@ namespace Rat {
           Physics.hspeed += acceleration;
         }
       }
+
+      base.Step();
     }
 
-    protected override void OffScreenStep() {
+    public override void OffScreenStep() {
       if (Is("Dead"))
         DestroySelf();
+
+      base.OffScreenStep();
     }
 
     public void ChangeDirection() {
@@ -69,7 +76,7 @@ namespace Rat {
       Physics.hspeed = -Physics.hspeed / 4;
       Physics.vspeed = 2f;
       Physics.gravity = 0.1f;
-      SolidPhysics.Collider.enabled = false;
+      Physics.Ground.Collider.enabled = false;
     }
 
     /***********************************

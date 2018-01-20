@@ -6,9 +6,6 @@ namespace Player {
   public class Collision : CollisionHandler {
     protected override void HandleCollision(eObjectType otherType, BaseObj other) {
       switch (otherType) {
-        case eObjectType.LADDER:
-          LadderCollision(other as Ladder_Base);
-          break;
         case eObjectType.RAT:
           RatCollision(other as Rat.Base);
           break;
@@ -36,22 +33,9 @@ namespace Player {
       }
     }
 
-    protected override void HandleExitCollision(eObjectType otherType, BaseObj other) {
-      switch (otherType) {
-        case eObjectType.LADDER:
-          LadderExit(other as Ladder_Base);
-          break;
-      }
-    }
-
     /***********************************
      * HANDLERS
      **********************************/
-
-    private void LadderCollision(Ladder_Base other) {
-      if (!Base.Is("Climbing") && (Game.UpHeld || Game.DownHeld))
-        Base.State("Climb", other);
-    }
 
     private void MinionCollision(Minion.Base other) {
       if (other.Is("Dead"))
@@ -115,11 +99,6 @@ namespace Player {
     private void DoorCollision(Door.Base other) {
       if (!Game.disableInput && Game.UpHeld && Base.HasFooting)
         Base.State("Exit", other);
-    }
-
-    private void LadderExit(Ladder_Base other) {
-      if (Base.Is("Climbing") && Base.Physics.Climb.Ladder == other)
-        Base.Physics.Climb.Stop();
     }
   }
 }

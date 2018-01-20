@@ -2,10 +2,11 @@ using UnityEngine;
 using System;
 
 namespace Target {
-  public class Sound : SoundObj {
-    private float lastPlayedAppear = 0;
-
+  public class Sound : SoundBlock {
+    public Sound() { enabled = true; }
     public override Type Lib { get { return typeof(Target.SFX); } }
+
+    private float lastPlayedAppear = 0;
 
     public void PlayBreak() {
       Game.SFX.Play("TargetBreak", 1f);

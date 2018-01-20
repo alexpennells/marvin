@@ -6,14 +6,14 @@ namespace PlayerHead {
   public class Base : BaseObj {
     private Player.Base player;
 
-    protected override void LoadReferences() {
+    public override void LoadReferences() {
       Sprite = new Sprite();
-      Sprite.enabled = true;
       base.LoadReferences();
     }
 
-    protected override void Init () {
+    public override void Init () {
       player = GameObject.Find("Player").GetComponent<Player.Base>() as Player.Base;
+      base.Init();
     }
 
     /***********************************

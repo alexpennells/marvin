@@ -5,9 +5,8 @@ using System.Collections.Generic;
 
 namespace Door {
   public class Base : Exit {
-    protected override void LoadReferences() {
+    public override void LoadReferences() {
       Sprite = new Sprite();
-      Sprite.enabled = true;
       base.LoadReferences();
     }
 

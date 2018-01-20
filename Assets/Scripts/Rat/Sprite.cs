@@ -3,6 +3,8 @@ using System;
 
 namespace Rat {
   public class Sprite : SpriteBlock {
+    public Sprite() { enabled = true; }
+
     public override void Init() {
       Play("Walk");
     }

@@ -4,6 +4,7 @@ using System.Collections;
 
 namespace Player {
   public class Sprite : SpriteBlock {
+    public Sprite() { enabled = true; }
 
     private bool deathFallComplete = false;
 
@@ -49,11 +50,6 @@ namespace Player {
       else if (Game.RightHeld && !Game.paused)
         FacingRight = true;
 
-      if (Base.Is("Climbing")) {
-        Play("Climb");
-        return;
-      }
-
       if (Base.HasFooting) {
         if (Game.paused) {
           // If the game is paused, just continue the current animation
@@ -75,13 +71,6 @@ namespace Player {
     public override void FireAnimationEndHandlers() {
       if (animationEndDeathFall)
         AnimationEndDeathFallHandler();
-    }
-
-    public override void ToggleAdditives() {
-      if (Base.Is("Climbing") && !AdditiveExists("climbing_tail"))
-        CreateAdditive("climbing_tail", "climbing_tail", new Vector2(0, 0), 1);
-      else if (!Base.Is("Climbing") && AdditiveExists("climbing_tail"))
-        DeleteAdditive("climbing_tail");
     }
 
     /***********************************
@@ -106,10 +95,6 @@ namespace Player {
         Animate("jump", 0f, 0.4f);
       else
         Animate("jump", 0f, 0.8f);
-    }
-
-    public void PlayClimb() {
-      Animate("climb", ClimbSpeed());
     }
 
     public void PlayWallSlide() {
@@ -159,10 +144,6 @@ namespace Player {
 
     private float RunSpeed() {
       return 2.5f - Math.Abs(Base.Physics.hspeed) / Base.Physics.hspeedMax;
-    }
-
-    private float ClimbSpeed() {
-      return Math.Max(Math.Abs(Base.Physics.vspeed), Math.Abs(Base.Physics.hspeed)) / 4;
     }
   }
 }

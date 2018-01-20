@@ -4,14 +4,16 @@ using System.Collections.Generic;
 namespace Player {
   [System.Serializable]
   public class SolidCollider : SolidColliderBlock {
+    public SolidCollider() { enabled = true; }
+
     protected override void WallCollision(SolidObj wall) {
       base.WallCollision(wall);
 
       if (wall.IsSticky && !Base.HasFooting) {
-        if (!Base.SolidPhysics.WallJump.Sliding)
+        if (!Base.Physics.Ground.WallJump.Sliding)
           Base.Sound.Play("Land");
 
-        Base.SolidPhysics.WallJump.StartSliding(wall);
+        Base.Physics.Ground.WallJump.StartSliding(wall);
       }
 
       Base.Physics.hspeed = 0;

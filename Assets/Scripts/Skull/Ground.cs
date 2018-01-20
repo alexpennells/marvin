@@ -1,10 +1,12 @@
+using UnityEngine;
 using System;
 
-namespace Minion {
-  public class SolidPhysics : SolidPhysicsObj {
+namespace Skull {
+  public class Ground : GroundBlock {
+    public Ground() { enabled = true; }
+
     public override void LoadReferences() {
       Collider = new SolidCollider();
-      Collider.enabled = true;
       base.LoadReferences();
     }
   }

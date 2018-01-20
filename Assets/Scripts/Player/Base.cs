@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 
 namespace Player {
-  public class Base : InputObj {
+  public class Base : BaseObj {
 
     [Tooltip("Vertical speed of the player when jumping")]
     public float jumpSpeed = 6;
@@ -27,13 +27,15 @@ namespace Player {
     private bool dead = false;
     private BaseObj hand = null;
 
-    protected override void LoadReferences() {
+    public override void LoadReferences() {
       Sprite = new Sprite();
-      Sprite.enabled = true;
+      Sound = new Sound();
+      Physics = new Physics(Physics);
+      Input = new Input();
       base.LoadReferences();
     }
 
-    protected override void Step () {
+    public override void Step () {
       // Destroy old hands that are no longer being used.
       if (!Is("Dead") && !HasFooting && this.hand != null) {
         this.hand.DestroySelf();
@@ -84,116 +86,8 @@ namespace Player {
     }
 
     /***********************************
-     * INPUT HANDLERS
-     **********************************/
-
-    protected override void UpHeld(float val) {
-      if (Is("Climbing"))
-        Physics.vspeed += Physics.Climb.acceleration;
-    }
-
-    protected override void DownHeld(float val) {
-      if (Is("Climbing"))
-        Physics.vspeed -= Physics.Climb.acceleration;
-    }
-
-    protected override void LeftHeld (float val) {
-      if (Is("Dead") || Is("Ziplining"))
-        return;
-
-      if (Is("Climbing")) {
-        Physics.hspeed -= Physics.Climb.acceleration;
-        return;
-      }
-
-      if (SolidPhysics.WallJump.IsJumping())
-        return;
-
-      // Don't increase speed if walk speed is maxed out.
-      if (!Is("Running") && Physics.hspeed <= -maxWalkingHspeed)
-        return;
-
-      Physics.hspeed -= TrueAccelerationSpeed;
-    }
-
-    protected override void RightHeld (float val) {
-      if (Is("Dead") || Is("Ziplining"))
-        return;
-
-      if (Is("Climbing")) {
-        Physics.hspeed += Physics.Climb.acceleration;
-        return;
-      }
-
-      if (SolidPhysics.WallJump.IsJumping())
-        return;
-
-      // Don't increase speed if walk speed is maxed out.
-      if (!Is("Running") && Physics.hspeed >= maxWalkingHspeed)
-        return;
-
-      Physics.hspeed += TrueAccelerationSpeed;
-    }
-
-    protected override void UnoPressed () {
-      RestartCoroutine("JumpPress");
-
-      if (Is("Dead"))
-        return;
-
-      if (Is("Ziplining")) {
-        Physics.Rail.StopGrinding();
-        Physics.vspeed = this.jumpSpeed;
-      } else if (Is("WallSliding")) {
-        Sound.Play("Jump");
-        SolidPhysics.WallJump.ActuallyWallJump();
-      } else if (HasFooting || Is("Climbing")) {
-        Physics.vspeed = this.jumpSpeed;
-        Sound.Play("Jump");
-        SolidPhysics.Collider.ClearFooting();
-        Physics.Climb.Stop();
-      }
-    }
-
-    protected override void UnoReleased () {
-      if (Is("Dead"))
-        return;
-
-      if (!SolidPhysics.WallJump.IsJumping() && Physics.vspeed > 2)
-        Physics.vspeed = 2;
-    }
-
-    protected override void DosPressed () {
-    }
-
-    protected override void DosHeld () {
-    }
-
-    protected override void DosReleased () {
-    }
-
-    protected override void TresPressed () {
-    }
-
-    protected override void CuatroPressed () {
-    }
-
-    protected override void LeftTriggerHeld(float val) {
-    }
-
-    protected override void RightTriggerHeld(float val) {
-
-    }
-
-    /***********************************
      * STATE CHANGE FUNCTIONS
      **********************************/
-
-    public void StateClimb(Ladder_Base other) {
-      Sprite.Play("Climb");
-      Sprite.StopBlur();
-      Physics.Climb.Begin(other);
-    }
 
     public void StateHurt(bool moveLeft) {
       if (Is("Invincible") || Is("Dead"))
@@ -238,8 +132,7 @@ namespace Player {
      **********************************/
 
     public bool IsRunning() { return Game.RightTriggerHeld; }
-    public bool IsClimbing() { return Physics.Climbing; }
-    public bool IsWallSliding() { return SolidPhysics.WallJump.Sliding; }
+    public bool IsWallSliding() { return Physics.Ground.WallJump.Sliding; }
     public bool IsInvincible() { return invincible; }
     public bool IsZiplining() { return Physics.Grinding; }
     public bool IsDead() { return dead; }

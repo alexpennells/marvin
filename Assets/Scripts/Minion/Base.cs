@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 namespace Minion {
-  public class Base : EnemyObj {
+  public class Base : BaseObj {
     public float acceleration = 0.2f;
 
     public float relativeMinPosition = 1f;
@@ -13,13 +13,14 @@ namespace Minion {
     private eDirection direction;
     private bool dead = false;
 
-    protected override void LoadReferences() {
-      Sprite = new Sprite();
-      Sprite.enabled = true;
+    public override void LoadReferences() {
+      Sprite = new Sprite(Sprite);
+      Sound = new Sound();
+      Physics = new Physics(Physics);
       base.LoadReferences();
     }
 
-    protected override void Init() {
+    public override void Init() {
       if (Physics.hspeed > 0)
         direction = eDirection.RIGHT;
       else if (Physics.hspeed < 0)
@@ -28,9 +29,11 @@ namespace Minion {
         direction = eDirection.LEFT;
       else
         direction = eDirection.RIGHT;
+
+      base.Init();
     }
 
-    protected override void Step() {
+    public override void Step() {
       if (!Is("Dead")) {
         if (direction == eDirection.LEFT && x < MinPosition)
           direction = eDirection.RIGHT;
@@ -43,6 +46,8 @@ namespace Minion {
           Physics.hspeed += acceleration;
         }
       }
+
+      base.Step();
     }
 
     public void ChangeDirection() {

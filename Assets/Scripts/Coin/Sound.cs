@@ -1,7 +1,8 @@
 using System;
 
 namespace Coin {
-  public class Sound : SoundObj {
+  public class Sound : SoundBlock {
+    public Sound() { enabled = true; }
     public override Type Lib { get { return typeof(Coin.SFX); } }
 
     public void PlayCollect() {

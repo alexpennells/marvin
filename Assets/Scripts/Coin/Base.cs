@@ -5,11 +5,17 @@ namespace Coin {
   public class Base : BaseObj {
     private bool moveUp = false;
 
-    protected override void Init () {
-      Physics.vspeed = (float)Game.Random.Next(0, 101) / 400f - 0.125f;
+    public override void LoadReferences() {
+      Sound = new Sound();
+      base.LoadReferences();
     }
 
-    protected override void Step () {
+    public override void Init () {
+      Physics.vspeed = (float)Game.Random.Next(0, 101) / 400f - 0.125f;
+      base.Init();
+    }
+
+    public override void Step () {
       if (moveUp)
         Physics.vspeed += 0.005f;
       else
@@ -19,6 +25,7 @@ namespace Coin {
         moveUp = false;
       else if (Physics.vspeed < -0.125f)
         moveUp = true;
+      base.Step();
     }
 
     public override void DestroySelf() {

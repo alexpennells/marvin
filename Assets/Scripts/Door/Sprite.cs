@@ -3,6 +3,8 @@ using System;
 
 namespace Door {
   public class Sprite : SpriteBlock {
+    public Sprite() { enabled = true; }
+
     public void PlayIdle() {
       Animate("idle", 1f);
     }

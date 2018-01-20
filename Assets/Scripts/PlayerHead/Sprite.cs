@@ -3,6 +3,7 @@ using System;
 
 namespace PlayerHead {
   public class Sprite : SpriteBlock {
+    public Sprite() { enabled = true; }
     private float angle = 0f;
 
     public override void Step() {

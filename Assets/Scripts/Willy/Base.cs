@@ -2,21 +2,29 @@ using UnityEngine;
 using System;
 
 namespace Willy {
-  public class Base : InputObj {
+  public class Base : BaseObj {
     private BaseObj follow = null;
     private Player.Base player;
 
     private bool grow = false;
     public float maxDist = 0.1f;
 
-    protected override void Init() {
+    public override void LoadReferences() {
+      Sprite = new Sprite();
+      Input = new Input();
+      base.LoadReferences();
+    }
+
+    public override void Init() {
       this.player = GameObject.Find("Player").GetComponent<Player.Base>();
       this.follow = this.player;
       JumpToDesiredPosition();
       Sprite.Play("Idle");
+
+      base.Init();
     }
 
-    protected override void Step () {
+    public override void Step () {
       base.Step();
 
       if (!Is("Punching")) {
@@ -25,10 +33,6 @@ namespace Willy {
       }
 
       AdjustScale();
-    }
-
-    protected override void DosPressed () {
-      State("Punch");
     }
 
     public void CreateFist() {

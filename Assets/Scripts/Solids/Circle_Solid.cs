@@ -14,9 +14,10 @@ public class Circle_Solid : MovingSolidObj
 
   private float centerX, centerY;
 
-  protected override void Init() {
+  public override void Init() {
     centerX = x;
     centerY = y;
+    base.Init();
   }
 
   protected override void Move() {

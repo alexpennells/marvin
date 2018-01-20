@@ -8,11 +8,10 @@ namespace SpeechBubble {
 
     private Teleprompter teleprompter;
 
-    protected override void LoadReferences() {
+    public override void LoadReferences() {
       this.teleprompter = GameObject.Find("Teleprompter").GetComponent<Teleprompter>();
 
       Sprite = new Sprite();
-      Sprite.enabled = true;
       base.LoadReferences();
     }
 

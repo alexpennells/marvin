@@ -7,10 +7,11 @@ namespace Hand {
   public class Base : MovingSolidObj {
     private bool moveUp = false;
 
-    protected override void Init () {
+    public override void Init () {
       Physics.vspeed = (float)Game.Random.Next(0, 101) / 400f - 0.125f;
       StartCoroutine("Grow");
       transform.localScale = new Vector3(0, 1, 1);
+      base.Init();
     }
 
     protected override void Move() {

@@ -8,13 +8,12 @@ namespace Collector {
     private PlayerHead.Base head;
     private bool flyAway = false;
 
-    protected override void LoadReferences() {
+    public override void LoadReferences() {
       Sprite = new Sprite();
-      Sprite.enabled = true;
       base.LoadReferences();
     }
 
-    protected override void Init() {
+    public override void Init() {
       player = GameObject.Find("Player").GetComponent<Player.Base>() as Player.Base;
 
       transform.localScale = Vector3.zero;
@@ -23,9 +22,10 @@ namespace Collector {
 
       StartCoroutine("Grow");
       Game.CreateParticle("CollectorSmoke", Position);
+      base.Init();
     }
 
-    protected override void Step() {
+    public override void Step() {
       if (flyAway) {
         if (x > Game.Scene.ClearPathMax())
           Sprite.FacingLeft = true;
@@ -42,6 +42,8 @@ namespace Collector {
         else
           Physics.vspeed -= 0.025f;
       }
+
+      base.Step();
     }
 
     public void Decapitate() {
