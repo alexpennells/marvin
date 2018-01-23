@@ -3,7 +3,10 @@ using System;
 
 namespace Target {
   public class Sprite : SpriteBlock {
-    public Sprite() { enabled = true; }
+    public Sprite(SpriteBlock old) {
+      enabled = true;
+      mirrorToStart = old.mirrorToStart;
+    }
 
     public void PlayIdle() {
       Animate("idle", 1f);

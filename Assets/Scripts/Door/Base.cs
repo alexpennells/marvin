@@ -11,7 +11,7 @@ namespace Door {
     }
 
     public override void StateTransitionStart() {
-      Game.ChangeScene(sceneName, entranceID, transition);
+      Game.ChangeScene(sceneName, exitID, transition);
       Sprite.Play("Open");
     }
 

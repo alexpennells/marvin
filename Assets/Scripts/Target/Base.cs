@@ -17,7 +17,7 @@ namespace Target {
       player = GameObject.Find("Player").GetComponent<Player.Base>();
       tornado = transform.Find("Tornado").GetComponent<ParticleSystem>();
 
-      Sprite = new Sprite();
+      Sprite = new Sprite(Sprite);
       Sound = new Sound();
       base.LoadReferences();
     }
