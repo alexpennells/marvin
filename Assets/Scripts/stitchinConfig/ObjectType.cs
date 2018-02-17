@@ -31,4 +31,5 @@ public enum eObjectType
   COLLECTOR,
   COIN,
   DOOR,
+  AMMO,
 };

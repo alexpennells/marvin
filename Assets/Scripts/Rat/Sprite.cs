@@ -32,7 +32,7 @@ namespace Rat {
     }
 
     public void PlayWalk() {
-      Animate("walk", 0.75f);
+      Animate("walk", 0.6f);
     }
 
     public void PlayDie() {

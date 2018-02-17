@@ -23,31 +23,28 @@ namespace PlayerGhost {
         else if (Base.Physics.hspeed < 0)
           FacingRight = true;
       }
-      else if (Base.Physics.hspeed > 0.5f) {
-        Play(Game.RightHeld ? "Forward" : "Backward");
-        FacingRight = true;
-      } else if (Base.Physics.hspeed < -0.5f) {
-        Play(Game.LeftHeld ? "Forward" : "Backward");
-        FacingLeft = true;
-      }
+      else if (Base.Physics.hspeed > 0.5f && FacingRight)
+        Play("Forward");
+      else if (Base.Physics.hspeed < -0.5f && FacingLeft)
+        Play("Forward");
       else
-        Play("Idle");
+        Play("Reverse");
     }
 
     public void PlaySpin() {
-      Animate("ghost_spin", 1.5f);
+      Animate("spin", 1.5f);
     }
 
     public void PlayIdle() {
-      Animate("ghost_idle", 0.5f);
+      Animate("idle", 0.5f);
     }
 
     public void PlayForward() {
-      Animate("ghost_forward", 0.75f);
+      Animate("forward", 0.75f);
     }
 
-    public void PlayBackward() {
-      Animate("ghost_backward", 0.75f);
+    public void PlayReverse() {
+      Animate("reverse", 0.75f);
     }
   }
 }

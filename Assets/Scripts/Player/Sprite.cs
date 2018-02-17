@@ -6,13 +6,17 @@ namespace Player {
   public class Sprite : SpriteBlock {
     public Sprite() { enabled = true; }
 
-    private bool deathFallComplete = false;
-
     public override void Step() {
       base.Step();
+      UpdateScale();
 
       if (Game.disableInput)
         return;
+
+      if (Base.Is("Pounding")) {
+        Play("Pound");
+        return;
+      }
 
       if (Base.Is("Ziplining")) {
         Play("Zipline");
@@ -22,7 +26,7 @@ namespace Player {
       }
 
       if (Base.Is("WallSliding")) {
-        Play("WallSlide");
+        Play("Slide");
         FaceAngle(0);
         return;
       }
@@ -39,11 +43,8 @@ namespace Player {
         FaceAngle(angle);
       }
 
-      if (Base.Is("Dead")) {
-        if (Base.HasFooting && deathFallComplete)
-          Play("DieLanding");
+      if (Base.Is("Dead") || Base.Is("Throwing"))
         return;
-      }
 
       if (Game.LeftHeld && !Game.paused)
         FacingLeft = true;
@@ -58,19 +59,28 @@ namespace Player {
           else if (IsPlaying("idle"))
             Play("Idle");
         } else {
-          if (Game.LeftHeld || Game.RightHeld) {
+          if (Base.Is("Ducking"))
+            Play("Duck");
+          else if (Game.LeftHeld || Game.RightHeld)
             Play("Walk");
-          } else {
+          else
             Play("Idle");
-          }
         }
-      } else if (!IsPlaying("spin"))
+      } else if (!IsPlaying("spin", "spin_headless"))
         Play("Jump");
     }
 
-    public override void FireAnimationEndHandlers() {
-      if (animationEndDeathFall)
-        AnimationEndDeathFallHandler();
+    private void UpdateScale() {
+      float desired = 1;
+      if (Base.Is("Ducking"))
+        desired = 0.8f;
+      else if (Base.Physics.vspeed > 0)
+        desired = 1 + Base.Physics.vspeed / 8;
+
+      if (desired < scaleY)
+        scaleY = Math.Max(desired, scaleY - 0.05f);
+      else if (desired > scaleY)
+        scaleY = Math.Min(desired, scaleY + 0.05f);
     }
 
     /***********************************
@@ -78,64 +88,64 @@ namespace Player {
      **********************************/
 
     public void PlayIdle() {
-      Animate("idle", 0.5f);
+      Animate(Base.Is("Headless") ? "idle_headless" : "idle", 0.5f);
+    }
+
+    public void PlayDuck() {
+      Animate(Base.Is("Headless") ? "duck_headless" : "duck", 0.5f);
     }
 
     public void PlayWalk() {
       if (Base.Is("Running"))
-        Animate("run", RunSpeed());
+        Animate(Base.Is("Headless") ? "run_headless" : "run", RunSpeed());
       else
-        Animate("walk", 0.75f);
+        Animate(Base.Is("Headless") ? "walk_headless" : "walk", 0.75f);
     }
 
     public void PlayJump() {
+      string n = Base.Is("Headless") ? "jump_headless" : "jump";
+
       if (Base.Physics.vspeed > 3)
-        Animate("jump", 0f, 0f);
+        Animate(n, 0f, 0f);
       else if (Base.Physics.vspeed > 0f)
-        Animate("jump", 0f, 0.4f);
+        Animate(n, 0f, 0.4f);
       else
-        Animate("jump", 0f, 0.8f);
+        Animate(n, 0f, 0.8f);
     }
 
-    public void PlayWallSlide() {
+    public void PlaySlide() {
+      string n = Base.Is("Headless") ? "slide_headless" : "slide";
+
       if (Base.Physics.vspeed > 3)
-        Animate("slide", 0f, 0f);
+        Animate(n, 0f, 0f);
       else if (Base.Physics.vspeed > 0f)
-        Animate("slide", 0f, 0.4f);
+        Animate(n, 0f, 0.4f);
       else
-        Animate("slide", 0f, 0.8f);
+        Animate(n, 0f, 0.8f);
     }
 
     public void PlayZipline() {
-      Animate("zipline", 1f);
-    }
-
-    public void PlayHurt() {
-      Animate("hurt", 0f);
-    }
-
-    public void PlayDie() {
-      Game.CreateParticle("Blood", Base.Mask.Center);
-      Animate("die", 1f);
+      Animate(Base.Is("Headless") ? "zipline_headless" : "zipline", 1f);
     }
 
     public void PlaySpin() {
-      Animate("spin", 1.5f);
+      Animate(Base.Is("Headless") ? "spin_headless" : "spin", 1.5f);
+    }
+
+    public void PlayThrow() {
+      Animate(Base.Is("Headless") ? "throw_headless" : "throw", 0f);
+    }
+
+    public void PlayFall() {
+      Animate("fall_headless", 0.75f);
     }
 
     public void PlayRevive() {
-      Animate("revive", 1f);
+      Animate("revive_headless", 0.25f);
     }
 
-    /***********************************
-     * ANIMATION END DEFINITIONS
-     **********************************/
-
-    private bool animationEndDeathFall = false;
-    public bool AnimationEndDeathFall { set { animationEndDeathFall = true; } }
-    private void AnimationEndDeathFallHandler() {
-      animationEndDeathFall = false;
-      deathFallComplete = true;
+    public void PlayPound() {
+      Animate(Base.Is("Headless") ? "pound_headless" : "pound", 0f);
     }
 
     /***********************************

@@ -22,7 +22,11 @@ namespace Player {
     protected override void FootingCollision(SolidObj footing) {
       base.FootingCollision(footing);
 
-      if (SceneStarted && !Base.HasFooting) {
+      if (Base.Is("Pounding") && Base.Physics.vspeed != 0) {
+        Base.StartCoroutine("GroundPound");
+        if (footing.transform.parent.gameObject.name == "DestroyableGrave")
+          footing.State("Damage");
+      } else if (SceneStarted && !Base.HasFooting) {
         (Base as Player.Base).CreateWalkPuffs(8);
         Base.Sound.Play("Land");
       }

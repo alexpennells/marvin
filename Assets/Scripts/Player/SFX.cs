@@ -8,6 +8,7 @@ namespace Player {
         new Clip("Footstep", 6),
         new Clip("CatJump", 5),
         new Clip("Thump", 1),
+        new Clip("Pound", 1),
       };
     }
   }

@@ -19,5 +19,12 @@ namespace Player {
       Ground = new Ground(Ground);
       base.LoadReferences();
     }
+
+    public override void Step() {
+      if (Base.Is("Pounding"))
+        SkipNextGravityUpdate();
+
+      base.Step();
+    }
   }
 }

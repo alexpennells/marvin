@@ -58,6 +58,12 @@ namespace Skull {
       Physics.vspeed = 2;
     }
 
+    public void CreateAmmoSkull() {
+      BaseObj ammo = Game.Create("Ammo/Skull", Position);
+      ammo.Sprite.FacingLeft = Sprite.FacingLeft;
+      ammo.Physics.hspeed = Sprite.FacingLeft ? -2 : 2;
+    }
+
     /***********************************
      * STATE CHANGE FUNCTIONS
      **********************************/

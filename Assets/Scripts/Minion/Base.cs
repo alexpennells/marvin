@@ -76,7 +76,7 @@ namespace Minion {
       Sprite.Play("Fall");
       Sound.Play("Laugh");
 
-      Skull.Base skull = Game.Create("Skull", Mask.Center) as Skull.Base;
+      BaseObj skull = Game.Create("Skull", Mask.Center);
       skull.Physics.hspeed = Sprite.FacingLeft ? -1 : 1;
       skull.Physics.vspeed = 1;
       skull.State("Invincible");

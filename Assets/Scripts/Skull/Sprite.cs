@@ -10,6 +10,10 @@ namespace Skull {
     }
 
     public override void Step() {
+      // Adjust y scale based on vspeed
+      float yScale = Math.Max(1 + Base.Physics.vspeed / 10, 0.5f);
+      transform.localScale = new Vector3(transform.localScale.x, yScale, 1);
+
       float angle = Base.Physics.vspeed * 5;
       FaceAngle(angle);
 

@@ -38,7 +38,7 @@ namespace Player {
      **********************************/
 
     private void MinionCollision(Minion.Base other) {
-      if (other.Is("Dead"))
+      if (Base.Is("Dead") || other.Is("Dead"))
         return;
 
       if (!Base.HasFooting && Base.y > other.y) {
@@ -53,10 +53,11 @@ namespace Player {
     }
 
     private void SkullCollision(Skull.Base other) {
-      if (other.Is("Invincible"))
+      if (Base.Is("Dead") || other.Is("Invincible"))
         return;
 
       if (!Base.HasFooting && Base.y > other.y) {
+        other.CreateAmmoSkull();
         Base.State("Bounce");
         other.State("Die");
       }
@@ -67,7 +68,7 @@ namespace Player {
     }
 
     private void RatCollision(Rat.Base other) {
-      if (other.Is("Dead"))
+      if (Base.Is("Dead") || other.Is("Dead"))
         return;
 
       if (!Base.HasFooting && Base.y > other.y) {
